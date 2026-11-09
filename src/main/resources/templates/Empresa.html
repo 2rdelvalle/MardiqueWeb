@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Empresa – Sociedad Portuaria Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link data-cc-href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" data-cc-category="personalization" rel="stylesheet" id="cc-font-jakarta">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/inicio.css">
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <style>
+        #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan)); z-index: 9999; transition: width 0.1s linear; }
+
+        .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.65s cubic-bezier(0.4,0,0.2,1), transform 0.65s cubic-bezier(0.4,0,0.2,1); }
+        .reveal.visible { opacity: 1; transform: none; }
+        .reveal-left  { opacity: 0; transform: translateX(-44px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        .reveal-right { opacity: 0; transform: translateX( 44px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        .reveal-left.visible, .reveal-right.visible { opacity: 1; transform: none; }
+        .delay-1{transition-delay:.1s} .delay-2{transition-delay:.2s} .delay-3{transition-delay:.3s} .delay-4{transition-delay:.4s} .delay-5{transition-delay:.5s}
+
+    </style>
+
+    <style>
+        :root {
+            --primary-blue: var(--navy);
+            --primary-dark: var(--navy);
+            --accent-gold: var(--miel);
+            --accent-cyan: var(--cian);
+            --bg-light: #f5f7fa;
+            --text-light: #ffffff;
+            --text-muted: #94a3b8;
+            --text-dark: #1e293b;
+            --border-color: #e2e8f0;
+            --radius: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans',sans-serif; }
+        body { background-color: #ffffff; color: #0a2e4d; -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; width: 100%; }
+
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 12px 24px; font-size: 12.5px; font-weight: 700; border-radius: 6px;
+            cursor: pointer; transition: var(--transition); text-transform: uppercase;
+            letter-spacing: 0.5px; position: relative; overflow: hidden; z-index: 1;
+        }
+        .btn::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transform: skewX(-25deg); z-index: -1;
+        }
+        .btn:hover::after { left: 150%; transition: 0.55s ease-in-out; }
+        .btn i { margin-left: 8px; font-size: 11px; transition: var(--transition); }
+        .btn:hover i { transform: translateX(4px); }
+
+        .btn-orange { background-color: var(--accent-gold); color: #0a2e4d; border: none; box-shadow: 0 4px 12px rgba(230,171,9,0.2); border-radius: 999px; }
+        .btn-orange:hover { background-color: #f4c542; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(230,171,9,0.35); }
+        .btn-outline { background-color: transparent; color: var(--text-light); border: 1px solid rgba(255,255,255,0.7); }
+        .btn-outline:hover { background-color: #ffffff; color: var(--primary-blue); border-color: var(--text-light); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255,255,255,0.15); }
+        .btn-dark { background-color: var(--primary-blue); color: var(--text-light); border: none; }
+        .btn-dark:hover { background-color: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(22,113,161,0.2); }
+
+
+
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        nav { flex: 1; display: flex; justify-content: center; padding-right: 20px; }
+        .nav-menu { display: flex; gap: 35px; align-items: center; }
+        .nav-menu li a {
+            color: rgba(255,255,255,0.75); font-size: 12.5px; font-weight: 500;
+            text-transform: uppercase; position: relative; padding: 8px 0;
+            letter-spacing: 0.5px; transition: color 0.25s ease;
+        }
+        .nav-menu li a::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+            background-color: var(--accent-gold); transition: var(--transition);
+        }
+        .nav-menu li.active a, .nav-menu li a:hover { color: var(--text-light); font-weight: 600; }
+        .nav-menu li.active a::after, .nav-menu li a:hover::after { width: 100%; }
+        .nav-menu li a i { margin-left: 4px; font-size: 10px; vertical-align: middle; }
+        .nav-menu li.dropdown { position: relative; }
+        .nav-menu li.dropdown .dropdown-trigger {
+            color: rgba(255,255,255,0.75); font-size: 12.5px; font-weight: 500;
+            text-transform: uppercase; padding: 8px 0; letter-spacing: 0.5px; cursor: default;
+            display: inline-block;
+        }
+        .nav-menu li.dropdown .dropdown-trigger i { margin-left: 4px; font-size: 10px; vertical-align: middle; }
+        .nav-menu li.dropdown:hover .dropdown-trigger,
+        .nav-menu li.dropdown.active .dropdown-trigger { color: #fff; font-weight: 600; }
+        .nav-menu li.dropdown .dropdown-menu {
+            position: absolute; top: 100%; left: 0; padding-top: 4px;
+            background: rgba(10,46,77,0.72); min-width: 210px; border-radius: 10px;
+            padding: 6px 0; opacity: 0 !important; visibility: hidden !important;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06);
+            z-index: 1000; list-style: none; pointer-events: none;
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+        }
+        .nav-menu li.dropdown .dropdown-menu::before {
+            content: ''; position: absolute; top: -4px; left: 0; right: 0; height: 4px;
+        }
+        .nav-menu li.dropdown:last-child .dropdown-menu { left: auto; right: 0; }
+
+        .nav-menu li.dropdown .dropdown-menu li { display: block; margin: 0; padding: 0; }
+        .nav-menu li.dropdown .dropdown-menu li a {
+            display: block; width: 100%; padding: 10px 22px; margin: 0;
+            font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,0.7);
+            text-transform: none; letter-spacing: 0.3px; text-decoration: none;
+            background: none; border: none; line-height: 1.4;
+            position: static; white-space: nowrap; box-sizing: border-box;
+        }
+        .nav-menu li.dropdown .dropdown-menu li a:hover {
+            color: #fff; background: rgba(255,255,255,0.04); padding-left: 26px;
+        }
+
+        .page-hero {
+            position: relative; height: 520px; display: flex; align-items: flex-end;
+            overflow: hidden;
+        }
+        .page-hero-bg {
+            position: absolute; top: -80px; left: 0; width: 100%; height: calc(100% + 80px);
+            background-image: var(--hero-img, url('/images/EquipoMardique.png'));
+            background-size: cover; background-position: center 40%;
+            z-index: 1; will-change: transform;
+        }
+        .page-hero::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(10,46,77,0.45) 0%, rgba(10,46,77,0.65) 45%, rgba(10,46,77,0.93) 100%);
+            z-index: 2;
+        }
+        .hero-particles { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
+        .hero-particle { position: absolute; border-radius: 50%; background: rgba(230,171,9,0.12); animation: floatParticle linear infinite; }
+        @keyframes floatParticle { 0%,100%{transform:translateY(0) scale(1);opacity:.5} 50%{transform:translateY(-28px) scale(1.08);opacity:.2} }
+        .page-hero .container { position: relative; z-index: 3; padding-bottom: 52px; }
+        .scroll-hint { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 4; display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.45); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; animation: bounceDown 2s ease infinite; }
+        .scroll-hint i { font-size: 15px; }
+        @keyframes bounceDown { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+        .page-hero-breadcrumb {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+            animation: fadeInUp 0.6s ease both;
+        }
+        .page-hero-breadcrumb a { color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; transition: color 0.2s; }
+        .page-hero-breadcrumb a:hover { color: var(--accent-gold); }
+        .page-hero-breadcrumb span { color: rgba(255,255,255,0.35); font-size: 10px; }
+        .page-hero-breadcrumb .current { color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+        .page-hero-title {
+            font-size: 54px; font-weight: 300; color: var(--text-light);
+            letter-spacing: -0.5px; line-height: 1.1;
+            animation: fadeInUp 0.7s ease 0.1s both;
+        }
+        .page-hero-title strong { font-weight: 800; color: var(--accent-gold); }
+        @keyframes fadeInUp {
+            from{opacity:0;transform:translateY(20px)}
+            to{opacity:1;transform:none}
+        }
+        .page-hero-line {
+            width: 0; height: 3px; margin-top: 14px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan));
+            border-radius: 2px; transition: width 1s ease 0.4s;
+        }
+        .page-hero-line.animate { width: 60px; }
+
+        .stats-strip {
+            background-color: var(--primary-dark); padding: 0; color: var(--text-light);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .stats-container { display: flex; justify-content: space-between; align-items: stretch; }
+        .stat-item { display: flex; align-items: center; gap: 14px; position: relative; flex: 1; padding: 26px 16px; transition: background 0.3s; cursor: default; }
+        .stat-item:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 10%; height: 80%; width: 1px; background-color: rgba(255,255,255,0.1); }
+        .stat-item:hover { background: rgba(255,255,255,0.04); }
+        .stat-icon { font-size: 30px; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.8); transition: var(--transition); }
+        .stat-item:hover .stat-icon { color: var(--accent-cyan); -webkit-text-stroke: 1px var(--accent-cyan); transform: scale(1.1); }
+        .stat-text h4 { font-size: 17px; font-weight: 700; margin-bottom: 1px; }
+        .stat-text p { font-size: 11.5px; color: var(--text-muted); line-height: 1.3; }
+
+        /* -------------------------------------------------------------------------
+           ESTILOS REDISEÑADOS: SECCIÓN NUESTRA EMPRESA
+           ------------------------------------------------------------------------- */
+        .about-intro { padding: 80px 0; background: #ffffff; }
+        .intro-layout { display: flex; gap: 64px; align-items: center; }
+        .intro-text { flex: 1.1; }
+
+        .section-label {
+            color: var(--accent-cyan);
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-label::before {
+            content: ''; display: inline-block; width: 30px; height: 3px; background: var(--accent-gold); border-radius: 2px;
+        }
+
+        .intro-text h2 {
+            font-size: 44px; font-weight: 800; color: var(--primary-dark); line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.5px;
+        }
+        .intro-text h2 span { color: var(--accent-cyan); }
+        .intro-text p { font-size: 14.5px; line-height: 1.65; color: #556b82; margin-bottom: 20px; }
+
+        .intro-image-panel {
+            flex: 1; position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(10,46,77,0.08);
+        }
+        .intro-image-panel img { width: 100%; height: 460px; object-fit: cover; display: block; border-radius: 16px; }
+
+        .intro-image-badge {
+            position: absolute; bottom: 20px; left: 20px; right: 20px;
+            background: var(--primary-dark);
+            border-radius: 12px;
+            padding: 18px 24px;
+            display: flex; align-items: center; gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+        .intro-image-badge:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(0,0,0,0.4); }
+
+        .badge-icon-box {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            border: 1px solid rgba(30,152,217,0.4);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            background: rgba(30,152,217,0.08);
+            flex-shrink: 0;
+        }
+        .badge-icon-box::before {
+            content: ''; position: absolute; left: -1px; top: 10px; bottom: 10px; width: 3px; background: var(--accent-gold); border-radius: 4px;
+        }
+        .badge-icon-box i { color: #ffffff; font-size: 20px; }
+
+        .badge-info { flex: 1; }
+        .badge-info h4 { color: var(--accent-gold); font-size: 13.5px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .badge-info p { color: #ffffff; font-size: 11.5px; line-height: 1.4; opacity: 0.9; margin: 0; }
+
+        .badge-arrow { color: #ffffff; font-size: 16px; transition: transform 0.3s ease; }
+        .intro-image-badge:hover .badge-arrow { transform: translateX(4px); color: var(--accent-gold); }
+
+
+        .features-section { background: var(--text-light); padding: 64px 0; border-top: 1px solid var(--border-color); }
+        .features-layout { display: flex; gap: 32px; align-items: flex-start; }
+        .features-left { flex: 1.2; }
+        .features-left h3 { font-size: 20px; font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; }
+        .features-left > p { font-size: 13.5px; color: #556b82; margin-bottom: 28px; line-height: 1.6; }
+        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .feature-card {
+            background: var(--bg-light); border: 1px solid var(--border-color);
+            border-radius: var(--radius); padding: 20px 18px;
+            display: flex; gap: 14px; align-items: flex-start;
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0;
+            background: var(--accent-cyan); border-radius: 0 0 3px 3px; transition: var(--transition);
+        }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(22,113,161,0.08); border-color: transparent; background: var(--text-light); }
+        .feature-card:hover::before { height: 100%; border-radius: 3px 0 0 3px; }
+        .feature-icon-wrap { width: 40px; height: 40px; border-radius: 8px; background: rgba(22,113,161,0.08); color: var(--primary-blue); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; transition: var(--transition); }
+        .feature-card:hover .feature-icon-wrap { background: var(--primary-blue); color: var(--text-light); }
+        .feature-card h4 { font-size: 13px; font-weight: 700; color: var(--primary-dark); margin-bottom: 4px; text-transform: uppercase; }
+        .feature-card p { font-size: 12px; color: #556b82; line-height: 1.45; }
+
+
+        /* ===== IDENTIDAD CORPORATIVA (Razón de Ser) ===== */
+        .rs-section { position: relative; overflow: hidden; padding: clamp(56px, 6vw, 96px) 0 clamp(40px, 4vw, 64px); background: linear-gradient(180deg, #f7fbfe 0%, #e9f5fc 100%); }
+        .rs-section::before {
+            content: ''; position: absolute; top: 0; right: 0; width: 46%; height: 100%; pointer-events: none;
+            background: var(--mv-img, url('/images/VisionMision.png')) right top / cover no-repeat; opacity: .10;
+            -webkit-mask-image: linear-gradient(270deg, #000 0%, transparent 90%); mask-image: linear-gradient(270deg, #000 0%, transparent 90%);
+        }
+        .rs-inner { position: relative; z-index: 1; }
+        .rs-header { text-align: center; max-width: 760px; margin: 0 auto clamp(32px, 4vw, 52px); }
+        .rs-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #0a2e4d; margin-bottom: 14px; }
+        .rs-eyebrow::before, .rs-eyebrow::after { content: ''; width: 34px; height: 3px; border-radius: 2px; }
+        .rs-eyebrow::before { background: #e6ab09; }
+        .rs-eyebrow::after { background: #1e98d9; }
+        .rs-header h2 { font-size: clamp(30px, 3.6vw, 44px); font-weight: 800; color: #0a2e4d; line-height: 1.1; letter-spacing: -.5px; margin: 0; }
+        .rs-header h2 span { color: #1e98d9; }
+        .rs-divider { width: 46px; height: 3px; border-radius: 2px; background: #e6ab09; margin: 16px auto 18px; }
+        .rs-header p { font-size: 14.5px; line-height: 1.7; color: #4a6078; max-width: 560px; margin: 0 auto; }
+
+        .rs-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+        .rs-card { --c: #e6ab09; position: relative; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); background: #fff; border-radius: 18px; box-shadow: 0 14px 40px rgba(10,46,77,.08); overflow: hidden; transition: transform .35s ease, box-shadow .35s ease; }
+        .rs-card.rs-vision { --c: #1e98d9; }
+        .rs-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(10,46,77,.13); }
+        .rs-media { position: relative; background: var(--c); min-height: 280px; clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%); }
+        .rs-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; clip-path: polygon(0 0, calc(100% - 9px) 0, calc(90% - 9px) 100%, 0 100%); }
+        .rs-body { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; padding: clamp(22px, 2.4vw, 34px) clamp(20px, 2.4vw, 32px) clamp(22px, 2.4vw, 34px) 22px; }
+        .rs-head { display: flex; align-items: center; gap: 14px; margin-left: -34px; }
+        .rs-icon { width: 54px; height: 54px; border-radius: 50%; background: var(--c); color: #fff; border: 4px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 21px; box-shadow: 0 6px 16px rgba(10,46,77,.18); flex-shrink: 0; }
+        .rs-tag { font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--c); }
+        .rs-body h3 { font-size: clamp(19px, 1.8vw, 23px); font-weight: 800; color: #0a2e4d; margin: 16px 0 10px; }
+        .rs-line { width: 30px; height: 3px; border-radius: 2px; background: var(--c); margin-bottom: 14px; }
+        .rs-body p { font-size: 13.5px; line-height: 1.7; color: #4a6078; margin: 0; }
+
+        /* Blindaje: evita que estilos globales (.mision/.vision, article) cambien el fondo o el texto */
+        .rs-section .rs-card { background: #fff !important; color: #4a6078 !important; }
+        .rs-section .rs-card .rs-body { background: #fff !important; }
+        .rs-section .rs-card .rs-body h3 { color: #0a2e4d !important; }
+        .rs-section .rs-card .rs-body p { color: #4a6078 !important; }
+        .rs-section .rs-card .rs-tag { color: var(--c) !important; }
+
+        /* ===== RESPALDO LEGAL + CERTIFICACIONES ===== */
+        .pm-section { position: relative; overflow: hidden; padding: clamp(40px, 4vw, 64px) 0 clamp(56px, 6vw, 96px); background: linear-gradient(180deg, #e9f5fc 0%, #f4faff 100%); }
+        .pm-section::before { content: ''; position: absolute; top: -120px; right: -120px; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, rgba(30,152,217,.12) 0%, transparent 70%); pointer-events: none; }
+        .pm-layout { position: relative; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(32px, 4.5vw, 64px); align-items: start; }
+        .pm-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #1671a1; margin-bottom: 8px; }
+        .pm-eyebrow::before { content: ''; width: 20px; height: 9px; background: linear-gradient(#e6ab09, #e6ab09) top / 100% 4px no-repeat, linear-gradient(#1e98d9, #1e98d9) bottom / 100% 4px no-repeat; border-radius: 2px; }
+        .pm-text h2 { font-size: clamp(28px, 3vw, 38px); font-weight: 800; color: #0a2e4d; line-height: 1.12; margin: 0 0 14px; letter-spacing: -.4px; }
+        .pm-text h2::after { content: ''; display: block; width: 36px; height: 3px; border-radius: 2px; background: #e6ab09; margin-top: 12px; }
+        .pm-text > p { font-size: 14.5px; line-height: 1.65; color: #4a6078; max-width: 520px; margin: 0 0 26px; }
+        .pm-list { display: flex; flex-direction: column; gap: 14px; }
+        .pm-item { display: flex; align-items: center; gap: 16px; background: #fff; border-radius: 12px; border-left: 4px solid #f4c542; padding: 16px 20px 16px 16px; box-shadow: 0 6px 18px rgba(10,46,77,.06); transition: transform .3s ease, box-shadow .3s ease; }
+        .pm-item:hover { transform: translateX(5px); box-shadow: 0 10px 26px rgba(10,46,77,.10); }
+        .pm-num { width: 28px; height: 28px; border-radius: 50%; background: #f4b81a; color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pm-ico { width: 52px; height: 52px; border-radius: 50%; background: #e6f2fb; color: #0a2e4d; font-size: 21px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pm-info { flex: 1; min-width: 0; }
+        .pm-info h4 { font-size: 13px; font-weight: 800; color: #0a2e4d; text-transform: uppercase; letter-spacing: .2px; margin: 0 0 4px; }
+        .pm-info p { font-size: 12.5px; line-height: 1.5; color: #5a6f86; margin: 0; }
+        .pm-chev { color: #e6ab09; font-size: 13px; flex-shrink: 0; transition: transform .3s ease; }
+        .pm-item:hover .pm-chev { transform: translateX(4px); }
+
+        .pm-certs h3 { font-size: clamp(22px, 2.2vw, 28px); font-weight: 800; color: #0a2e4d; margin: 0 0 20px; letter-spacing: -.3px; }
+        .pm-certs-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .pm-cert { background: #fff; border-radius: 12px; border-left: 4px solid #f4c542; padding: 22px 16px 20px; text-align: center; box-shadow: 0 6px 18px rgba(10,46,77,.06); transition: transform .3s ease, box-shadow .3s ease; }
+        .pm-cert:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(10,46,77,.10); }
+        .pm-cert .pm-ico { width: 56px; height: 56px; margin: 0 auto 12px; font-size: 23px; }
+        .pm-cert h4 { font-size: 14px; font-weight: 800; color: #0a2e4d; margin: 0 0 6px; }
+        .pm-cert p { font-size: 12px; line-height: 1.5; color: #5a6f86; margin: 0; }
+        .pm-regl { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 18px; padding: 16px 20px; background: rgba(255,255,255,.75); border: 1px solid rgba(30,152,217,.18); border-radius: 12px; }
+        .pm-regl-ico { width: 34px; height: 34px; border-radius: 50%; background: #1e98d9; color: #fff; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pm-regl-txt { flex: 1; min-width: 150px; padding-left: 14px; border-left: 3px solid #e6ab09; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: #1671a1; }
+        .pm-btn { display: inline-flex; align-items: center; gap: 8px; background: #0a2e4d; color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; padding: 11px 18px; border-radius: 6px; transition: background .3s ease, transform .3s ease; }
+        .pm-btn:hover { background: #1671a1; transform: translateY(-2px); }
+        .pm-btn i { font-size: 10px; }
+
+        .cta-band {
+            background: var(--primary-dark); padding: 56px 0; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .cta-band::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-gold)); }
+        .cta-band h2 { font-size: 26px; font-weight: 700; color: var(--text-light); margin-bottom: 10px; }
+        .cta-band p { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 28px; }
+        .cta-buttons { display: flex; justify-content: center; gap: 14px; }
+
+        footer {
+            background: linear-gradient(180deg, var(--primary-dark) 0%, #0a1a2b 100%);
+            padding: 60px 0 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            position: relative;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-gold));
+            opacity: .5;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.8fr 1.2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-logo {
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 18px;
+            position: relative;
+        }
+        .footer-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 15%;
+            width: 70%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        .footer-logo img { height: 34px; object-fit: contain; }
+        .footer-desc { margin-bottom: 20px; line-height: 1.65; font-size: 12.5px; color: rgba(148,163,184,.85); }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a {
+            display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px;
+            border: 1px solid rgba(148,163,184,.2);
+            border-radius: 50%;
+            color: #94a3b8;
+            transition: all .3s ease;
+            font-size: 14px;
+        }
+        .social-icons a:hover {
+            color: #fff;
+            border-color: var(--accent-gold);
+            background: rgba(230,171,9,.12);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(230,171,9,.2);
+        }
+        .footer-title {
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 26px; height: 2.5px;
+            background: var(--accent-gold);
+            border-radius: 2px;
+        }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a {
+            transition: all .25s ease;
+            font-size: 12.5px;
+            color: rgba(148,163,184,.85);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-links a:hover {
+            color: var(--accent-gold);
+            padding-left: 5px;
+        }
+        .contact-info { list-style: none; padding: 0; }
+        .contact-info li {
+            display: flex; gap: 10px;
+            margin-bottom: 14px;
+            align-items: flex-start;
+            font-size: 12.5px;
+            color: rgba(148,163,184,.85);
+        }
+        .contact-info i { margin-top: 3px; font-size: 14px; color: var(--accent-gold); }
+        .certs-container { display: flex; gap: 14px; }
+        .cert-item { text-align: center; flex: 1; }
+        .cert-circle {
+            width: 54px; height: 54px;
+            border: 1.5px solid rgba(148,163,184,.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 10px auto;
+            font-size: 8px;
+            font-weight: 800;
+            color: #fff;
+            transition: all .35s ease;
+            background: rgba(255,255,255,.03);
+        }
+        .cert-item:hover .cert-circle {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 16px rgba(230,171,9,.25);
+            transform: scale(1.08);
+        }
+        .cert-item p { font-size: 9.5px; line-height: 1.3; color: rgba(148,163,184,.75); }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,.05);
+            padding: 18px 0;
+            text-align: center;
+            font-size: 12px;
+        }
+        .footer-bottom-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .footer-bottom-links a {
+            color: rgba(148,163,184,.7);
+            text-decoration: none;
+            transition: all .25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            margin-left: 0;
+        }
+        .footer-bottom-links a:hover { color: #fff; }
+        .footer-bottom-links a i { font-size: 11px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .intro-layout, .features-layout, .permits-layout { flex-direction: column; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .stats-container { flex-wrap: wrap; gap: 16px; }
+            .stat-item::after { display: none; }
+        }
+        @media (max-width: 768px) {
+            .nav-menu { display: none; }
+            nav { display: none; }
+            .header-pse-btn { display: none; }
+            .mobile-menu-toggle { display: flex; }
+            .mobile-nav-drawer { display: flex; }
+            .page-hero-title { font-size: 30px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .certs-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-grid > div:nth-child(3) > div { flex-direction: column; gap: 20px; }
+            .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+            .footer-bottom-links { justify-content: center; }
+            footer { padding: 48px 0 0; }
+            .cta-buttons { flex-direction: column; align-items: center; }
+
+            /* Ajustes Misión/Visión en móvil */
+            .mv-cards-grid { grid-template-columns: 1fr; gap: 20px; }
+            .mv-item { padding: 32px 24px; }
+        }
+
+    </style>
+    <link rel="stylesheet" href="/css/chatbot.css">
+    <link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body>
+<div id="scroll-progress"></div>
+
+<header id="main-header">
+    <div class="container header-content">
+        <a href="/inicio" class="logo-box">
+            <img src="/images/Logo.png" alt="Sociedad Portuaria Mardique">
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/inicio">INICIO</a></li>
+                <li class="active"><a href="/empresa">EMPRESA</a></li>
+                <li><a href="/servicios">SERVICIOS</a></li>
+                <li class="dropdown">
+                    <span class="dropdown-trigger">SERVICIO AL CLIENTE <i class="fas fa-chevron-down"></i></span>
+                    <ul class="dropdown-menu">
+                        <li><a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a></li>
+                        <li><a href="/procedimientos">PROCEDIMIENTOS</a></li>
+                        <li><a href="/tarifas">TARIFAS</a></li>
+                    </ul>
+                </li>
+                <li><a href="/contacto">CONTACTO</a></li>
+                <li><a href="/galeria">GALERÍA</a></li>
+                <li><a href="/login">ACCESO</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="header-pse-btn"><img src="/images/pse.png" alt="PSE"></a>
+        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+
+<div class="page-wrapper">
+
+    <section class="page-hero">
+        <div class="page-hero-bg" id="heroBg" th:style="|--hero-img: url('${heroImage}');|"></div>
+        <div class="hero-particles" id="heroParticles"></div>
+        <div class="container">
+            <div class="page-hero-breadcrumb">
+                <a href="/inicio">INICIO</a>
+                <span><i class="fas fa-chevron-right" style="font-size:9px;"></i></span>
+                <span class="current">EMPRESA</span>
+            </div>
+            <h1 class="page-hero-title" th:utext="${pageContents['hero-title']} ?: 'SOMOS &lt;strong&gt;MARDIQUE&lt;/strong&gt;'">SOMOS <strong>MARDIQUE</strong></h1>
+            <div class="page-hero-line" id="heroLine"></div>
+        </div>
+        <div class="scroll-hint"><i class="fas fa-chevron-down"></i><span>Desplazar</span></div>
+    </section>
+
+
+    <div class="stats-strip">
+        <div class="container stats-container">
+            <div class="stat-item reveal delay-1">
+                <i class="fa-solid fa-anchor stat-icon"></i>
+                <div class="stat-text"><h4><span class="counter" data-target="15">0</span>m</h4><p>Profundidad del<br>canal de acceso</p></div>
+            </div>
+            <div class="stat-item reveal delay-2">
+                <i class="fa-solid fa-star stat-icon"></i>
+                <div class="stat-text"><h4><span class="counter" data-target="2014">0</span></h4><p>Zona franca portuaria<br>especial - DIAN</p></div>
+            </div>
+            <div class="stat-item reveal delay-3">
+                <i class="fa-solid fa-infinity stat-icon"></i>
+                <div class="stat-text"><h4>Multimodal</h4><p>Acceso marítimo<br>y fluvial simultáneo</p></div>
+            </div>
+            <div class="stat-item reveal delay-4">
+                <i class="fa-solid fa-award stat-icon"></i>
+                <div class="stat-text"><h4>ISO 9001</h4><p>Certificación en calidad<br>y seguridad</p></div>
+            </div>
+            <div class="stat-item reveal delay-5">
+                <i class="fa-solid fa-tower-cell stat-icon"></i>
+                <div class="stat-text"><h4>24/7</h4><p>Operaciones<br>continuas</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN REDISEÑADA: NUESTRA EMPRESA -->
+    <section class="about-intro">
+        <div class="container">
+            <div class="intro-layout">
+                <div class="intro-text reveal-left">
+                    <div class="section-label">NUESTRA EMPRESA</div>
+                    <h2 th:utext="${pageContents['section-title']} ?: 'Un puerto de clase mundial&lt;br&gt;en &lt;span&gt;Colombia&lt;/span&gt;'">Un puerto de clase mundial<br>en <span>Colombia</span></h2>
+
+                    <p th:utext="${pageContents['section-text']} ?: 'Sociedad Portuaria Mardique S.A. es un puerto multipropósito privado de uso público, ubicado estratégicamente en la Carretera Antigua Vía Barú, Corregimiento Santa Ana – Cartagena, Colombia.'">Sociedad Portuaria Mardique S.A. es un puerto multipropósito privado de uso público, ubicado estratégicamente en la Carretera Antigua Vía Barú, Corregimiento Santa Ana – Cartagena, Colombia.</p>
+
+                    <p>Nuestra posición geoestratégica nos permite ser el único puerto con capacidad de disminuir trasbordos y cabotajes en las operaciones de importación y exportación de bienes, con conexión directa al interior del país a través del transporte multimodal fluvial y terrestre.</p>
+
+                    <p>Contamos con concesión portuaria otorgada por Cormagdalena, y con más de 20 años de experiencia en la prestación de servicios portuarios y logísticos de excelencia.</p>
+
+                    <div style="margin-top: 32px;">
+                        <a href="/servicios" class="btn btn-orange">NUESTROS SERVICIOS <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="intro-image-panel reveal-right">
+                    <!-- Aseguramos que la imagen tenga el tamaño y posición adecuados -->
+                    <img th:src="@{${introImage}}" src="/images/OperadorPortuario.png" alt="Puerto Mardique">
+
+                    <!-- Tarjeta flotante superpuesta (Badge) -->
+                    <div class="intro-image-badge">
+                        <div class="badge-icon-box">
+                            <i class="fas fa-file-lines"></i>
+                        </div>
+                        <div class="badge-info">
+                            <h4>REGISTRO OPERADOR PORTUARIO</h4>
+                            <p>Registro como operador portuario ante la autoridad competente — Mayo 2021</p>
+                        </div>
+                        <i class="fas fa-arrow-right badge-arrow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <style>
+        /* ===== CAPACIDADES (info original de Empresa) ===== */
+        .features-section .features-left { flex: 1; }
+        .features-section .features-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        @media (max-width: 1100px) { .features-section .features-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 640px)  { .features-section .features-grid { grid-template-columns: 1fr; } }
+
+        /* ===== CTA con la misma ola que Inicio ===== */
+        .cta-v3 {
+            position: relative; overflow: hidden; text-align: center; color: #fff; background: #0b3851;
+            padding: clamp(120px, 13vw, 180px) 0 clamp(80px, 10vw, 130px);
+            border-bottom: 3px solid transparent; border-image: linear-gradient(90deg, #e6ab09, #1e98d9, #e6ab09) 1;
+        }
+        .cta-v3 .cta-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 1; mix-blend-mode: normal; }
+        .cta-v3 .cta-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(135deg, rgba(11,56,81,.90) 0%, rgba(16,82,116,.76) 55%, rgba(22,113,161,.60) 100%); }
+        .cta-v3 .cta-wave { position: absolute; left: 0; right: 0; top: -1px; width: 100%; height: clamp(54px, 6.5vw, 96px); z-index: 2; pointer-events: none; }
+        .cta-v3 .cta-wave svg { display: block; width: 100%; height: 100%; }
+        .cta-v3 .container { position: relative; z-index: 3; }
+        .cta-v3 h2 { text-wrap: balance; color: #fff; font-size: clamp(28px, 3.6vw, 46px); font-weight: 800; letter-spacing: -.5px; margin: 0 0 14px; }
+        .cta-v3 h2::after { content: ''; display: block; width: 56px; height: 3px; border-radius: 2px; margin: 18px auto 0; background: linear-gradient(90deg, #e6ab09 0%, #f4c542 40%, #1e98d9 100%); }
+        .cta-v3 p { color: #cfe9f7; font-size: clamp(15px, 1.4vw, 19px); line-height: 1.6; margin: 0 auto 34px; max-width: 760px; text-wrap: balance; }
+        .cta-v3 .cta-buttons-new { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .cta-v3 .btn-outline { color: #fff; border: 1.5px solid rgba(255,255,255,.6); background: rgba(255,255,255,.08); border-radius: 999px; cursor: pointer; }
+        .cta-v3 .btn-outline:hover { background: #fff; color: #0b3851; border-color: #fff; }
+
+        /* ===== FOOTER legible, igual de claro que Inicio ===== */
+        footer.site-footer { background: linear-gradient(180deg, #105274 0%, #0b3851 100%); padding: clamp(48px, 6vw, 80px) 0 0; font-size: 14px; color: rgba(255,255,255,.85); }
+        footer.site-footer::before { display: none; }
+        footer.site-footer .footer-grid { grid-template-columns: 1.5fr 1fr 1.2fr 1fr; gap: clamp(28px, 4vw, 56px); }
+        footer.site-footer .footer-logo { display: inline-block; background: #fff; border-radius: 14px; padding: 12px 18px; margin-bottom: 18px; }
+        footer.site-footer .footer-logo::after { display: none; }
+        footer.site-footer .footer-logo img { height: 44px; width: auto; display: block; }
+        footer.site-footer .footer-desc { color: #cfe9f7; font-size: 14px; line-height: 1.7; max-width: 380px; }
+        footer.site-footer .social-icons a { color: #fff; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.35); }
+        footer.site-footer .social-icons a:hover { background: #e6ab09; border-color: #e6ab09; color: #0a2e4d; }
+        footer.site-footer .footer-title { color: #fff; }
+        footer.site-footer .footer-links a { color: rgba(255,255,255,.85); font-size: 14px; }
+        footer.site-footer .footer-links a:hover { color: #e6ab09; }
+        footer.site-footer .contact-info li { color: rgba(255,255,255,.88); font-size: 14px; }
+        footer.site-footer .contact-info li span { color: inherit; }
+        footer.site-footer .contact-info i { color: #e6ab09; }
+        footer.site-footer .certs-container { gap: 22px; }
+        footer.site-footer .cert-circle { width: 56px; height: 56px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.4); background: rgba(255,255,255,.08); color: #f4c542; font-size: 22px; }
+        footer.site-footer .cert-circle i { font-size: 22px; }
+        footer.site-footer .cert-item p { color: rgba(255,255,255,.85); font-size: 11px; line-height: 1.35; }
+        footer.site-footer .footer-bottom { border-top: 1px solid rgba(255,255,255,.14); }
+        footer.site-footer .footer-bottom span { color: rgba(255,255,255,.75); font-size: 13px; }
+        footer.site-footer .footer-bottom-links a { color: rgba(255,255,255,.82); font-size: 13px; }
+        footer.site-footer .footer-bottom-links a:hover { color: #e6ab09; }
+
+        /* ===== Responsive de las secciones nuevas ===== */
+        @media (max-width: 1024px) {
+            footer.site-footer .footer-grid { grid-template-columns: 1fr 1fr; }
+            .pm-layout { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 900px) { .rs-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) {
+            .rs-card { grid-template-columns: 1fr; }
+            .rs-media { min-height: 200px; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+            .rs-media img { clip-path: polygon(0 0, 100% 0, 100% calc(90% - 9px), 0 calc(100% - 9px)); }
+            .rs-body { padding: 8px 22px 26px; }
+            .rs-head { margin-left: 0; margin-top: -34px; }
+            .pm-certs-grid { grid-template-columns: 1fr; }
+            .pm-item { flex-wrap: wrap; }
+        }
+        @media (max-width: 768px) { footer.site-footer .footer-grid { grid-template-columns: 1fr; } }
+    </style>
+
+    <!-- CAPACIDADES: contenido original de Empresa (restaurado) -->
+    <section class="features-section">
+        <div class="container">
+            <div style="margin-bottom: 36px;" class="reveal">
+                <div class="section-label">CAPACIDADES</div>
+                <h2 style="font-size:26px; font-weight:700; color:var(--primary-dark); margin-top:8px;">Características Portuarias y Logísticas</h2>
+            </div>
+            <div class="features-layout">
+                <div class="features-left">
+                    <div class="features-grid">
+                        <div class="feature-card reveal delay-1">
+                            <div class="feature-icon-wrap"><i class="fas fa-bolt"></i></div>
+                            <div>
+                                <h4>Grúas Móviles</h4>
+                                <p>Operaciones seguras y eficientes de izaje con equipos de última generación para todo tipo de carga.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card reveal delay-2">
+                            <div class="feature-icon-wrap"><i class="fas fa-flask"></i></div>
+                            <div>
+                                <h4>Hidrocarburos</h4>
+                                <p>Infraestructura especializada para manejo y almacenamiento de crudos y combustibles líquidos derivados del petróleo.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card reveal delay-3">
+                            <div class="feature-icon-wrap"><i class="fa-solid fa-warehouse"></i></div>
+                            <div>
+                                <h4>Silos para Gráneles</h4>
+                                <p>Sistemas de alta capacidad para manejo de gráneles sólidos con altos estándares de calidad y seguridad.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card reveal delay-4">
+                            <div class="feature-icon-wrap"><i class="fas fa-cube"></i></div>
+                            <div>
+                                <h4>Contenedores</h4>
+                                <p>Manipulación integral y almacenamiento de contenedores con infraestructura especializada.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card reveal delay-1">
+                            <div class="feature-icon-wrap"><i class="fas fa-clipboard-check"></i></div>
+                            <div>
+                                <h4>Carga General y de Proyecto</h4>
+                                <p>Manejo integral de carga general con soluciones logísticas a la medida del cliente.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card reveal delay-2">
+                            <div class="feature-icon-wrap"><i class="fas fa-hard-hat"></i></div>
+                            <div>
+                                <h4>Shore Base</h4>
+                                <p>Soporte logístico especializado para la industria offshore y proyectos de gran envergadura.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card reveal delay-3">
+                            <div class="feature-icon-wrap"><i class="fas fa-traffic-light"></i></div>
+                            <div>
+                                <h4>Transporte Terrestre</h4>
+                                <p>Operaciones de transporte terrestre integradas con la cadena logística portuaria.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card reveal delay-4">
+                            <div class="feature-icon-wrap"><i class="fas fa-ferry"></i></div>
+                            <div>
+                                <h4>Transporte Fluvial</h4>
+                                <p>Operaciones fluviales con conexión directa al interior del país a través del río Magdalena.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- IDENTIDAD CORPORATIVA -->
+    <section class="rs-section" th:style="|--mv-img: url('${visionImage}');|">
+        <div class="container rs-inner">
+            <div class="rs-header reveal">
+                <div class="rs-eyebrow">IDENTIDAD CORPORATIVA</div>
+                <h2>Nuestra <span>Razón de Ser</span></h2>
+                <div class="rs-divider"></div>
+                <p>Somos un puerto multipropósito que conecta al país con el mundo, impulsando el desarrollo económico y logístico de la región.</p>
+            </div>
+
+            <div class="rs-grid">
+                <article class="rs-card rs-mision reveal delay-1">
+                    <div class="rs-media">
+                        <img src="/images/Mision.png" onerror="this.onerror=null;this.src='/images/VisionMision.png'" alt="Misión de Mardique" loading="lazy">
+                    </div>
+                    <div class="rs-body">
+                        <div class="rs-head">
+                            <div class="rs-icon"><i class="fas fa-bullseye"></i></div>
+                            <span class="rs-tag">Misión</span>
+                        </div>
+                        <h3>Lo que hacemos hoy</h3>
+                        <div class="rs-line"></div>
+                        <p>Prestar servicios portuarios y logísticos con excelencia, con mayores y mejores ventajas competitivas para nuestros usuarios y clientes; ofreciéndoles procesos eficientes, creados a la medida de sus necesidades.</p>
+                    </div>
+                </article>
+
+                <article class="rs-card rs-vision reveal delay-2">
+                    <div class="rs-media">
+                        <img src="/images/Vision.png" onerror="this.onerror=null;this.src='/images/VisionMision.png'" alt="Visión de Mardique" loading="lazy">
+                    </div>
+                    <div class="rs-body">
+                        <div class="rs-head">
+                            <div class="rs-icon"><i class="fas fa-eye"></i></div>
+                            <span class="rs-tag">Visión</span>
+                        </div>
+                        <h3>Hacia dónde vamos</h3>
+                        <div class="rs-line"></div>
+                        <p>Ser la Terminal más importante en Colombia en prestación de servicios portuarios y logísticos, a través de una gran plataforma logística integrada por el transporte multimodal, que impulse el desarrollo de las diferentes regiones y actores del comercio exterior.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- RESPALDO LEGAL + CERTIFICACIONES -->
+    <section class="pm-section">
+        <div class="container">
+            <div class="pm-layout">
+                <div class="pm-text reveal-left">
+                    <div class="pm-eyebrow">Respaldo legal</div>
+                    <h2>Cuenta con Permisos Oficiales</h2>
+                    <p>Mardique opera bajo el más riguroso marco legal y regulatorio, con autorizaciones y permisos vigentes de las entidades competentes.</p>
+                    <div class="pm-list">
+                        <div class="pm-item reveal delay-1">
+                            <div class="pm-num">1</div>
+                            <div class="pm-ico"><i class="fas fa-ship"></i></div>
+                            <div class="pm-info">
+                                <h4>Concesión Portuaria</h4>
+                                <p>Otorgada por Cormagdalena para la operación de las facilidades fluviales y marítimas.</p>
+                            </div>
+                            <i class="fas fa-chevron-right pm-chev"></i>
+                        </div>
+                        <div class="pm-item reveal delay-2">
+                            <div class="pm-num">2</div>
+                            <div class="pm-ico"><i class="fas fa-leaf"></i></div>
+                            <div class="pm-info">
+                                <h4>Licencia Ambiental</h4>
+                                <p>Otorgada por Cardique, garantizando estándares ambientales en todas las operaciones.</p>
+                            </div>
+                            <i class="fas fa-chevron-right pm-chev"></i>
+                        </div>
+                        <div class="pm-item reveal delay-3">
+                            <div class="pm-num">3</div>
+                            <div class="pm-ico"><i class="fas fa-oil-can"></i></div>
+                            <div class="pm-info">
+                                <h4>Autorización Ministerio de Minas</h4>
+                                <p>Para almacenamiento de crudos y combustibles líquidos derivados del petróleo.</p>
+                            </div>
+                            <i class="fas fa-chevron-right pm-chev"></i>
+                        </div>
+                        <div class="pm-item reveal delay-4">
+                            <div class="pm-num">4</div>
+                            <div class="pm-ico"><i class="fas fa-file-contract"></i></div>
+                            <div class="pm-info">
+                                <h4>Zona Franca Portuaria Especial — DIAN</h4>
+                                <p>Resolución 002639 — Abril de 2014. Beneficios tributarios y aduaneros para operaciones de comercio exterior.</p>
+                            </div>
+                            <i class="fas fa-chevron-right pm-chev"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pm-certs reveal-right">
+                    <div class="pm-eyebrow">Calidad</div>
+                    <h3>Certificaciones Vigentes</h3>
+                    <div class="pm-certs-grid">
+                        <div class="pm-cert reveal delay-1">
+                            <div class="pm-ico"><i class="fas fa-award"></i></div>
+                            <h4>Gestión de Calidad</h4>
+                            <p>Sistema de gestión de calidad certificado por Bureau Veritas — ISO 9001:2015</p>
+                        </div>
+                        <div class="pm-cert reveal delay-2">
+                            <div class="pm-ico"><i class="fas fa-hard-hat"></i></div>
+                            <h4>Seguridad y Salud</h4>
+                            <p>Gestión de seguridad y salud en el trabajo certificado internacionalmente — ISO 45001:2018</p>
+                        </div>
+                        <div class="pm-cert reveal delay-3">
+                            <div class="pm-ico"><i class="fas fa-ship"></i></div>
+                            <h4>Operador Portuario</h4>
+                            <p>Registro oficial como operador portuario — Mayo 2021</p>
+                        </div>
+                        <div class="pm-cert reveal delay-4">
+                            <div class="pm-ico"><i class="fas fa-warehouse"></i></div>
+                            <h4>Zona Franca</h4>
+                            <p>Portuaria especial otorgada por la DIAN desde 2014</p>
+                        </div>
+                    </div>
+                    <div class="pm-regl">
+                        <div class="pm-regl-ico"><i class="fas fa-file-lines"></i></div>
+                        <div class="pm-regl-txt">Reglamento técnico de operaciones</div>
+                        <a href="https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf" target="_blank" rel="noopener" class="pm-btn">VER REGLAMENTO <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- CTA: misma ola que Inicio (azul + línea dorada) -->
+    <section class="cta-v3 reveal">
+        <img th:src="@{${ctaImage}}" src="/images/Operar.png" alt="" class="cta-bg-img">
+        <div class="cta-overlay"></div>
+        <div class="cta-wave" aria-hidden="true">
+            <svg viewBox="0 0 1440 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- banda azul -->
+                <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48 L1440,62 C1200,32 960,42 720,66 C480,90 240,84 0,48 Z" fill="#1e98d9"/>
+                <!-- fondo de la sección anterior -->
+                <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48 L1440,0 L0,0 Z" fill="#f4faff"/>
+                <!-- línea dorada -->
+                <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48" fill="none" stroke="#e6ab09" stroke-width="2" vector-effect="non-scaling-stroke"/>
+            </svg>
+        </div>
+        <div class="container">
+            <h2>¿Listo para operar con nosotros?</h2>
+            <p>Conozca todas las soluciones que Mardique tiene disponibles para su operación.</p>
+            <div class="cta-buttons-new">
+                <a href="/servicios" class="btn btn-orange">VER TODOS LOS SERVICIOS <i class="fas fa-arrow-right"></i></a>
+                <button type="button" onclick="openServiceForm('Solicite una Cotización', 'Cotización de Servicios', 'Su operación portuaria', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted a la brevedad posible.')" class="btn btn-outline">CONTÁCTENOS <i class="fas fa-phone"></i></button>
+            </div>
+        </div>
+    </section>
+
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">
+                        <img src="/images/Logo.png" alt="Mardique">
+                    </div>
+                    <p class="footer-desc">Puerto multipropósito privado de uso público. Servicios portuarios y logísticos de excelencia en Cartagena, Colombia.</p>
+                    <div class="social-icons">
+                        <a href="https://www.youtube.com/channel/UCaqN40lCIj_nm53aHPJEicQ" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="mailto:info@spmardique.com"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <p class="footer-title">Navegación</p>
+                    <ul class="footer-links">
+                        <li><a href="/inicio">Inicio</a></li>
+                        <li><a href="/empresa">Empresa</a></li>
+                        <li><a href="/servicios">Servicios</a></li>
+                        <li><a href="/tramites-en-linea">Trámites en Línea</a></li>
+                        <li><a href="/galeria">Galería</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="footer-title">Contacto</p>
+                    <ul class="contact-info">
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Carretera Antigua Vía Barú, Cl 7 Puerto 2, Corregimiento Santa Ana – Cartagena – Colombia</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span>info@spmardique.com</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-clock"></i>
+                            <span>Operaciones 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="footer-title">Certificaciones</p>
+                    <div class="certs-container">
+                        <div class="cert-item">
+                            <div class="cert-circle"><i class="fas fa-certificate"></i></div>
+                            <p>ISO<br>9001</p>
+                        </div>
+                        <div class="cert-item">
+                            <div class="cert-circle"><i class="fas fa-hard-hat"></i></div>
+                            <p>ISO<br>45001</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Sociedad Portuaria Mardique S.A. Todos los derechos reservados.</span>
+                <div class="footer-bottom-links">
+                    <a href="https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf" target="_blank"><i class="fas fa-file-pdf"></i> Reglamento Operativo</a>
+                    <a href="/privacidad"><i class="fas fa-shield-alt"></i> Políticas de Privacidad</a>
+                    <a href="#"><i class="fas fa-shield-halved"></i> Políticas de Seguridad</a>
+                    <a href="#" data-cc-action="open-modal"><i class="fas fa-cookie-bite"></i> Preferencias de cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /*<![CDATA[*/
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            /* DROPDOWN MENU FIX */
+            document.querySelectorAll('.nav-menu li.dropdown .dropdown-menu').forEach(function(m) {
+                m.style.setProperty('opacity', '0', 'important');
+                m.style.setProperty('visibility', 'hidden', 'important');
+            });
+            document.querySelectorAll('.nav-menu li.dropdown').forEach(function(li) {
+                var menu = li.querySelector('.dropdown-menu');
+                if (!menu) return;
+                var timer;
+                li.addEventListener('mouseenter', function() {
+                    clearTimeout(timer);
+                    menu.style.setProperty('opacity', '1', 'important');
+                    menu.style.setProperty('visibility', 'visible', 'important');
+                    menu.style.pointerEvents = 'auto';
+                });
+                li.addEventListener('mouseleave', function() {
+                    timer = setTimeout(function() {
+                        menu.style.setProperty('opacity', '0', 'important');
+                        menu.style.setProperty('visibility', 'hidden', 'important');
+                        menu.style.pointerEvents = '';
+                    }, 150);
+                });
+                menu.addEventListener('mouseenter', function() {
+                    clearTimeout(timer);
+                    menu.style.setProperty('opacity', '1', 'important');
+                    menu.style.setProperty('visibility', 'visible', 'important');
+                    menu.style.pointerEvents = 'auto';
+                });
+                menu.addEventListener('mouseleave', function() {
+                    menu.style.setProperty('opacity', '0', 'important');
+                    menu.style.setProperty('visibility', 'hidden', 'important');
+                    menu.style.pointerEvents = '';
+                });
+            });
+
+            /* 1 – SCROLL PROGRESS */
+            const bar = document.getElementById('scroll-progress');
+            window.addEventListener('scroll', () => {
+                bar.style.width = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100) + '%';
+            }, { passive: true });
+
+            /* 2 – HEADER SHRINK */
+            const hdr = document.getElementById('main-header');
+            window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', window.scrollY > 60), { passive: true });
+
+            /* 3 – HERO PARALLAX */
+            const heroBg = document.getElementById('heroBg');
+            if (heroBg) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY < 700) heroBg.style.transform = 'translateY(' + (window.scrollY * 0.35) + 'px)';
+                }, { passive: true });
+            }
+
+            /* 4 – HERO LINE */
+            setTimeout(() => {
+                const line = document.getElementById('heroLine');
+                if (line) line.classList.add('animate');
+            }, 250);
+
+            /* 5 – PARTÍCULAS HERO */
+            const pc = document.getElementById('heroParticles');
+            if (pc) {
+                for (let i = 0; i < 12; i++) {
+                    const el = document.createElement('div');
+                    el.className = 'hero-particle';
+                    const s = Math.random() * 90 + 20;
+                    el.style.cssText = 'width:'+s+'px;height:'+s+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-duration:'+(Math.random()*6+5)+'s;animation-delay:'+(Math.random()*4)+'s;opacity:'+(Math.random()*0.2+0.05)+';';
+                    pc.appendChild(el);
+                }
+            }
+
+            /* 6 – REVEAL ON SCROLL */
+            const io = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+            document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => io.observe(el));
+
+            /* 7 – CONTADORES */
+            const co = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (!e.isIntersecting) return;
+                    const tgt = parseInt(e.target.dataset.target);
+                    const step = tgt / 50;
+                    let cur = 0;
+                    const t = setInterval(() => {
+                        cur += step;
+                        if (cur >= tgt) { e.target.textContent = tgt; clearInterval(t); }
+                        else e.target.textContent = Math.floor(cur);
+                    }, 28);
+                    co.unobserve(e.target);
+                });
+            }, { threshold: 0.5 });
+            document.querySelectorAll('.counter').forEach(c => co.observe(c));
+
+        });
+
+        /*]]>*/
+    </script>
+</div><div class="drawer-overlay" id="drawerOverlay"></div>
+
+<nav class="mobile-nav-drawer" id="mobileDrawer" aria-label="Menú móvil">
+    <div class="drawer-header">
+        <img src="/images/Logo.png" alt="Mardique">
+        <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&times;</button>
+    </div>
+    <div class="drawer-nav">
+        <a href="/inicio">INICIO</a>
+        <a href="/empresa" class="active">EMPRESA</a>
+        <a href="/servicios">SERVICIOS</a>
+        <div class="drawer-divider"></div>
+        <button class="drawer-item" id="drawerServCliente">
+            SERVICIO AL CLIENTE <i class="fas fa-chevron-down drawer-chevron"></i>
+        </button>
+        <div class="drawer-submenu" id="subServCliente">
+            <a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a>
+            <a href="/procedimientos">PROCEDIMIENTOS</a>
+            <a href="/tarifas">TARIFAS</a>
+        </div>
+        <a href="/contacto">CONTACTO</a>
+        <a href="/galeria">GALERÍA</a>
+        <div class="drawer-divider"></div>
+        <a href="/login">ACCESO</a>
+        <button type="button" class="drawer-contact-btn" onclick="openServiceForm('Contáctenos', 'Otro', 'Solicitud General', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted a la brevedad posible.')" style="border:none;cursor:pointer;"><i class="fas fa-phone-alt"></i> CONTÁCTANOS</button>
+    </div>
+</nav>
+
+<div th:replace="~{Inicio :: contactModal}"></div>
+<script src="/js/chatbot.js"></script>
+<div th:replace="~{fragments/cookie-consent :: cookieBanner}"></div>
+</body>
+</html>

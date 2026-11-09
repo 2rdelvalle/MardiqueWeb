@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Dashboard — Admin Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <link rel="stylesheet" href="/css/inicio.css">
+    
+    <link rel="stylesheet" href="/css/portal.css"><style>
+        body{background:linear-gradient(160deg,#e8eef5 0%,#dce4ef 40%,#eef2f7 100%);background-attachment:fixed}
+        .delay-1{transition-delay:.1s}.delay-2{transition-delay:.2s}.delay-3{transition-delay:.3s}.delay-4{transition-delay:.4s}.delay-5{transition-delay:.5s}
+.status{display:inline-block;padding:4px 12px;border-radius:50px;font-size:11px;font-weight:700;}
+.role-admin{background:#fef3c7;color:#d97706;}
+.role-editor{background:#d1fae5;color:#16a34a;}
+.role-user{background:#e0e7ff;color:#4338ca;}
+.user-active{color:#16a34a;font-weight:700;}
+.user-inactive{color:#dc2626;font-weight:700;}
+    
+        .phero-badge{animation:fadeInDown .6s ease both}
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+        .phero-main h1{animation:fadeInUp .7s ease .1s both}
+        .phero-main p{animation:fadeInUp .7s ease .25s both}
+        .phero-actions{animation:fadeInUp .7s ease .4s both}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+        .phero-floaters{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+        .phero-floaters i{position:absolute;color:rgba(255,255,255,.08);animation:floatIcon 9s ease-in-out infinite}
+        .phero-floaters i:nth-child(1){font-size:60px;top:14%;left:6%;animation-delay:0s}
+        .phero-floaters i:nth-child(2){font-size:40px;top:62%;left:14%;animation-delay:1.4s}
+        .phero-floaters i:nth-child(3){font-size:48px;top:20%;right:8%;animation-delay:.7s}
+        .phero-floaters i:nth-child(4){font-size:36px;bottom:12%;right:16%;animation-delay:2.1s}
+        @keyframes floatIcon{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(6deg)}}
+        header{transition:background-color .6s cubic-bezier(.4,0,.2,1),backdrop-filter .6s cubic-bezier(.4,0,.2,1),box-shadow .6s ease,padding .3s ease}
+        header.scrolled{background-color:rgba(0,0,0,.93)!important;backdrop-filter:blur(3px) saturate(115%);-webkit-backdrop-filter:blur(3px) saturate(115%);border-bottom:1px solid rgba(255,255,255,.05)}
+    </style>
+<link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body>
+<div id="scroll-progress"></div>
+
+<header id="main-header">
+    <div class="hdr header-content">
+        <a href="/admin/dashboard" class="logo-box">
+            <img src="/images/Logo.png" alt="Mardique">
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li class="active"><a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                <li th:if="${isFullAdmin}"><a href="/admin/users"><i class="fas fa-users-cog"></i> Usuarios</a></li>
+                <li><a href="/admin/solicitudes"><i class="fas fa-file-alt"></i> Solicitudes</a></li>
+                <li><a href="/admin/mensajes"><i class="fas fa-envelope"></i> Mensajes</a></li>
+                <li th:if="${isFullAdmin}"><a href="/admin/chatbot" th:classappend="${currentPage == 'chatbot' ? 'active' : ''}"><i class="fas fa-robot"></i> Chatbot</a></li>
+            </ul>
+        </nav>
+        <div class="hdr-right">
+            <span class="hdr-user" th:text="${#authentication.name}">admin</span>
+            <button class="btn-logout" onclick="document.getElementById('logoutModal').classList.add('show')">
+                <i class="fas fa-sign-out-alt"></i> Salir
+            </button>
+        </div>
+        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+<div class="phero">
+    <div class="phw-glow"></div>
+    <div class="phero-floaters">
+        <i class="fas fa-chart-pie"></i>
+        <i class="fas fa-chart-line"></i>
+        <i class="fas fa-chart-bar"></i>
+        <i class="fas fa-users-cog"></i>
+    </div>
+    <div class="phw-container">
+        <div class="phero-grid">
+            <div class="phero-main">
+                <div class="phero-badge"><i class="fas fa-chart-pie"></i> Panel de Administración</div>
+                <h1>Panel de <strong>Administración</strong></h1>
+                <p>Resumen general del sistema y acceso rápido a todas las funciones de gestión.</p>
+                <div class="phero-actions">
+                    <a href="/admin/dashboard" class="btn btn-gold"><i class="fas fa-sync-alt"></i> Actualizar</a>
+                    <a href="/admin/users" class="btn btn-outline-w"><i class="fas fa-users-cog"></i> Usuarios</a>
+                </div>
+            </div>
+            <div class="phero-card">
+                <div class="phero-card-head">
+                    <span class="phero-card-name"><i class="fas fa-chart-pie"></i> Sistema</span>
+                    <span class="phw-status"><i class="fas fa-circle"></i> En línea</span>
+                </div>
+                <div class="phw-stats">
+                    <div class="phw-stat">
+                        <div class="phw-stat-ico"><i class="fas fa-users"></i></div>
+                        <div><div class="phw-stat-num" th:text="${totalUsers}">0</div><div class="phw-stat-lbl">Usuarios</div></div>
+                    </div>
+                    <div class="phw-stat">
+                        <div class="phw-stat-ico"><i class="fas fa-address-book"></i></div>
+                        <div><div class="phw-stat-num" th:text="${totalContacts}">0</div><div class="phw-stat-lbl">Contactos</div></div>
+                    </div>
+                    <div class="phw-stat">
+                        <div class="phw-stat-ico"><i class="fas fa-file-alt"></i></div>
+                        <div><div class="phw-stat-num" th:text="${pendingSolicitudes}">0</div><div class="phw-stat-lbl">Pendientes</div></div>
+                    </div>
+                    <div class="phw-stat">
+                        <div class="phw-stat-ico"><i class="fas fa-envelope"></i></div>
+                        <div><div class="phw-stat-num" th:text="${totalMensajes}">0</div><div class="phw-stat-lbl">Mensajes</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="phw-wave"></div>
+</div>
+
+<div class="body">
+    <div class="stats-row reveal">
+        <div class="stat-box" th:if="${isFullAdmin}">
+            <div class="stat-ico" style="background: rgba(30,152,217, 0.12); color: var(--ac);">
+                <i class="fas fa-users"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${totalUsers}">0</div>
+                <div class="stat-lbl">Usuarios registrados</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-ico" style="background: rgba(22, 163, 74, 0.12); color: #16a34a;">
+                <i class="fas fa-address-book"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${totalContacts}">0</div>
+                <div class="stat-lbl">Contactos recibidos</div>
+            </div>
+        </div>
+        <div class="stat-box" th:if="${isFullAdmin}">
+            <div class="stat-ico" style="background: rgba(230,171,9, 0.12); color: var(--ag);">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${totalDocuments}">0</div>
+                <div class="stat-lbl">Documentos cargados</div>
+            </div>
+        </div>
+        <div class="stat-box" th:if="${isFullAdmin}">
+            <div class="stat-ico" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;">
+                <i class="fas fa-images"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${totalGallery}">0</div>
+                <div class="stat-lbl">Imágenes en galería</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-ico" style="background: rgba(220, 38, 38, 0.12); color: #dc2626;">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${pendingSolicitudes}">0</div>
+                <div class="stat-lbl">Solicitudes pendientes</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-ico" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${totalMensajes}">0</div>
+                <div class="stat-lbl">Mensajes de contacto</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-ico" style="background: rgba(2, 132, 199, 0.12); color: #0284c7;">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${pqrsAbiertos}">0</div>
+                <div class="stat-lbl">PQRS abiertas</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-ico" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${pqrsPorVencer}">0</div>
+                <div class="stat-lbl">PQRS por vencer (SLA)</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-ico" style="background: rgba(220, 38, 38, 0.12); color: #dc2626;">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${pqrsVencidos}">0</div>
+                <div class="stat-lbl">PQRS vencidas</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-ico" style="background: rgba(5, 150, 105, 0.12); color: #059669;">
+                <i class="fas fa-check-double"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${pqrsResueltosHoy}">0</div>
+                <div class="stat-lbl">Resueltas hoy</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sec-lbl reveal"><i class="fas fa-bolt"></i> Acceso rápido</div>
+    <div class="quick-grid reveal">
+        <a th:if="${isFullAdmin}" href="/admin/users" class="quick-card">
+            <div class="qico c"><i class="fas fa-users-cog"></i></div>
+            <div>
+                <h3>Usuarios</h3>
+                <p>Gestionar cuentas y roles</p>
+            </div>
+        </a>
+        <a href="/admin/solicitudes" class="quick-card">
+            <div class="qico g"><i class="fas fa-file-alt"></i></div>
+            <div>
+                <h3>Solicitudes</h3>
+                <p>Aprobar o rechazar</p>
+            </div>
+        </a>
+        <a href="/admin/mensajes" class="quick-card">
+            <div class="qico p"><i class="fas fa-envelope"></i></div>
+            <div>
+                <h3>Mensajes</h3>
+                <p>Ver mensajes del formulario de contacto</p>
+            </div>
+        </a>        <a th:if="${isFullAdmin}" href="/admin/chatbot" class="quick-card">
+            <div class="qico p"><i class="fas fa-robot"></i></div>
+            <div>
+                <h3>Chatbot</h3>
+                <p>Gestionar chatbot IA</p>
+            </div>
+        </a>
+    </div>
+
+    <div th:if="${isFullAdmin}">
+        <div class="sec-lbl reveal"><i class="fas fa-users"></i> Últimos usuarios registrados</div>
+        <div class="table-wrap reveal">
+            <table>
+                <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${recentUsers}">
+                    <td><strong th:text="${u.username}">usuario</strong></td>
+                    <td th:text="${u.email}">email@ejemplo.com</td>
+                    <td>
+                            <span class="status" th:classappend="${u.role == 'ROLE_ADMIN' ? 'role-admin' : (u.role == 'ROLE_EDITOR' ? 'role-editor' : 'role-user')}" th:text="${u.role.replace('ROLE_','')}">
+                                USER
+                            </span>
+                    </td>
+                    <td>
+                            <span th:class="${u.enabled ? 'user-active' : 'user-inactive'}" th:text="${u.enabled ? 'Activo' : 'Inactivo'}">
+                                Activo
+                            </span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(recentUsers)}">
+                    <td colspan="4" style="text-align: center; padding: 48px; color: #94a3b8;">
+                        <i class="fas fa-users" style="font-size: 32px; margin-bottom: 12px; display: block;"></i>
+                        No hay usuarios registrados
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <div class="pfooter">
+        <div class="pfooter-links">
+            <a href="/inicio"><i class="fas fa-globe"></i> Sitio público</a>
+            <span class="pfooter-sep">|</span>
+            <a href="https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf" target="_blank"><i class="fas fa-file-pdf"></i> Reglamento Operativo</a>
+            <span class="pfooter-sep">|</span>
+            <a href="#"><i class="fas fa-shield-alt"></i> Políticas de Privacidad</a>
+            <span class="pfooter-sep">|</span>
+            <a href="#"><i class="fas fa-shield-halved"></i> Políticas de Seguridad</a>
+        </div>
+        <div class="pfooter-copy">&copy; 2026 Sociedad Portuaria Mardique S.A. Todos los derechos reservados.</div>
+    </div>
+
+<!-- Modal Crear PQRS desde Admin -->
+<div class="modal-overlay" id="pqrsCreateModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);">
+    <div class="modal-box" style="background:#fff;border-radius:16px;padding:28px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.22);">
+        <h2 style="font-size:18px;font-weight:800;color:var(--pd);margin-bottom:20px;display:flex;align-items:center;gap:10px;"><i class="fas fa-plus-circle"></i> Crear PQRS para otro usuario</h2>
+        <form th:action="@{/admin/pqrs/create}" method="post">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:var(--pd);margin-bottom:5px;text-transform:uppercase;">Nombre completo</label>
+                    <input type="text" name="nombreCompleto" required placeholder="Nombre y apellido" style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;">
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:var(--pd);margin-bottom:5px;text-transform:uppercase;">Tipo de documento</label>
+                    <select name="tipoDocumento" style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;">
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="TI">Tarjeta de Identidad</option>
+                        <option value="NIT">NIT</option>
+                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="Pasaporte">Pasaporte</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-bottom:14px;">
+                <label style="display:block;font-size:12px;font-weight:700;color:var(--pd);margin-bottom:5px;text-transform:uppercase;">Número de documento</label>
+                <input type="text" name="numeroDocumento" required placeholder="Número de documento" style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:var(--pd);margin-bottom:5px;text-transform:uppercase;">Correo electrónico</label>
+                    <input type="email" name="email" required placeholder="correo@ejemplo.com" style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;">
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:var(--pd);margin-bottom:5px;text-transform:uppercase;">Teléfono</label>
+                    <input type="text" name="telefono" placeholder="+57 300 123 4567" style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;">
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:var(--pd);margin-bottom:5px;text-transform:uppercase;">Tipo de petición</label>
+                    <select name="tipoPeticion" required style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;">
+                        <option value="PETICION">Petición</option>
+                        <option value="QUEJA">Queja</option>
+                        <option value="RECLAMO">Reclamo</option>
+                        <option value="SUGERENCIA">Sugerencia</option>
+                        <option value="FELICITACION">Felicitación</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:var(--pd);margin-bottom:5px;text-transform:uppercase;">Departamento</label>
+                    <select name="departamento" style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;">
+                        <option value="">Sin asignar</option>
+                        <option value="Talento Humano">Talento Humano</option>
+                        <option value="Operaciones">Operaciones</option>
+                        <option value="Administración">Administración</option>
+                        <option value="Finanzas">Finanzas</option>
+                        <option value="Sistemas">Sistemas</option>
+                        <option value="Jurídico">Jurídico</option>
+                        <option value="Comercial">Comercial</option>
+                        <option value="Logística">Logística</option>
+                        <option value="Seguridad">Seguridad</option>
+                        <option value="Gerencia">Gerencia</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-bottom:14px;">
+                <label style="display:block;font-size:12px;font-weight:700;color:var(--pd);margin-bottom:5px;text-transform:uppercase;">Asunto</label>
+                <input type="text" name="subject" required placeholder="Asunto de la PQRS" style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;">
+            </div>
+            <div style="margin-bottom:14px;">
+                <label style="display:block;font-size:12px;font-weight:700;color:var(--pd);margin-bottom:5px;text-transform:uppercase;">Mensaje / Descripción</label>
+                <textarea name="message" rows="5" required placeholder="Describa detalladamente la petición, queja, reclamo, sugerencia o felicitación..." style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;resize:vertical;"></textarea>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+                <button type="button" class="btn-cancel" onclick="document.getElementById('pqrsCreateModal').style.display='none'">Cancelar</button>
+                <button type="submit" class="btn btn-gold"><i class="fas fa-paper-plane"></i> Radicar PQRS</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="logoutModal">
+    <div class="modal-box">
+        <i class="fas fa-sign-out-alt" style="font-size: 46px; color: var(--ag); margin-bottom: 12px; display: block;"></i>
+        <h2>Cerrar Sesión</h2>
+        <p>¿Estás seguro de que deseas cerrar tu sesión?</p>
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="document.getElementById('logoutModal').classList.remove('show')">Cancelar</button>
+            <form th:action="@{/logout}" method="post" style="display:inline;"><button type="submit" class="btn btn-red"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button></form>
+        </div>
+    </div>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<nav class="mobile-nav-drawer" id="mobileDrawer" aria-label="Menú móvil">
+    <div class="drawer-header">
+        <img src="/images/Logo.png" alt="Mardique">
+        <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&times;</button>
+    </div>
+    <div class="drawer-nav">
+        <a href="/admin/dashboard" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a th:if="${isFullAdmin}" href="/admin/users"><i class="fas fa-users-cog"></i> Usuarios</a>
+        <a href="/admin/solicitudes"><i class="fas fa-file-alt"></i> Solicitudes</a>
+        <a href="/admin/mensajes"><i class="fas fa-envelope"></i> Mensajes</a>
+        <a th:if="${isFullAdmin}" href="/admin/chatbot" th:classappend="${currentPage == 'chatbot' ? 'active' : ''}"><i class="fas fa-robot"></i> Chatbot</a>
+        <div class="drawer-divider"></div>
+        <button class="drawer-logout-btn" onclick="closeDrw();document.getElementById('logoutModal').classList.add('show')">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+    </div>
+</nav>
+
+<script>
+    const progressBar = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+        if (progressBar) progressBar.style.width = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100) + '%';
+    }, { passive: true });
+
+    const mainHdr = document.getElementById('main-header');
+    window.addEventListener('scroll', () => {
+        mainHdr.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -36px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    document.querySelectorAll('.reveal-left, .reveal-right').forEach(el => obs.observe(el));
+    document.getElementById('logoutModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('show');
+    });
+
+    const tog  = document.getElementById('mobileToggle');
+    const drw  = document.getElementById('mobileDrawer');
+    const ov   = document.getElementById('drawerOverlay');
+    const cl   = document.getElementById('drawerClose');
+
+    function openDrw() {
+        drw.classList.add('open');
+        ov.classList.add('open');
+        tog.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeDrw() {
+        drw.classList.remove('open');
+        ov.classList.remove('open');
+        tog.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    tog && tog.addEventListener('click', () => drw.classList.contains('open') ? closeDrw() : openDrw());
+    cl  && cl.addEventListener('click', closeDrw);
+    ov  && ov.addEventListener('click', closeDrw);
+
+    function openPqrsCreateModal() {
+        document.getElementById('pqrsCreateModal').style.display = 'flex';
+    }
+    document.getElementById('pqrsCreateModal').addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+    });
+</script>
+<script src="/js/panel-nav.js"></script>
+<button onclick="openPqrsCreateModal()" class="float-home" style="bottom:88px;background:var(--ag);color:#fff;font-size:18px;border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;box-shadow:0 6px 24px rgba(230,171,9,.45);" title="Crear PQRS"><i class="fas fa-plus"></i></button>
+<a href="/admin/dashboard" class="float-home" aria-label="Ir a inicio"><i class="fas fa-home"></i></a>
+</body>
+</html>

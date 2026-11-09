@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Usuarios — Admin Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <link rel="stylesheet" href="/css/inicio.css">
+    <link rel="stylesheet" href="/css/portal.css">
+<style>
+    .msg{padding:14px 18px;border-radius:var(--r);font-size:13px;margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+    .msg-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;}
+    .msg-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;}
+    .search-bar{display:flex;gap:12px;align-items:center;margin-bottom:24px;flex-wrap:wrap;background:var(--sur);padding:16px 20px;border-radius:var(--rl);border:1.5px solid var(--bdr);}
+    .search-bar input{padding:10px 16px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;flex:1;min-width:200px;outline:none;transition:var(--tr);background:#fff;}
+    .search-bar input:focus{border-color:var(--ag);box-shadow:0 0 0 3px rgba(230,171,9,.1);}
+    .search-bar .filter-select{padding:10px 16px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--tx);cursor:pointer;}
+    .user-info strong{font-size:13px;font-weight:700;color:var(--pd);}
+    .user-info small{font-size:11px;color:var(--mx);}
+    .extra-info{font-size:11px;color:var(--mx);margin-top:2px;}
+    .truncate{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .badge-admin{background:#fef3c7;color:#d97706;}
+    .badge-editor{background:#d1fae5;color:#16a34a;}
+    .badge-area{background:#e0f2fe;color:#0284c7;}
+    .status-active{color:#16a34a;font-weight:700;}
+    .status-inactive{color:#dc2626;font-weight:700;}
+    .actions{display:flex;gap:6px;flex-wrap:wrap;}
+    .btn-cyan{background:var(--ac);color:#fff;}
+    .btn-cyan:hover{background:#0284c7;transform:translateY(-1px);}
+    .btn-green{background:#16a34a;color:#fff;}
+    .btn-green:hover{background:#15803d;transform:translateY(-1px);}
+    .btn-gold{background:var(--ag);color:#fff;}
+    .btn-gold:hover{background:#d97706;transform:translateY(-1px);}
+    .btn-red{background:#dc2626;color:#fff;}
+    .btn-red:hover{background:#b91c1c;transform:translateY(-1px);}
+    .role-select{padding:5px 8px;border-radius:var(--r);border:1.5px solid var(--bdr);font-size:11px;font-family:inherit;background:#fff;}
+    .btn-add{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--ag);color:#fff;border:none;font-size:24px;cursor:pointer;box-shadow:0 6px 20px rgba(230,171,9,.4);z-index:100;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+    .btn-add:hover{transform:scale(1.1);box-shadow:0 8px 28px rgba(230,171,9,.5);background:#d97706;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .form-group{margin-bottom:14px;}
+    .form-group label{display:block;font-size:12px;font-weight:700;color:var(--pd);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px;}
+    .form-group input,.form-group select{width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;background:#fff;outline:none;transition:var(--tr);}
+    .form-group input:focus,.form-group select:focus{border-color:var(--ag);box-shadow:0 0 0 3px rgba(230,171,9,.1);}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+    .modal-overlay.show{display:flex;}
+    .modal-box{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:520px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.22);}
+    .modal-box h2{font-size:18px;font-weight:800;color:var(--pd);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+    .btn-cancel{padding:10px 20px;border:1.5px solid var(--bdr);border-radius:var(--r);background:#fff;color:var(--tx);font-size:13px;font-weight:600;cursor:pointer;transition:var(--tr);}
+    .btn-cancel:hover{background:#f8fafc;}
+    @media(max-width:768px){
+        .search-bar{flex-direction:column;align-items:stretch;}
+        .actions{flex-direction:column;}
+        .form-row{grid-template-columns:1fr;}
+        .btn-add{bottom:80px;}
+    }
+    .phero-badge{animation:fadeInDown .6s ease both}
+    @keyframes fadeInDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+    .phero-main h1{animation:fadeInUp .7s ease .1s both}
+    .phero-main p{animation:fadeInUp .7s ease .25s both}
+    .phero-actions{animation:fadeInUp .7s ease .4s both}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+    .phero-floaters{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+    .phero-floaters i{position:absolute;color:rgba(255,255,255,.08);animation:floatIcon 9s ease-in-out infinite}
+    .phero-floaters i:nth-child(1){font-size:60px;top:14%;left:6%;animation-delay:0s}
+    .phero-floaters i:nth-child(2){font-size:40px;top:62%;left:14%;animation-delay:1.4s}
+    .phero-floaters i:nth-child(3){font-size:48px;top:20%;right:8%;animation-delay:.7s}
+    .phero-floaters i:nth-child(4){font-size:36px;bottom:12%;right:16%;animation-delay:2.1s}
+    @keyframes floatIcon{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(6deg)}}
+    header{transition:background-color .6s cubic-bezier(.4,0,.2,1),backdrop-filter .6s cubic-bezier(.4,0,.2,1),box-shadow .6s ease,padding .3s ease}
+    header.scrolled{background-color:rgba(0,0,0,.93)!important;backdrop-filter:blur(3px) saturate(115%);-webkit-backdrop-filter:blur(3px) saturate(115%);border-bottom:1px solid rgba(255,255,255,.05)}
+</style>
+<link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body>
+<div id="scroll-progress"></div>
+<header id="main-header">
+    <div class="hdr header-content">
+        <a href="/admin/dashboard" class="logo-box">
+            <img src="/images/Logo.png" alt="Mardique">
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                <li class="active"><a href="/admin/users"><i class="fas fa-users-cog"></i> Usuarios</a></li>
+                <li><a href="/admin/solicitudes"><i class="fas fa-file-alt"></i> Solicitudes</a></li>
+                <li><a href="/admin/mensajes"><i class="fas fa-envelope"></i> Mensajes</a></li>
+                <li th:if="${isFullAdmin}"><a href="/admin/chatbot" th:classappend="${currentPage == 'chatbot' ? 'active' : ''}"><i class="fas fa-robot"></i> Chatbot</a></li>
+            </ul>
+        </nav>
+        <div class="hdr-right">
+            <span class="hdr-user" th:text="${#authentication.name}">admin</span>
+            <button class="btn-logout" onclick="document.getElementById('logoutModal').classList.add('show')">
+                <i class="fas fa-sign-out-alt"></i> Salir
+            </button>
+        </div>
+        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+<div class="phero">
+    <div class="phw-glow"></div>
+    <div class="phero-floaters">
+        <i class="fas fa-users-cog"></i>
+        <i class="fas fa-user-shield"></i>
+        <i class="fas fa-user-tag"></i>
+        <i class="fas fa-user-check"></i>
+    </div>
+    <div class="phw-container">
+        <div class="phero-grid">
+            <div class="phero-main">
+                <div class="phero-badge"><i class="fas fa-users-cog"></i> Gestión de Usuarios</div>
+                <h1>Usuarios del <strong>Sistema</strong></h1>
+                <p>Administra las cuentas, roles y permisos de acceso al sistema.</p>
+                <div class="phero-actions">
+                    <button class="btn btn-gold" onclick="document.getElementById('createModal').classList.add('show')"><i class="fas fa-plus"></i> Nuevo Usuario</button>
+                    <a href="/admin/dashboard" class="btn btn-outline-w"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                </div>
+            </div>
+            <div class="phero-card">
+                <div class="phero-card-head">
+                    <span class="phero-card-name"><i class="fas fa-users"></i> Usuarios</span>
+                    <span class="phw-status"><i class="fas fa-circle"></i> Activo</span>
+                </div>
+                <div class="phw-stats">
+                    <div class="phw-stat">
+                        <div class="phw-stat-ico"><i class="fas fa-users"></i></div>
+                        <div><div class="phw-stat-num" th:text="${totalUsers}">0</div><div class="phw-stat-lbl">Totales</div></div>
+                    </div>
+                    <div class="phw-stat">
+                        <div class="phw-stat-ico"><i class="fas fa-user-check"></i></div>
+                        <div><div class="phw-stat-num" th:text="${activeUsers}">0</div><div class="phw-stat-lbl">Activos</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="phw-wave"></div>
+</div>
+
+<div class="body">
+    <div th:if="${success}" class="msg msg-success reveal">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}">Operación exitosa</span>
+    </div>
+    <div th:if="${error}" class="msg msg-error reveal">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}">Error</span>
+    </div>
+
+    <div class="stats-row reveal">
+        <div class="stat-box">
+            <div class="stat-ico" style="background: rgba(30,152,217, 0.12); color: var(--ac);">
+                <i class="fas fa-users"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${totalUsers}">0</div>
+                <div class="stat-lbl">Total usuarios</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-ico" style="background: rgba(22, 163, 74, 0.12); color: #16a34a;">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${activeUsers}">0</div>
+                <div class="stat-lbl">Usuarios activos</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-bar reveal">
+        <input type="text" id="searchInput" placeholder="Buscar por nombre, email o usuario..." onkeyup="filterTable()">
+        <select id="roleFilter" class="filter-select" onchange="filterTable()">
+            <option value="">Todos los roles</option>
+            <option value="ROLE_ADMIN">Admin</option>
+            <option value="ROLE_EDITOR">Editor</option>
+        </select>
+    </div>
+
+    <div class="table-wrap reveal">
+        <table id="usersTable">
+            <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Contacto</th>
+                <th>Área</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users}" th:attr="data-username=${u.username},data-role=${u.role}">
+                <td>
+                    <div class="user-info">
+                        <strong th:text="${u.nombres + ' ' + u.apellidos}">Nombre Apellido</strong>
+                        <small th:text="'@' + ${u.username}">usuario</small>
+                    </div>
+                </td>
+                <td>
+                    <div class="truncate" th:text="${u.email}">email@ejemplo.com</div>
+                    <div class="extra-info" th:text="${u.telefono ?: 'Sin teléfono'}">+57 300 123 4567</div>
+                </td>
+                <td>
+                    <span class="status-badge badge-area" th:if="${u.departamento != null}" th:text="${u.departamento}">Área</span>
+                    <span class="extra-info" th:if="${u.departamento == null}">General</span>
+                </td>
+                <td>
+                    <span class="status-badge" th:classappend="${u.role == 'ROLE_ADMIN' ? 'badge-admin' : 'badge-editor'}" th:text="${u.role.replace('ROLE_','')}">
+                        ADMIN
+                    </span>
+                </td>
+                <td>
+                    <span th:class="${u.enabled ? 'status-active' : 'status-inactive'}" th:text="${u.enabled ? 'Activo' : 'Inactivo'}">
+                        Activo
+                    </span>
+                </td>
+                <td>
+                    <div class="actions">
+                        <button class="btn btn-cyan" th:data-id="${u.id}" th:data-username="${u.username}" th:data-nombres="${u.nombres}" th:data-apellidos="${u.apellidos}" th:data-email="${u.email}" th:data-telefono="${u.telefono}" th:data-departamento="${u.departamento}" onclick="openEditModal(this)">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <form th:action="@{/admin/users/role/{id}(id=${u.id})}" method="post" style="display:flex;gap:4px;align-items:center;">
+                            <select name="role" class="role-select">
+                                <option value="ROLE_EDITOR" th:selected="${u.role == 'ROLE_EDITOR'}">EDITOR</option>
+                                <option value="ROLE_ADMIN" th:selected="${u.role == 'ROLE_ADMIN'}">ADMIN</option>
+                            </select>
+                            <button type="submit" class="btn btn-gold"><i class="fas fa-sync-alt"></i></button>
+                        </form>
+                        <form th:action="@{/admin/users/toggle/{id}(id=${u.id})}" method="post" style="display:inline;">
+                            <button type="submit" th:class="${u.enabled ? 'btn btn-red' : 'btn btn-green'}">
+                                <i th:class="${u.enabled ? 'fas fa-ban' : 'fas fa-check'}"></i>
+                                <span th:text="${u.enabled ? 'Desactivar' : 'Activar'}"></span>
+                            </button>
+                        </form>
+                        <form th:if="${blockedUsernames.contains(u.username)}" th:action="@{/admin/users/unblock/{username}(username=${u.username})}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-green" title="Quitar bloqueo por intentos fallidos">
+                                <i class="fas fa-lock-open"></i> Desbloquear
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(users)}">
+                <td colspan="6">
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <p>No hay usuarios registrados</p>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination" th:if="${totalPages > 1}" style="display:flex;justify-content:center;gap:8px;margin:24px 0;flex-wrap:wrap;">
+        <a th:href="@{/admin/users(page=${currentPage - 1})}" th:if="${currentPage > 0}" class="btn btn-cyan" style="padding:8px 14px;font-size:12px;">
+            <i class="fas fa-chevron-left"></i> Anterior
+        </a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:if="${totalPages <= 10}">
+            <a th:href="@{/admin/users(page=${i})}" th:text="${i + 1}" th:class="${i == currentPage ? 'btn btn-gold' : 'btn btn-cyan'}" style="padding:8px 14px;font-size:12px;min-width:36px;text-align:center;"></a>
+        </span>
+        <span th:if="${totalPages > 10}">
+            <span th:if="${currentPage > 2}" style="padding:8px 14px;font-size:12px;">...</span>
+            <span th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}" th:if="${i >= 0 && i < totalPages}">
+                <a th:href="@{/admin/users(page=${i})}" th:text="${i + 1}" th:class="${i == currentPage ? 'btn btn-gold' : 'btn btn-cyan'}" style="padding:8px 14px;font-size:12px;min-width:36px;text-align:center;"></a>
+            </span>
+            <span th:if="${currentPage < totalPages - 3}" style="padding:8px 14px;font-size:12px;">...</span>
+        </span>
+        <a th:href="@{/admin/users(page=${currentPage + 1})}" th:if="${currentPage < totalPages - 1}" class="btn btn-cyan" style="padding:8px 14px;font-size:12px;">
+            Siguiente <i class="fas fa-chevron-right"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pfooter">
+    <div class="pfooter-links">
+        <a href="/inicio"><i class="fas fa-globe"></i> Sitio público</a>
+        <span class="pfooter-sep">|</span>
+        <a href="https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf" target="_blank"><i class="fas fa-file-pdf"></i> Reglamento Operativo</a>
+        <span class="pfooter-sep">|</span>
+        <a href="#"><i class="fas fa-shield-alt"></i> Políticas de Privacidad</a>
+        <span class="pfooter-sep">|</span>
+        <a href="#"><i class="fas fa-shield-halved"></i> Políticas de Seguridad</a>
+    </div>
+    <div class="pfooter-copy">&copy; 2026 Sociedad Portuaria Mardique S.A. Todos los derechos reservados.</div>
+</div>
+
+<!-- Modal Crear Usuario -->
+<div class="modal-overlay" id="createModal">
+    <div class="modal-box">
+        <h2><i class="fas fa-user-plus"></i> Crear Usuario</h2>
+        <form th:action="@{/admin/users/create}" method="post" id="createForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombres</label>
+                    <input type="text" name="nombres" required placeholder="Nombres">
+                </div>
+                <div class="form-group">
+                    <label>Apellidos</label>
+                    <input type="text" name="apellidos" required placeholder="Apellidos">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Nombre de usuario</label>
+                <input type="text" name="username" required placeholder="usuario" pattern="[a-zA-Z0-9._-]+" title="Solo letras, números, puntos, guiones">
+            </div>
+            <div class="form-group">
+                <label>Correo electrónico</label>
+                <input type="email" name="email" required placeholder="correo@ejemplo.com">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" name="telefono" placeholder="+57 300 123 4567">
+                </div>
+                <div class="form-group">
+                    <label>Área / Departamento</label>
+                    <select name="departamento">
+                        <option value="">Sin área (General)</option>
+                        <option value="Talento Humano">Talento Humano</option>
+                        <option value="Operaciones">Operaciones</option>
+                        <option value="Administración">Administración</option>
+                        <option value="Finanzas">Finanzas</option>
+                        <option value="Sistemas">Sistemas</option>
+                        <option value="Jurídico">Jurídico</option>
+                        <option value="Comercial">Comercial</option>
+                        <option value="Logística">Logística</option>
+                        <option value="Seguridad">Seguridad</option>
+                        <option value="Gerencia">Gerencia</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" required placeholder="Mínimo 6 caracteres" minlength="6">
+            </div>
+            <div class="form-group">
+                <label>Rol</label>
+                <select name="role">
+                    <option value="ROLE_EDITOR">Editor</option>
+                    <option value="ROLE_ADMIN">Admin</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="document.getElementById('createModal').classList.remove('show')">Cancelar</button>
+                <button type="submit" class="btn btn-gold"><i class="fas fa-save"></i> Crear Usuario</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Editar Usuario -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <h2><i class="fas fa-user-edit"></i> Editar Usuario</h2>
+        <form th:action="@{/admin/users/update/{id}(id=${editUserId})}" method="post" id="editForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombres</label>
+                    <input type="text" name="nombres" id="editNombres" required>
+                </div>
+                <div class="form-group">
+                    <label>Apellidos</label>
+                    <input type="text" name="apellidos" id="editApellidos" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Nombre de usuario</label>
+                <input type="text" name="username" id="editUsername" required pattern="[a-zA-Z0-9._-]+" title="Solo letras, números, puntos, guiones">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" id="editEmail" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" name="telefono" id="editTelefono">
+                </div>
+                <div class="form-group">
+                    <label>Área / Departamento</label>
+                    <select name="departamento" id="editDepartamento">
+                        <option value="">Sin área (General)</option>
+                        <option value="Talento Humano">Talento Humano</option>
+                        <option value="Operaciones">Operaciones</option>
+                        <option value="Administración">Administración</option>
+                        <option value="Finanzas">Finanzas</option>
+                        <option value="Sistemas">Sistemas</option>
+                        <option value="Jurídico">Jurídico</option>
+                        <option value="Comercial">Comercial</option>
+                        <option value="Logística">Logística</option>
+                        <option value="Seguridad">Seguridad</option>
+                        <option value="Gerencia">Gerencia</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Nueva contraseña (dejar vacío para no cambiar)</label>
+                <input type="password" name="newPassword" id="editNewPassword" placeholder="Dejar vacío si no desea cambiar" minlength="6">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="document.getElementById('editModal').classList.remove('show')">Cancelar</button>
+                <button type="submit" class="btn btn-gold"><i class="fas fa-save"></i> Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Logout -->
+<div class="modal-overlay" id="logoutModal">
+    <div class="modal-box">
+        <i class="fas fa-sign-out-alt" style="font-size: 46px; color: var(--ag); margin-bottom: 12px; display: block;"></i>
+        <h2>Cerrar Sesión</h2>
+        <p>¿Estás seguro de que deseas cerrar tu sesión?</p>
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="document.getElementById('logoutModal').classList.remove('show')">Cancelar</button>
+            <form th:action="@{/logout}" method="post" style="display:inline;"><button type="submit" class="btn btn-red"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button></form>
+        </div>
+    </div>
+</div>
+
+<button class="btn-add" onclick="document.getElementById('createModal').classList.add('show')" title="Crear nuevo usuario">
+    <i class="fas fa-plus"></i>
+</button>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<nav class="mobile-nav-drawer" id="mobileDrawer" aria-label="Menú móvil">
+    <div class="drawer-header">
+        <img src="/images/Logo.png" alt="Mardique">
+        <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&times;</button>
+    </div>
+    <div class="drawer-nav">
+        <a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="/admin/users" class="active"><i class="fas fa-users-cog"></i> Usuarios</a>
+        <a href="/admin/solicitudes"><i class="fas fa-file-alt"></i> Solicitudes</a>
+        <a href="/admin/mensajes"><i class="fas fa-envelope"></i> Mensajes</a>
+        <a th:if="${isFullAdmin}" href="/admin/chatbot"><i class="fas fa-robot"></i> Chatbot</a>
+        <div class="drawer-divider"></div>
+        <button class="drawer-logout-btn" onclick="closeDrw();document.getElementById('logoutModal').classList.add('show')">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+    </div>
+</nav>
+
+<script>
+    const progressBar = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+        if (progressBar) progressBar.style.width = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100) + '%';
+    }, { passive: true });
+
+    const mainHdr = document.getElementById('main-header');
+    window.addEventListener('scroll', () => {
+        mainHdr.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    document.querySelectorAll('.modal-overlay').forEach(m => {
+        m.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+    });
+
+    const tog = document.getElementById('mobileToggle');
+    const drw = document.getElementById('mobileDrawer');
+    const ov = document.getElementById('drawerOverlay');
+    const cl = document.getElementById('drawerClose');
+
+    function openDrw() { drw.classList.add('open'); ov.classList.add('open'); tog.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeDrw() { drw.classList.remove('open'); ov.classList.remove('open'); tog.classList.remove('open'); document.body.style.overflow = ''; }
+
+    tog && tog.addEventListener('click', () => drw.classList.contains('open') ? closeDrw() : openDrw());
+    cl && cl.addEventListener('click', closeDrw);
+    ov && ov.addEventListener('click', closeDrw);
+
+    function filterTable() {
+        var input = document.getElementById('searchInput').value.toLowerCase();
+        var role = document.getElementById('roleFilter').value;
+        var rows = document.querySelectorAll('#usersTable tbody tr');
+        rows.forEach(function(row) {
+            if (row.querySelector('td[colspan]')) return;
+            var text = row.textContent.toLowerCase();
+            var rowRole = row.getAttribute('data-role') || '';
+            var match = text.indexOf(input) > -1;
+            if (role && rowRole !== role) match = false;
+            row.style.display = match ? '' : 'none';
+        });
+    }
+
+    function openEditModal(el) {
+        document.getElementById('editNombres').value = el.getAttribute('data-nombres') || '';
+        document.getElementById('editApellidos').value = el.getAttribute('data-apellidos') || '';
+        document.getElementById('editUsername').value = el.getAttribute('data-username') || '';
+        document.getElementById('editEmail').value = el.getAttribute('data-email') || '';
+        document.getElementById('editTelefono').value = el.getAttribute('data-telefono') || '';
+        document.getElementById('editDepartamento').value = el.getAttribute('data-departamento') || '';
+        document.getElementById('editNewPassword').value = '';
+        var id = el.getAttribute('data-id');
+        document.getElementById('editForm').action = '/admin/users/update/' + id;
+        document.getElementById('editModal').classList.add('show');
+    }
+</script>
+<script src="/js/panel-nav.js"></script>
+<a href="/admin/dashboard" class="float-home" aria-label="Ir a inicio"><i class="fas fa-home"></i></a>
+</body>
+</html>

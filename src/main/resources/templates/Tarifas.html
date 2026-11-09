@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Tarifas – Sociedad Portuaria Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link data-cc-href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" data-cc-category="personalization" rel="stylesheet" id="cc-font-jakarta">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/inicio.css">
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <style>
+        :root {
+            --primary-blue: var(--navy); --primary-dark: var(--navy); --accent-gold: var(--miel);
+            --accent-cyan: var(--cian); --bg-light: #f5f7fa; --text-light: #ffffff;
+            --text-muted: #94a3b8; --text-dark: #1e293b; --border-color: #e2e8f0;
+            --radius: 8px; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans',sans-serif; }
+        body { background: #fff; color: var(--text-dark); -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; color: inherit; } ul { list-style: none; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; width: 100%; }
+
+        #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan)); z-index: 9999; transition: width 0.1s linear; }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; font-size: 12.5px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.5px; position: relative; overflow: hidden; z-index: 1; border: none; }
+        .btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transform: skewX(-25deg); z-index: -1; }
+        .btn:hover::after { left: 150%; transition: 0.55s ease-in-out; }
+        .btn i { margin-left: 8px; font-size: 11px; transition: var(--transition); }
+        .btn:hover i { transform: translateX(4px); }
+        .btn-orange { background-color: var(--accent-gold); color: #fff; box-shadow: 0 4px 15px rgba(230,171,9,0.25); }
+        .btn-orange:hover { background-color: var(--miel); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(230,171,9,0.4); }
+        .btn-outline-light { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.6); }
+        .btn-outline-light:hover { background: #fff; color: var(--primary-blue); transform: translateY(-2px); }
+
+        
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        nav { flex: 1; display: flex; justify-content: center; padding-right: 20px; }
+        .nav-menu { display: flex; gap: 35px; align-items: center; }
+        .nav-menu li a { color: rgba(255,255,255,0.75); font-size: 12.5px; font-weight: 500; text-transform: uppercase; position: relative; padding: 8px 0; letter-spacing: 0.5px; transition: color 0.25s ease; }
+        .nav-menu li a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent-gold); transition: var(--transition); }
+        .nav-menu li.active a, .nav-menu li a:hover { color: #fff; font-weight: 600; }
+        .nav-menu li.active a::after, .nav-menu li a:hover::after { width: 100%; }
+        .nav-menu li a i { margin-left: 4px; font-size: 10px; vertical-align: middle; }
+        .nav-menu li.dropdown { position: relative; }
+        .nav-menu li.dropdown .dropdown-trigger {
+            color: rgba(255,255,255,0.75); font-size: 12.5px; font-weight: 500;
+            text-transform: uppercase; padding: 8px 0; letter-spacing: 0.5px; cursor: default;
+            display: inline-block;
+        }
+        .nav-menu li.dropdown .dropdown-trigger i { margin-left: 4px; font-size: 10px; vertical-align: middle; }
+        .nav-menu li.dropdown:hover .dropdown-trigger,
+        .nav-menu li.dropdown.active .dropdown-trigger { color: #fff; font-weight: 600; }
+        .nav-menu li.dropdown .dropdown-menu {
+            position: absolute; top: 100%; left: 0; padding-top: 4px;
+            background: rgba(10,46,77,0.72); min-width: 210px; border-radius: 10px;
+            padding: 6px 0; opacity: 0 !important; visibility: hidden !important;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06);
+            z-index: 1000; list-style: none; pointer-events: none;
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+        }
+        .nav-menu li.dropdown .dropdown-menu::before {
+            content: ''; position: absolute; top: -4px; left: 0; right: 0; height: 4px;
+        }
+        .nav-menu li.dropdown:last-child .dropdown-menu { left: auto; right: 0; }
+
+        .nav-menu li.dropdown .dropdown-menu li { display: block; margin: 0; padding: 0; }
+        .nav-menu li.dropdown .dropdown-menu li a {
+            display: block; width: 100%; padding: 10px 22px; margin: 0;
+            font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,0.7);
+            text-transform: none; letter-spacing: 0.3px; text-decoration: none;
+            background: none; border: none; line-height: 1.4;
+            position: static; white-space: nowrap; box-sizing: border-box;
+        }
+        .nav-menu li.dropdown .dropdown-menu li a:hover {
+            color: #fff; background: rgba(255,255,255,0.04); padding-left: 26px;
+        }
+
+        .page-hero { position: relative; height: 540px; display: flex; align-items: flex-end; overflow: hidden; }
+        .page-hero-bg { position: absolute; top: -80px; left: 0; width: 100%; height: calc(100% + 80px); background-image: var(--hero-img, url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1600&q=80')); background-size: cover; background-position: center; z-index: 1; will-change: transform; }
+        .page-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,46,77,0.45) 0%, rgba(10,46,77,0.65) 45%, rgba(10,46,77,0.93) 100%); z-index: 2; }
+        .hero-particles { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
+        .hero-particle { position: absolute; border-radius: 50%; background: rgba(230,171,9,0.12); animation: floatParticle linear infinite; }
+        @keyframes floatParticle { 0%,100%{transform:translateY(0) scale(1);opacity:.5} 50%{transform:translateY(-28px) scale(1.08);opacity:.2} }
+        .page-hero .container { position: relative; z-index: 3; padding-bottom: 52px; }
+.page-hero-breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; animation: fadeInUp 0.6s ease both; }
+        .page-hero-breadcrumb a { color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; transition: color 0.2s; }
+        .page-hero-breadcrumb a:hover { color: var(--accent-gold); }
+        .page-hero-breadcrumb span { color: rgba(255,255,255,0.35); font-size: 10px; }
+        .page-hero-breadcrumb .current { color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+        .page-hero-title { font-size: 54px; font-weight: 300; color: #fff; letter-spacing: -0.5px; line-height: 1.1; animation: fadeInUp 0.7s ease 0.1s both; }
+        .page-hero-title strong { font-weight: 800; color: var(--accent-gold); }
+        .page-hero-sub { color: rgba(255,255,255,0.7); font-size: 15px; margin-top: 12px; max-width: 520px; line-height: 1.6; animation: fadeInUp 0.7s ease 0.25s both; }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+        .page-hero-line { width: 0; height: 3px; margin-top: 14px; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan)); border-radius: 2px; transition: width 1s ease 0.4s; }
+        .page-hero-line.animate { width: 60px; }
+        .scroll-hint { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 4; display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.45); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; animation: bounceDown 2s ease infinite; }
+        .scroll-hint i { font-size: 15px; }
+        @keyframes bounceDown { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+        .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.65s cubic-bezier(0.4,0,0.2,1), transform 0.65s cubic-bezier(0.4,0,0.2,1); }
+        .reveal.visible { opacity: 1; transform: none; }
+        .delay-1{transition-delay:.1s} .delay-2{transition-delay:.2s} .delay-3{transition-delay:.3s}
+
+        .section-block { padding: 56px 0; }
+        .section-bg-light { background: var(--bg-light); }
+        .section-header { margin-bottom: 36px; }
+        .section-label { color: var(--primary-blue); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px; }
+        .section-title { font-size: 28px; color: var(--primary-dark); font-weight: 800; }
+        .section-line { width: 50px; height: 3px; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan)); margin-top: 12px; border-radius: 2px; }
+
+        /* INTRO INFO STRIP */
+        .info-band { background: var(--bg-light); padding: 36px 0; border-bottom: 1px solid var(--border-color); }
+        .info-items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+        .info-item { display: flex; align-items: center; gap: 18px; padding: 20px 32px; border-right: 1px solid var(--border-color); }
+        .info-item:last-child { border-right: none; }
+        .info-item-icon { width: 50px; height: 50px; border-radius: 10px; background: var(--primary-dark); color: var(--accent-gold); font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .info-item-text h4 { font-size: 14px; font-weight: 700; color: var(--primary-dark); margin-bottom: 4px; }
+        .info-item-text p { font-size: 12.5px; color: #6b7f96; line-height: 1.5; }
+
+        /* TARIFA REQUEST CARD */
+        .tarifa-main { background: linear-gradient(135deg, var(--primary-dark) 0%, #0d2a42 100%); border-radius: var(--radius); padding: 56px; color: white; text-align: center; margin-bottom: 48px; position: relative; overflow: hidden; box-shadow: 0 20px 50px rgba(13,42,66,0.3); }
+        .tarifa-main::before { content: ''; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(30,152,217,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(30,152,217,0.04) 1px, transparent 1px); background-size: 40px 40px; animation: gridShift 20s linear infinite; }
+        @keyframes gridShift { from{background-position:0 0} to{background-position:40px 40px} }
+        .tarifa-main-content { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+        .tarifa-main-icon { width: 80px; height: 80px; border-radius: 50%; background: rgba(230,171,9,0.15); border: 2px solid rgba(230,171,9,0.4); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 32px; color: var(--accent-gold); animation: pulseGlow 3s ease-in-out infinite; }
+        @keyframes pulseGlow { 0%,100%{box-shadow:0 0 20px rgba(230,171,9,0.15)} 50%{box-shadow:0 0 50px rgba(230,171,9,0.4)} }
+        .tarifa-main h2 { font-size: 36px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 16px; }
+        .tarifa-main h2 span { color: var(--accent-gold); }
+        .tarifa-main p { font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.7; margin-bottom: 32px; }
+        .tarifa-contact-box { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius); padding: 24px 32px; margin-top: 32px; }
+        .tarifa-contact-box h4 { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 0.5px; }
+        .tarifa-channels { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .tarifa-channel { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); border-radius: 8px; padding: 12px 20px; font-size: 13.5px; font-weight: 600; transition: var(--transition); }
+        .tarifa-channel:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
+        .tarifa-channel i { font-size: 18px; color: var(--accent-gold); }
+        .tarifa-channel span { color: rgba(255,255,255,0.9); }
+        .tarifa-channel a { color: var(--accent-cyan); transition: color 0.2s; }
+        .tarifa-channel a:hover { color: #fff; }
+
+        /* TARIFA CARDS */
+        .tarifa-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .tarifa-card { background: #fff; border-radius: var(--radius); border: 1px solid var(--border-color); padding: 28px; transition: var(--transition); position: relative; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.04); text-align: center; }
+        .tarifa-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan)); transform: scaleX(0); transform-origin: left; transition: transform 0.35s ease; }
+        .tarifa-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); border-color: transparent; }
+        .tarifa-card:hover::after { transform: scaleX(1); }
+        .tarifa-card-icon { width: 60px; height: 60px; border-radius: 50%; background: rgba(22,113,161,0.07); color: var(--primary-blue); font-size: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; transition: var(--transition); }
+        .tarifa-card:hover .tarifa-card-icon { background: var(--primary-blue); color: #fff; }
+        .tarifa-card h3 { font-size: 16px; font-weight: 700; color: var(--primary-dark); margin-bottom: 10px; }
+        .tarifa-card p { font-size: 13px; color: #6b7f96; line-height: 1.6; }
+
+        /* NOTA LEGAL */
+        .legal-note { background: rgba(22,113,161,0.05); border-left: 4px solid var(--primary-blue); border-radius: 0 var(--radius) var(--radius) 0; padding: 18px 24px; margin-top: 32px; display: flex; align-items: flex-start; gap: 14px; }
+        .legal-note i { color: var(--primary-blue); font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+        .legal-note p { font-size: 13px; color: #4a6175; line-height: 1.65; }
+
+        /* TABLA DE SERVICIOS */
+        .services-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+        .services-table thead tr { background: var(--primary-dark); }
+        .services-table thead th { padding: 14px 20px; color: #fff; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; }
+        .services-table thead th:last-child { text-align: center; }
+        .services-table tbody tr { border-bottom: 1px solid var(--border-color); transition: background 0.2s; }
+        .services-table tbody tr:hover { background: var(--bg-light); }
+        .services-table tbody td { padding: 14px 20px; font-size: 13.5px; color: var(--text-dark); }
+        .services-table tbody td:last-child { text-align: center; }
+        .services-table .td-icon { color: var(--primary-blue); font-size: 18px; }
+        .services-table .badge-cat { display: inline-block; background: rgba(22,113,161,0.08); color: var(--primary-blue); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+        /* CTA */
+        .cta-band { background: var(--primary-dark); padding: 64px 0; text-align: center; position: relative; overflow: hidden; }
+        .cta-band::after { content: ''; position: absolute; bottom: -40px; right: -60px; width: 300px; height: 300px; border-radius: 50%; background: rgba(230,171,9,0.06); pointer-events: none; }
+        .cta-band h2 { font-size: 34px; color: white; font-weight: 800; margin-bottom: 12px; }
+        .cta-band p { color: rgba(255,255,255,0.7); font-size: 15px; margin-bottom: 32px; }
+        .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+        /* ── FOOTER ── */
+        footer {
+            background: linear-gradient(180deg, var(--primary-dark) 0%, #0a1a2b 100%);
+            padding: 60px 0 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            position: relative;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-gold));
+            opacity: .5;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.8fr 1.2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-logo {
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 18px;
+            position: relative;
+        }
+        .footer-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 15%;
+            width: 70%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        .footer-logo img { height: 34px; object-fit: contain; }
+        .footer-desc { margin-bottom: 20px; line-height: 1.65; font-size: 12.5px; color: rgba(148,163,184,.85); }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a {
+            display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px;
+            border: 1px solid rgba(148,163,184,.2);
+            border-radius: 50%;
+            color: #94a3b8;
+            transition: all .3s ease;
+            font-size: 14px;
+        }
+        .social-icons a:hover {
+            color: #fff;
+            border-color: var(--accent-gold);
+            background: rgba(230,171,9,.12);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(230,171,9,.2);
+        }
+        .footer-title {
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 26px; height: 2.5px;
+            background: var(--accent-gold);
+            border-radius: 2px;
+        }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a {
+            transition: all .25s ease;
+            font-size: 12.5px;
+            color: rgba(148,163,184,.85);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-links a:hover {
+            color: var(--accent-gold);
+            padding-left: 5px;
+        }
+        .contact-info { list-style: none; padding: 0; }
+        .contact-info li {
+            display: flex; gap: 10px;
+            margin-bottom: 14px;
+            align-items: flex-start;
+            font-size: 12.5px;
+            color: rgba(148,163,184,.85);
+        }
+        .contact-info i { margin-top: 3px; font-size: 14px; color: var(--accent-gold); }
+        .certs-container { display: flex; gap: 14px; }
+        .cert-item { text-align: center; flex: 1; }
+        .cert-circle {
+            width: 54px; height: 54px;
+            border: 1.5px solid rgba(148,163,184,.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 10px auto;
+            font-size: 8px;
+            font-weight: 800;
+            color: #fff;
+            transition: all .35s ease;
+            background: rgba(255,255,255,.03);
+        }
+        .cert-item:hover .cert-circle {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 16px rgba(230,171,9,.25);
+            transform: scale(1.08);
+        }
+        .cert-item p { font-size: 9.5px; line-height: 1.3; color: rgba(148,163,184,.75); }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,.05);
+            padding: 18px 0;
+            text-align: center;
+            font-size: 12px;
+        }
+        .footer-bottom-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .footer-bottom-links a {
+            color: rgba(148,163,184,.7);
+            text-decoration: none;
+            transition: all .25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            margin-left: 0;
+        }
+        .footer-bottom-links a:hover { color: #fff; }
+        .footer-bottom-links a i { font-size: 11px; }
+
+        /* IFRAME */
+        .iframe-wrapper { max-width: 960px; margin: 0 auto; }
+        .iframe-container { position: relative; width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.08); background: #f8f9fa; }
+        .iframe-container::before { content: ''; display: block; padding-top: 56.25%; }
+        .iframe-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; background: #fff; }
+        .iframe-actions { text-align: center; margin-top: 20px; }
+        .iframe-empty { text-align: center; padding: 48px 24px; background: #fff; border-radius: 12px; border: 2px dashed var(--border-color); max-width: 520px; margin: 0 auto; }
+        .iframe-empty .empty-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(230,171,9,0.1); color: var(--accent-gold); font-size: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+        .iframe-empty h3 { font-size: 18px; color: var(--primary-dark); font-weight: 700; margin-bottom: 8px; }
+        .iframe-empty p { font-size: 13.5px; color: #6b7f96; line-height: 1.6; margin-bottom: 20px; }
+        .iframe-empty .empty-contacts { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .iframe-empty .empty-contacts .tarifa-channel { background: rgba(22,113,161,0.06); border: 1px solid var(--border-color); padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; }
+        .iframe-empty .empty-contacts .tarifa-channel i { color: var(--primary-blue); }
+        .iframe-empty .empty-contacts .tarifa-channel a { color: var(--primary-blue); }
+
+        @media (max-width: 1024px) { .info-items { grid-template-columns: 1fr; } .info-item { border-right: none; border-bottom: 1px solid var(--border-color); } .footer-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 768px) { .nav-menu, nav, .header-pse-btn { display: none; } .mobile-menu-toggle { display: flex; } .mobile-nav-drawer { display: flex; } .page-hero-title { font-size: 32px; } .tarifa-main { padding: 36px 20px; } .tarifa-channels { flex-direction: column; } .footer-grid { grid-template-columns: 1fr; } .footer-grid > div:nth-child(3) > div { flex-direction: column; gap: 20px; } .footer-bottom { flex-direction: column; gap: 10px; text-align: center; } .footer-bottom-links { justify-content: center; } .iframe-empty .empty-contacts { flex-direction: column; align-items: center; } }
+
+    </style>
+<script src="/js/inicio.js"></script>
+<script src="/js/panel-nav.js"></script>
+    <link rel="stylesheet" href="/css/chatbot.css">
+    <link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body>
+<div id="scroll-progress"></div>
+<header id="main-header">
+    <div class="container header-content">
+        <a href="/inicio" class="logo-box">
+            <img src="/images/Logo.png" alt="Sociedad Portuaria Mardique">
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/inicio">INICIO</a></li>
+                <li><a href="/empresa">EMPRESA</a></li>
+                <li><a href="/servicios">SERVICIOS</a></li>
+                <li class="dropdown active">
+                    <span class="dropdown-trigger">SERVICIO AL CLIENTE <i class="fas fa-chevron-down"></i></span>
+                    <ul class="dropdown-menu">
+                        <li><a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a></li>
+                        <li><a href="/procedimientos">PROCEDIMIENTOS</a></li>
+                        <li><a href="/tarifas">TARIFAS</a></li>
+                    </ul>
+                </li>
+                <li><a href="/contacto">CONTACTO</a></li>
+                <li><a href="/galeria">GALERÍA</a></li>
+                <li><a href="/login">ACCESO</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="header-pse-btn"><img src="/images/pse.png" alt="PSE"></a>
+        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+
+<div class="page-wrapper">
+<section class="page-hero" id="hero">
+    <div class="page-hero-bg" id="heroBg" th:style="|--hero-img: url('${heroImage}');|"></div>
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="container">
+        <div class="page-hero-breadcrumb">
+            <a href="/inicio">INICIO</a>
+            <span>›</span>
+            <a href="/tramites-en-linea">SERVICIO AL CLIENTE</a>
+            <span>›</span>
+            <span class="current">TARIFAS</span>
+        </div>
+        <h1 class="page-hero-title" th:utext="${pageContents['hero-title']} ?: 'Nuestras &lt;strong&gt;Tarifas&lt;/strong&gt;'">Nuestras <strong>Tarifas</strong></h1>
+        <p class="page-hero-sub" th:utext="${pageContents['hero-sub']} ?: 'Consulte las tarifas de nuestros servicios portuarios, marítimos y logísticos. Para información detallada, nuestro equipo comercial está disponible para atenderle.'">Consulte las tarifas de nuestros servicios portuarios, marítimos y logísticos. Para información detallada, nuestro equipo comercial está disponible para atenderle.</p>
+        <div class="page-hero-line" id="heroLine"></div>
+    </div>
+    <div class="scroll-hint"><i class="fas fa-chevron-down"></i><span>Explorar</span></div>
+</section>
+
+
+
+<div class="info-band reveal">
+    <div class="container">
+        <div class="info-items">
+            <div class="info-item">
+                <div class="info-item-icon"><i class="fas fa-headset"></i></div>
+                <div class="info-item-text">
+                    <h4>Atención Personalizada</h4>
+                    <p>Nuestro equipo comercial le asesorará con las tarifas según su operación.</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-item-icon"><i class="fas fa-file-contract"></i></div>
+                <div class="info-item-text">
+                    <h4>Tarifas Reguladas</h4>
+                    <p>Precios establecidos bajo los marcos regulatorios de la Superintendencia de Puertos.</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-item-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <div class="info-item-text">
+                    <h4>Cotización Personalizada</h4>
+                    <p>Solicite una cotización ajustada a su volumen y tipo de operación.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="section-block">
+    <div class="container">
+        <div class="tarifa-main reveal">
+            <div class="tarifa-main-content">
+                <div class="tarifa-main-icon"><i class="fas fa-tags"></i></div>
+                <h2>Información de <span>Tarifas</span></h2>
+                <p>Para conocer las tarifas actualizadas de nuestros servicios portuarios, marítimos, fluviales y logísticos, por favor comuníquese directamente con nuestro equipo comercial. Estaremos encantados de entregarle una cotización personalizada según su tipo de operación y volumen de carga.</p>
+                <div class="tarifa-contact-box">
+                    <h4>Contáctenos para obtener sus tarifas</h4>
+                    <div class="tarifa-channels">
+                        <div class="tarifa-channel">
+                            <i class="fas fa-phone"></i>
+                            <span>PBX: <a th:href="'tel:+57' + ${#strings.replace(#strings.replace(tarifaPhone, '(57) ', ''), ' ', '')}" th:text="${tarifaPhone}">(57) (5) 669 0730</a></span>
+                        </div>
+                        <div class="tarifa-channel">
+                            <i class="fas fa-envelope"></i>
+                            <span><a th:href="'mailto:' + ${tarifaEmail}" th:text="${tarifaEmail}">info@spmardique.com</a></span>
+                        </div>
+                        <div class="tarifa-channel">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Carretera Antigua Vía Barú, Cartagena</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legal-note reveal">
+            <i class="fas fa-info-circle"></i>
+            <p>Las tarifas de la Sociedad Portuaria Mardique están sujetas a los lineamientos de la Superintendencia de Puertos y Transporte de Colombia. Para mayor información consulte el <a href="https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf" target="_blank" style="color:var(--primary-blue);font-weight:600;">Reglamento de Condiciones Técnicas de Operación</a>.</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="section-block section-bg-light" id="tarifa-iframe-section">
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="section-label">Documento de Tarifas</span>
+            <h2 class="section-title">Consulte nuestras <span style="color:var(--accent-gold)">tarifas</span></h2>
+            <div class="section-line"></div>
+        </div>
+
+        <div class="iframe-wrapper reveal" th:if="${!#strings.isEmpty(tarifaIframeUrl)}">
+            <div class="iframe-container">
+                <iframe th:src="${tarifaIframeUrl}"
+                        frameborder="0"
+                        allowfullscreen
+                        loading="lazy"
+                        allow="autoplay"
+                        referrerpolicy="no-referrer"
+                        title="Documento de Tarifas Mardique">
+                </iframe>
+            </div>
+            <div class="iframe-actions">
+                <a th:href="${tarifaIframeUrl}" target="_blank" class="btn btn-orange" rel="noopener">
+                    <i class="fas fa-external-link-alt"></i> Abrir en pantalla completa
+                </a>
+            </div>
+        </div>
+
+        <div class="iframe-empty reveal" th:if="${#strings.isEmpty(tarifaIframeUrl)}">
+            <div class="empty-icon"><i class="fas fa-file-invoice"></i></div>
+            <h3>Documento de tarifas no disponible</h3>
+            <p>El documento de tarifas aún no ha sido cargado por nuestro equipo. Por favor, contacte a nuestro equipo comercial para obtener información actualizada.</p>
+            <div class="empty-contacts">
+                <div class="tarifa-channel">
+                    <i class="fas fa-phone"></i>
+                    <span>PBX: <a th:href="'tel:+57' + ${#strings.replace(#strings.replace(tarifaPhone, '(57) ', ''), ' ', '')}" th:text="${tarifaPhone}">(57) (5) 669 0730</a></span>
+                </div>
+                <div class="tarifa-channel">
+                    <i class="fas fa-envelope"></i>
+                    <span><a th:href="'mailto:' + ${tarifaEmail}" th:text="${tarifaEmail}">info@spmardique.com</a></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="legal-note reveal" style="margin-top:20px;">
+            <i class="fas fa-phone"></i>
+            <p>Si tiene problemas para visualizar el documento, contáctenos al <strong th:text="${tarifaPhone}">(57) (5) 669 0730</strong> o escriba a <a th:href="'mailto:' + ${tarifaEmail}" style="color:var(--primary-blue);font-weight:600;" th:text="${tarifaEmail}">info@spmardique.com</a>.</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="section-block" th:if="${not #lists.isEmpty(docs)}">
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="section-label">Descargables</span>
+            <h2 class="section-title">Documentos de tarifas</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="tarifa-cards">
+            <div class="tarifa-card reveal delay-1" th:each="d : ${docs}">
+                <div class="tarifa-card-icon"><i class="fas fa-file-pdf" style="color:#dc2626;"></i></div>
+                <h3 th:text="${d.nombre}">Tarifa</h3>
+                <p th:if="${d.descripcion}" th:text="${d.descripcion}">Descripci&oacute;n</p>
+                <div class="file-info" style="font-size:12px;color:#94a3b8;margin-top:8px;"><i class="fas fa-calendar-alt"></i> <span th:text="${d.uploadedAt}">fecha</span></div>
+                <div style="margin-top:16px;">
+                    <a th:href="${d.filePath}" target="_blank" class="btn btn-orange" style="font-size:11px;padding:10px 18px;"><i class="fas fa-download"></i> Descargar PDF</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="cta-band reveal">
+    <img th:src="@{${ctaImage}}" src="/images/Operar.png" alt="" class="cta-bg-img" style="opacity:0.5;position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;">
+    <div class="cta-overlay" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(24,62,93,0.45);z-index:1;"></div>
+    <div class="container" style="position:relative;z-index:2;">
+        <h2>¿Listo para comenzar su operación?</h2>
+        <p>Contáctenos y obtenga una cotización personalizada adaptada a sus necesidades.</p>
+        <div class="cta-buttons">
+            <button type="button" onclick="openServiceForm('Solicite una Cotización', 'Cotización de Servicios', 'Su operación portuaria', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted a la brevedad posible.')" class="btn btn-orange" style="border:none;cursor:pointer;">Solicitar Cotización <i class="fas fa-arrow-right"></i></button>
+            <a href="/tramites-en-linea" class="btn btn-outline-light">Ver Trámites en Línea <i class="fas fa-file-alt"></i></a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-logo"><img src="/images/Logo.png" alt="Mardique Logo"></div>
+                <p class="footer-desc">Puerto multipropósito privado de uso público con servicios portuarios y de infraestructura para el desarrollo del país.</p>
+                <div class="social-icons">
+                    <a href="https://www.youtube.com/channel/UCaqN40lCIj_nm53aHPJEicQ" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="mailto:info@spmardique.com"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="footer-title">ENLACES RÁPIDOS</h4>
+                <ul class="footer-links">
+                    <li><a href="/inicio">Inicio</a></li>
+                    <li><a href="/empresa">Empresa</a></li>
+                    <li><a href="/servicios">Servicios</a></li>
+                    <li><a href="/tramites-en-linea">Servicio al Cliente</a></li>
+                    <li><a href="/contacto">Contacto</a></li>
+                    <li><a href="/galeria">Galería</a></li>
+                </ul>
+            </div>
+            <div>
+                <div style="display:flex;gap:30px;">
+                    <div>
+                        <h4 class="footer-title">SERVICIO AL CLIENTE</h4>
+                        <ul class="footer-links">
+                            <li><a href="/tramites-en-linea">Trámites en Línea</a></li>
+                            <li><a href="/procedimientos">Procedimientos</a></li>
+                            <li><a href="/tarifas">Tarifas</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="footer-title">CONTÁCTANOS</h4>
+                        <ul class="contact-info">
+                            <li><i class="fa-solid fa-location-dot"></i><span>Carretera Antigua Vía Barú, Cartagena</span></li>
+                            <li><i class="fa-solid fa-phone"></i><span>PBX: (57) (5) 669 0730</span></li>
+                            <li><i class="fa-solid fa-envelope"></i><span>info@spmardique.com</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4 class="footer-title">CERTIFICACIONES</h4>
+                <div class="certs-container">
+                    <div class="cert-item"><div class="cert-circle"><i class="fas fa-certificate"></i></div><p>ISO<br>9001</p></div>
+                    <div class="cert-item"><div class="cert-circle"><i class="fas fa-hard-hat"></i></div><p>ISO<br>45001</p></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 Sociedad Portuaria Mardique S.A. Todos los derechos reservados.</span>
+            <div class="footer-bottom-links">
+                <a th:href="${reglamentoDoc != null ? reglamentoDoc.filePath : 'https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf'}" target="_blank"><i class="fas fa-file-pdf"></i> Reglamento Operativo</a>
+                <a href="/privacidad"><i class="fas fa-shield-alt"></i> Políticas de Privacidad</a>
+                <a href="#"><i class="fas fa-shield-halved"></i> Políticas de Seguridad</a>
+                <a href="#" data-cc-action="open-modal"><i class="fas fa-cookie-bite"></i> Preferencias de cookies</a>
+            </div>
+        </div>
+        </div>
+    </footer>
+
+<script>
+/*<![CDATA[*/
+
+    document.addEventListener('DOMContentLoaded', function () {
+        /* DROPDOWN MENU FIX */
+        document.querySelectorAll('.nav-menu li.dropdown .dropdown-menu').forEach(function(m) {
+            m.style.setProperty('opacity', '0', 'important');
+            m.style.setProperty('visibility', 'hidden', 'important');
+        });
+        document.querySelectorAll('.nav-menu li.dropdown').forEach(function(li) {
+            var menu = li.querySelector('.dropdown-menu');
+            if (!menu) return;
+            var timer;
+            li.addEventListener('mouseenter', function() {
+                clearTimeout(timer);
+                menu.style.setProperty('opacity', '1', 'important');
+                menu.style.setProperty('visibility', 'visible', 'important');
+                menu.style.pointerEvents = 'auto';
+            });
+            li.addEventListener('mouseleave', function() {
+                timer = setTimeout(function() {
+                    menu.style.setProperty('opacity', '0', 'important');
+                    menu.style.setProperty('visibility', 'hidden', 'important');
+                    menu.style.pointerEvents = '';
+                }, 150);
+            });
+            menu.addEventListener('mouseenter', function() {
+                clearTimeout(timer);
+                menu.style.setProperty('opacity', '1', 'important');
+                menu.style.setProperty('visibility', 'visible', 'important');
+                menu.style.pointerEvents = 'auto';
+            });
+            menu.addEventListener('mouseleave', function() {
+                menu.style.setProperty('opacity', '0', 'important');
+                menu.style.setProperty('visibility', 'hidden', 'important');
+                menu.style.pointerEvents = '';
+            });
+        });
+
+        const bar = document.getElementById('scroll-progress');
+        window.addEventListener('scroll', () => {
+            bar.style.width = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100) + '%';
+        }, { passive: true });
+
+        const hdr = document.getElementById('main-header');
+
+        function syncNav() {
+            const isScrolled = window.scrollY > 60;
+            hdr.classList.toggle('scrolled', isScrolled);
+        }
+
+        syncNav();
+        window.addEventListener('scroll', syncNav, { passive: true });
+
+        const bg = document.getElementById('heroBg');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY < 700) bg.style.transform = 'translateY(' + (window.scrollY * 0.35) + 'px)';
+        }, { passive: true });
+
+        setTimeout(() => document.getElementById('heroLine').classList.add('animate'), 250);
+
+        const pc = document.getElementById('heroParticles');
+        for (let i = 0; i < 12; i++) {
+            const el = document.createElement('div'); el.className = 'hero-particle';
+            const s = Math.random() * 90 + 20;
+            el.style.cssText = 'width:'+s+'px;height:'+s+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-duration:'+(Math.random()*6+5)+'s;animation-delay:'+(Math.random()*4)+'s;opacity:'+(Math.random()*0.2+0.05)+';';
+            pc.appendChild(el);
+        }
+
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    });
+
+/*]]>*/
+</script>
+</div><div class="drawer-overlay" id="drawerOverlay"></div>
+
+<nav class="mobile-nav-drawer" id="mobileDrawer" aria-label="Menú móvil">
+    <div class="drawer-header">
+        <img src="/images/Logo.png" alt="Mardique">
+        <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&times;</button>
+    </div>
+    <div class="drawer-nav">
+        <a href="/inicio">INICIO</a>
+        <a href="/empresa">EMPRESA</a>
+        <a href="/servicios">SERVICIOS</a>
+        <div class="drawer-divider"></div>
+        <button class="drawer-item active" id="drawerServCliente">
+            SERVICIO AL CLIENTE <i class="fas fa-chevron-down drawer-chevron"></i>
+        </button>
+        <div class="drawer-submenu open" id="subServCliente">
+            <a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a>
+            <a href="/procedimientos">PROCEDIMIENTOS</a>
+            <a href="/tarifas" class="active">TARIFAS</a>
+        </div>
+        <a href="/contacto">CONTACTO</a>
+        <a href="/galeria">GALERÍA</a>
+        <div class="drawer-divider"></div>
+        <a href="/login">ACCESO</a>
+        <button type="button" class="drawer-contact-btn" onclick="openServiceForm('Contáctenos', 'Otro', 'Solicitud General', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted a la brevedad posible.')" style="border:none;cursor:pointer;"><i class="fas fa-phone-alt"></i> CONTÁCTANOS</button>
+    </div>
+</nav>
+
+    <div th:replace="~{Inicio :: contactModal}"></div>
+    <script src="/js/chatbot.js"></script>
+<div th:replace="~{fragments/cookie-consent :: cookieBanner}"></div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+[33m2090e12[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: reset: moving to HEAD
+[33m2090e12[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{1}: commit: Mejora total en intranet,
+[33m5848fea[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{2}: commit: Mejora total en intranet, terminada
+[33m40bb964[m HEAD@{3}: commit: Migracion de intranet con sharepoint a local
+[33m19fb7d3[m HEAD@{4}: commit: Mejora en la intranet corporativa
+[33ma400ed9[m HEAD@{5}: commit: Documentos y carpetas con QR
+[33m79c2655[m HEAD@{6}: commit: Mejora en la gestion de pqrs
+[33m08f6be9[m HEAD@{7}: commit: Correccion del responsive y tamaño del chatbot
+[33m88f475e[m HEAD@{8}: commit: Funcionalidad a botones con formulario
+[33m56ed193[m HEAD@{9}: commit: Gestión multimedia de páginas públicas desde el editor
+[33m2bfd950[m HEAD@{10}: commit: Soluccion visual a detalles, color de navegacion y el chatbot ya permite recfibir conventaios y satisfaccion
+[33m42f29b4[m HEAD@{11}: commit: Ajustes y mejoras visuales en el diseño web
+[33m21b537c[m HEAD@{12}: commit: Ajustes y mejoras visuales en el diseño web
+[33mdaeddae[m HEAD@{13}: reset: moving to daeddae726799bc5b1f971976f9074078a77e046
+[33m339812b[m HEAD@{14}: revert: Revert "Soluccion de errores. Editor Web, Diseño del globo"
+[33mdaeddae[m HEAD@{15}: commit: Soluccion de errores. Editor Web, Diseño del globo
+[33me38695d[m HEAD@{16}: commit: Dockerfile para archivos
+[33ma912493[m HEAD@{17}: commit: Visualizacion de archivos en intranet
+[33mf5903c3[m HEAD@{18}: commit: Visualizacion de archivos en intranet
+[33mc4ec62d[m HEAD@{19}: reset: moving to c4ec62dc0112970673644a56653e34e70ed8ee5e
+[33mc4ec62d[m HEAD@{20}: reset: moving to c4ec62dc0112970673644a56653e34e70ed8ee5e
+[33mc4ec62d[m HEAD@{21}: reset: moving to c4ec62dc0112970673644a56653e34e70ed8ee5e
+[33mc4ec62d[m HEAD@{22}: commit: Mejoras en el Chatbot
+[33m5d27e97[m HEAD@{23}: commit: Mejoras en el Chatbot
+[33mb4d037e[m HEAD@{24}: commit: Implementacion de Chatbot
+[33m182be6e[m HEAD@{25}: commit: Implementacion de Chatbot
+[33mfdd0933[m HEAD@{26}: commit: Implementacion de Chatbot
+[33m6092e7d[m HEAD@{27}: commit: Implementacion de Chatbot
+[33m854364e[m HEAD@{28}: commit: Implementacion de Chatbot
+[33mc28ddd8[m HEAD@{29}: reset: moving to HEAD~1
+[33m6a35d33[m HEAD@{30}: commit: Implementacion de Chatbot
+[33mc28ddd8[m HEAD@{31}: commit: Implementacion de Chatbot
+[33m3d3ff14[m HEAD@{32}: commit: Implementacion de Chatbot
+[33ma18757e[m HEAD@{33}: commit (amend): Fix chatbot: update Groq model to llama-3.3-70b-versatile, add error logging, disable CSRF for /api/chatbot
+[33mfb88943[m HEAD@{34}: commit: Fix chatbot: update Groq model to llama-3.3-70b-versatile, add error logging, disable CSRF for /api/chatbot
+[33meeec3d2[m HEAD@{35}: commit: Add chatbot: Groq AI integration, knowledge base (PDF/text), admin panel, chat widget on all public pages
+[33m33f27d2[m HEAD@{36}: commit: Encriptacion de usuarios
+[33m5864e12[m HEAD@{37}: commit: Actualizacion de encriptacion
+[33mfc05f1e[m HEAD@{38}: commit: Actualizacion de encriptacion
+[33mc14e3e4[m HEAD@{39}: commit: Actualizacion de encriptacion
+[33m84344e3[m HEAD@{40}: commit: Actualizacion de encriptacion
+[33m12bd95e[m HEAD@{41}: commit: Encriptacion de usuarios
+[33m752062b[m HEAD@{42}: commit: Informes PowerBi
+[33mf8026e8[m HEAD@{43}: commit: Previsualizacion de documentos
+[33mc559d8b[m HEAD@{44}: commit: Bloqueo por intentos de credenciales
+[33md312bf1[m HEAD@{45}: commit: Intranet en prueba
+[33me19939b[m HEAD@{46}: commit: Intranet en prueba
+[33mace0725[m HEAD@{47}: commit: Intranet en prueba
+[33mf9a3c1a[m HEAD@{48}: commit: Intranet en prueba
+[33m0608175[m[33m ([m[1;31morigin/copilot/explain-repository-structure[m[33m)[m HEAD@{49}: commit: intranet
+[33m7658d50[m HEAD@{50}: commit: Codigo sin comentarios
+[33mb83a5de[m HEAD@{51}: commit: Mejoras de seguridad
+[33m15da792[m HEAD@{52}: commit: Mejoras de seguridad
+[33m9c1dc77[m HEAD@{53}: commit: Mejoras de seguridad
+[33me81234b[m HEAD@{54}: commit: Mejoras de seguridad
+[33m0eaf88e[m HEAD@{55}: commit: Mejora diseño del globo
+[33ma67b1f2[m HEAD@{56}: commit: Mejora diseño del globo
+[33m22c4724[m HEAD@{57}: commit: Mejora diseño del globo
+[33m9e03c16[m HEAD@{58}: commit: Imagenes en el globo
+[33maa4fdf6[m HEAD@{59}: commit: Imagenes con carrusel
+[33mb7db9a5[m HEAD@{60}: commit: Descripcion en imagenes
+[33ma01f59a[m HEAD@{61}: commit: Optimizacion y mejora
+[33m8bc4825[m HEAD@{62}: commit: Rediseño de footer y portal usuario
+[33m15f19fd[m HEAD@{63}: commit: basededatos
+[33mea7dce3[m HEAD@{64}: commit: basededatos
+[33m180ad65[m HEAD@{65}: commit: basededatos
+[33m0a15831[m HEAD@{66}: commit: basededatos
+[33m8282b0d[m HEAD@{67}: commit: basededatos
+[33m21a507f[m HEAD@{68}: commit: basededatos
+[33ma61c658[m HEAD@{69}: commit: basededatos
+[33m6302a95[m HEAD@{70}: commit: Version final
+[33m96a5a23[m HEAD@{71}: commit: Version final
+[33m68b7354[m HEAD@{72}: commit: Version final
+[33m4114fb8[m HEAD@{73}: commit: Arreglo de imagenes
+[33mde44269[m HEAD@{74}: Branch: renamed refs/heads/master to refs/heads/main
+[33mde44269[m HEAD@{76}: commit (initial): Mi primer commit inicial

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Chatbot — Admin Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <link rel="stylesheet" href="/css/inicio.css">
+    <link rel="stylesheet" href="/css/portal.css">
+    <style>
+        .msg{padding:14px 18px;border-radius:var(--r);font-size:13px;margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+        .msg-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;}
+        .msg-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;}
+        .chunk-preview{font-size:12px;color:#64748b;max-height:60px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;}
+        .badge-pdf{background:#fef3c7;color:#d97706;}
+        .badge-text{background:#e0f2fe;color:#0284c7;}
+        .source-group{background:var(--sur);border-radius:var(--rl);padding:16px;margin-bottom:16px;border:1.5px solid var(--bdr);}
+        .source-title{font-weight:700;font-size:14px;color:var(--pd);margin-bottom:8px;}
+        .source-count{font-size:11px;color:var(--mx);}
+        .rating-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--miel),var(--cian));transition:width .6s cubic-bezier(.4,0,.2,1);}
+        .collapse-body{display:none;}
+        .collapse-body.open{display:block;}
+        .collapse-toggle{background:#eef2f7;border:1px solid var(--bdr);border-radius:var(--r);color:var(--pd);font-weight:600;padding:5px 14px;font-size:12px;cursor:pointer;transition:all .2s;margin-left:8px;float:right;}
+        .collapse-toggle:hover{background:var(--pd);color:#fff;transform:translateY(-1px);}
+        .collapse-toggle .cb-icon{display:inline-block;transition:transform .3s;}
+        .collapse-toggle.open .cb-icon{transform:rotate(180deg);}
+        pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--r);font-size:12px;overflow-x:auto;margin:0;}
+    </style>
+    <link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body>
+<div id="scroll-progress"></div>
+<header id="main-header">
+    <div class="hdr header-content">
+        <a href="/admin/dashboard" class="logo-box">
+            <img src="/images/Logo.png" alt="Mardique">
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                <li th:if="${isFullAdmin}"><a href="/admin/users"><i class="fas fa-users-cog"></i> Usuarios</a></li>
+                <li><a href="/admin/solicitudes"><i class="fas fa-file-alt"></i> Solicitudes</a></li>
+                <li><a href="/admin/mensajes"><i class="fas fa-envelope"></i> Mensajes</a></li>
+                <li th:if="${isFullAdmin}" class="active"><a href="/admin/chatbot"><i class="fas fa-robot"></i> Chatbot</a></li>
+            </ul>
+        </nav>
+        <div class="hdr-right">
+            <span class="hdr-user" th:text="${#authentication.name}">admin</span>
+            <button class="btn-logout" onclick="document.getElementById('logoutModal').classList.add('show')">
+                <i class="fas fa-sign-out-alt"></i> Salir
+            </button>
+        </div>
+        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+<div class="phero">
+    <div class="phw-glow"></div>
+    <div class="phero-floaters">
+        <i class="fas fa-robot"></i>
+        <i class="fas fa-brain"></i>
+        <i class="fas fa-file-alt"></i>
+        <i class="fas fa-comment-dots"></i>
+    </div>
+    <div class="phw-container">
+        <div class="phero-grid">
+            <div class="phero-main">
+                <div class="phero-badge"><i class="fas fa-robot"></i> Administrar Chatbot</div>
+                <h1>Base de <strong>Conocimiento</strong></h1>
+                <p>Sube PDFs o escribe texto para que el chatbot aprenda sobre la empresa y responda preguntas.</p>
+                <div class="phero-actions">
+                    <a href="/admin/chatbot" class="btn btn-gold"><i class="fas fa-sync-alt"></i> Actualizar</a>
+                    <a href="/admin/dashboard" class="btn btn-outline-w"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                </div>
+            </div>
+            <div class="phero-card">
+                <div class="phero-card-head">
+                    <span class="phero-card-name"><i class="fas fa-database"></i> Conocimiento</span>
+                    <span class="phw-status"><i class="fas fa-circle"></i> Activo</span>
+                </div>
+                <div class="phw-stats">
+                    <div class="phw-stat">
+                        <div class="phw-stat-ico"><i class="fas fa-file"></i></div>
+                        <div><div class="phw-stat-num" th:text="${chunkCount}">0</div><div class="phw-stat-lbl">Fragmentos</div></div>
+                    </div>
+                    <div class="phw-stat">
+                        <div class="phw-stat-ico"><i class="fas fa-layer-group"></i></div>
+                        <div><div class="phw-stat-num" th:text="${sourceCount}">0</div><div class="phw-stat-lbl">Documentos</div></div>
+                    </div>
+                    <div class="phw-stat">
+                        <div class="phw-stat-ico"><i class="fas fa-robot"></i></div>
+                        <div><div class="phw-stat-num">Llama 3</div><div class="phw-stat-lbl">Modelo IA</div></div>
+                    </div>
+                    <div class="phw-stat">
+                        <div class="phw-stat-ico"><i class="fas fa-globe"></i></div>
+                        <div><div class="phw-stat-num">P&uacute;blico</div><div class="phw-stat-lbl">Acceso</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="phw-wave"></div>
+</div>
+
+<div class="body">
+    <div th:if="${success}" class="msg msg-success reveal">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}">Documento procesado correctamente</span>
+    </div>
+    <div th:if="${error}" class="msg msg-error reveal">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}">Error al procesar el documento</span>
+    </div>
+
+    <div class="stats-row reveal">
+        <div class="stat-box" style="cursor:pointer;" onclick="document.getElementById('uploadPdfModal').classList.add('show')">
+            <div class="stat-ico" style="background: rgba(230, 171, 9, 0.12); color: var(--ag);">
+                <i class="fas fa-file-pdf"></i>
+            </div>
+            <div>
+                <div class="stat-num" style="font-size:14px;">Subir PDF</div>
+                <div class="stat-lbl">Alimenta el chatbot con documentos</div>
+            </div>
+        </div>
+        <div class="stat-box" style="cursor:pointer;" onclick="document.getElementById('manualTextModal').classList.add('show')">
+            <div class="stat-ico" style="background: rgba(30, 152, 217, 0.12); color: var(--ac);">
+                <i class="fas fa-pen-fancy"></i>
+            </div>
+            <div>
+                <div class="stat-num" style="font-size:14px;">Agregar Texto</div>
+                <div class="stat-lbl">Escribe informaci&oacute;n manualmente</div>
+            </div>
+        </div>
+        <div class="stat-box" style="cursor:pointer;" onclick="document.getElementById('faqModal').classList.add('show')">
+            <div class="stat-ico" style="background: rgba(230, 171, 9, 0.12); color: var(--ag);">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <div>
+                <div class="stat-num" style="font-size:14px;">Preguntas Frecuentes</div>
+                <div class="stat-lbl">Gestionar el men&uacute; del chat</div>
+            </div>
+        </div>
+        <div class="stat-box" onclick="document.getElementById('chatDashboardModal').classList.add('show')" style="cursor:pointer;">
+            <div class="stat-ico" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div>
+                <div class="stat-num" style="font-size:14px;">Dashboard del Chat</div>
+                <div class="stat-lbl">Informe: mensajes, respuestas y tiempo</div>
+            </div>
+        </div>
+        <form method="post" action="/admin/chatbot/index-pages">
+            <div class="stat-box" style="cursor:pointer;">
+                <div class="stat-ico" style="background: rgba(255, 255, 255, 0.12); color: #0ea5e9;">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div>
+                    <div class="stat-num" style="font-size:14px;">Indexar p&aacute;ginas del sitio</div>
+                    <div class="stat-lbl">Leer el texto de la web p&uacute;blica</div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="source-group reveal" style="margin-bottom:16px;">
+        <div class="source-title" style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;">
+            <i class="fas fa-question-circle" style="margin-right:8px;color:var(--ag);"></i>
+            Preguntas Frecuentes del Chatbot
+            <span class="source-count" th:text="|(${#lists.size(faqs)} preguntas)|"></span>
+            <button type="button" class="btn btn-gold" style="padding:4px 10px;font-size:11px;" onclick="openFaqModal()">
+                <i class="fas fa-plus"></i> Agregar
+            </button>
+            <div style="flex:1;"></div>
+            <button type="button" class="collapse-toggle" onclick="toggleCollapse(this)">
+                <i class="fas fa-chevron-down cb-icon"></i> <span class="cb-label">Ver todas</span>
+            </button>
+        </div>
+        <div class="collapse-body">
+            <div th:if="${#lists.isEmpty(faqs)}" class="chunk-preview" style="padding:8px 0;">
+                No hay preguntas frecuentes. Agrega algunas para el men&uacute; del chat.
+            </div>
+            <div th:each="faq : ${faqs}" style="padding:10px 0;border-bottom:1px solid var(--bdr);">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:200px;">
+                        <div style="font-size:13px;font-weight:700;color:var(--pd);" th:text="${faq.question}">Pregunta</div>
+                        <div class="chunk-preview" th:text="${faq.answer}">Respuesta...</div>
+                    </div>
+                    <div style="display:flex;gap:6px;flex-shrink:0;">
+                        <button type="button" class="btn btn-outline" style="padding:4px 10px;font-size:11px;" th:attr="data-id=${faq.id},data-q=${faq.question},data-a=${faq.answer},data-orden=${faq.orden},data-activo=${faq.activo}" onclick="editFaq(this)">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <form th:action="@{/admin/chatbot/faq/delete/{id}(id=${faq.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-red" style="padding:4px 10px;font-size:11px;" onclick="return confirm('¿Eliminar esta pregunta frecuente?')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:each="entry : ${groupedChunks}" class="source-group reveal">
+        <div class="source-title" style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;">
+            <i th:class="${entry.key.endsWith('.pdf') ? 'fas fa-file-pdf' : 'fas fa-file-alt'}" style="color:var(--ag);"></i>
+            <span th:text="${entry.key}">documento.pdf</span>
+            <span class="source-count" th:text="|(${#lists.size(entry.value)} fragmentos)|"></span>
+            <div style="flex:1;"></div>
+            <button type="button" class="collapse-toggle" onclick="toggleCollapse(this)">
+                <i class="fas fa-chevron-down cb-icon"></i> <span class="cb-label">Ver fragmentos</span>
+            </button>
+            <form th:action="@{/admin/chatbot/delete}" method="post" style="display:inline;">
+                <input type="hidden" name="source" th:value="${entry.key}">
+                <button type="submit" class="btn btn-red" style="padding:4px 10px;font-size:11px;" onclick="return confirm('¿Eliminar todos los fragmentos de este documento?')">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </form>
+        </div>
+        <div class="collapse-body">
+            <div th:each="chunk : ${entry.value}" style="padding:8px 0;border-bottom:1px solid var(--bdr);">
+                <div style="font-size:11px;color:var(--mx);margin-bottom:2px;" th:text="${chunk.section}">Parte 1</div>
+                <div class="chunk-preview" th:text="${chunk.content}">Contenido del fragmento...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="source-group reveal" style="margin-top:16px;">
+        <div class="source-title" style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;">
+            <i class="fas fa-star" style="color:var(--ag);"></i>
+            Calificaciones de Atención
+            <span class="source-count" th:text="|(${#lists.size(ratings)} calificaciones)|"></span>
+            <div style="flex:1;"></div>
+            <button type="button" class="collapse-toggle" id="ratingsToggle" onclick="toggleRatings()">
+                <i class="fas fa-chevron-down cb-icon"></i> <span class="cb-label">Ver todas</span>
+            </button>
+        </div>
+        <div th:if="${#lists.isEmpty(ratings)}" class="chunk-preview" style="padding:8px 0;">
+            No hay calificaciones por el momento.
+        </div>
+        <div class="collapse-body" id="ratingsList">
+            <div th:each="r : ${ratings}" th:attr="data-rating-id=${r.id}" style="padding:12px 0;border-bottom:1px solid var(--bdr);display:flex;align-items:flex-start;gap:14px;">
+                <div style="flex-shrink:0;">
+                    <span style="font-size:14px;color:var(--ag);font-weight:700;" th:text="|${r.rating}/5|">5/5</span>
+                    <div th:title="|${r.rating} de 5 estrellas|" style="font-size:14px;color:var(--ag);letter-spacing:2px;margin-top:2px;">
+                        <span th:each="star : ${#numbers.sequence(1, r.rating)}">★</span>
+                        <span th:each="empty : ${#numbers.sequence(r.rating + 1, 5)}" style="color:#cbd5e1;">★</span>
+                    </div>
+                </div>
+                <div style="flex:1;min-width:0;">
+                    <div class="chunk-preview" style="font-size:12.5px;color:#334155;max-height:none;" th:text="${r.comment != null and !r.comment.isEmpty() ? r.comment : 'Sin observación.'}">Comentario del usuario...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(chunks)}" class="empty-state" style="margin:40px 0;">
+        <i class="fas fa-robot"></i>
+        <p>No hay informaci&oacute;n en la base de conocimiento. Sube PDFs o agrega texto para empezar.</p>
+    </div>
+</div>
+
+<div class="modal-overlay" id="uploadPdfModal">
+    <div class="modal-box">
+        <h2><i class="fas fa-file-pdf" style="color:var(--ag);"></i> Subir PDF</h2>
+        <p style="text-align:center;color:var(--mx);font-size:13px;margin-bottom:20px;">El texto se extraer&aacute; autom&aacute;ticamente y se dividir&aacute; en fragmentos para alimentar al chatbot.</p>
+        <form method="post" th:action="@{/admin/chatbot/upload}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Archivo PDF</label>
+                <input type="file" name="file" accept=".pdf,application/pdf" required style="width:100%;padding:10px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="document.getElementById('uploadPdfModal').classList.remove('show')">Cancelar</button>
+                <button type="submit" class="btn btn-gold"><i class="fas fa-upload"></i> Subir y Procesar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="manualTextModal">
+    <div class="modal-box">
+        <h2><i class="fas fa-pen-fancy" style="color:var(--ac);"></i> Agregar Texto Manual</h2>
+        <p style="text-align:center;color:var(--mx);font-size:13px;margin-bottom:20px;">Escribe informaci&oacute;n sobre la empresa, servicios, tarifas, etc.</p>
+        <form method="post" th:action="@{/admin/chatbot/text}">
+            <div class="form-group">
+                <label>T&iacute;tulo / Fuente</label>
+                <input type="text" name="title" placeholder="Ej: Informaci&oacute;n General de Mardique" required style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;">
+            </div>
+            <div class="form-group">
+                <label>Contenido</label>
+                <textarea name="content" rows="8" placeholder="Escribe aqu&iacute; la informaci&oacute;n que quieres que el chatbot conozca..." required style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;resize:vertical;"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="document.getElementById('manualTextModal').classList.remove('show')">Cancelar</button>
+                <button type="submit" class="btn btn-gold"><i class="fas fa-save"></i> Agregar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="faqModal">
+    <div class="modal-box">
+        <h2><i class="fas fa-question-circle" style="color:var(--ag);"></i> <span id="faqModalTitle">Agregar Pregunta Frecuente</span></h2>
+        <p style="text-align:center;color:var(--mx);font-size:13px;margin-bottom:20px;">Estas preguntas aparecen en el men&uacute; del chat y el chatbot las responde autom&aacute;ticamente.</p>
+        <form method="post" th:action="@{/admin/chatbot/faq/save}" id="faqForm">
+            <input type="hidden" name="id" id="faqId">
+            <div class="form-group">
+                <label>Pregunta</label>
+                <input type="text" name="question" id="faqQuestion" required maxlength="300" placeholder="Ej: ¿Cómo contacto con el Gerente Comercial?" style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;">
+            </div>
+            <div class="form-group">
+                <label>Respuesta</label>
+                <textarea name="answer" id="faqAnswer" rows="4" required placeholder="Escribe la respuesta del chatbot..." style="width:100%;padding:10px 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:inherit;resize:vertical;"></textarea>
+            </div>
+            <div class="form-group" style="display:flex;gap:16px;align-items:center;">
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                    <input type="checkbox" name="activo" value="true" id="faqActivo" style="width:16px;height:16px;" checked> Activa
+                </label>
+                <label style="display:flex;align-items:center;gap:6px;">
+                    Orden
+                    <input type="number" name="orden" id="faqOrden" value="0" min="0" style="width:70px;padding:8px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;">
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="document.getElementById('faqModal').classList.remove('show')">Cancelar</button>
+                <button type="submit" class="btn btn-gold"><i class="fas fa-save"></i> Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="chatDashboardModal">
+    <div class="modal-box" style="max-width:780px;max-height:86vh;overflow-y:auto;">
+        <h2><i class="fas fa-chart-line" style="color:#8b5cf6;"></i> Dashboard del Chat</h2>
+        <p style="text-align:center;color:var(--mx);font-size:13px;margin-bottom:20px;">Mensajes enviados, calidad de respuesta, tiempos y valoraciones de los usuarios.</p>
+
+        <div class="dash-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+            <div class="dash-stat" style="background:linear-gradient(135deg,var(--navy),#245a80);color:#fff;border-radius:14px;padding:16px;text-align:center;">
+                <i class="fas fa-comment-dots" style="font-size:18px;opacity:.85;"></i>
+                <div style="font-size:26px;font-weight:800;margin-top:6px;" th:text="${chatMessagesCount}">0</div>
+                <div style="font-size:11px;opacity:.75;">Mensajes totales</div>
+                <div style="font-size:10px;opacity:.5;margin-top:4px;"><span th:text="${chatUserMessages}">0</span> usu. · <span th:text="${chatBotMessages}">0</span> bot</div>
+            </div>
+            <div class="dash-stat" style="background:linear-gradient(135deg,#245a80,var(--navy));color:#fff;border-radius:14px;padding:16px;text-align:center;">
+                <i class="fas fa-users" style="font-size:18px;opacity:.85;"></i>
+                <div style="font-size:26px;font-weight:800;margin-top:6px;" th:text="${chatSessions}">0</div>
+                <div style="font-size:11px;opacity:.75;">Conversaciones</div>
+                <div style="font-size:10px;opacity:.5;margin-top:4px;">sesiones &uacute;nicas</div>
+            </div>
+            <div class="dash-stat" style="background:linear-gradient(135deg,var(--miel),#e07c0f);color:#fff;border-radius:14px;padding:16px;text-align:center;">
+                <i class="fas fa-stopwatch" style="font-size:18px;opacity:.85;"></i>
+                <div style="font-size:26px;font-weight:800;margin-top:6px;"><span th:text="${chatAvgResponse}">0</span>s</div>
+                <div style="font-size:11px;opacity:.75;">Tiempo medio</div>
+                <div style="font-size:10px;opacity:.5;margin-top:4px;">m&iacute;n <span th:text="${chatMinResponse}">0</span>s · m&aacute;x <span th:text="${chatMaxResponse}">0</span>s</div>
+            </div>
+            <div class="dash-stat" style="background:linear-gradient(135deg,var(--cian),#0080b0);color:#fff;border-radius:14px;padding:16px;text-align:center;">
+                <i class="fas fa-star" style="font-size:18px;opacity:.85;"></i>
+                <div style="font-size:26px;font-weight:800;margin-top:6px;"><span th:text="${chatRatingAvg}">0</span>/5</div>
+                <div style="font-size:11px;opacity:.75;">Valoraci&oacute;n media</div>
+                <div style="font-size:10px;opacity:.5;margin-top:4px;"><span th:text="${chatRatingsCount}">0</span> calificaciones</div>
+            </div>
+        </div>
+
+        <div class="dash-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+            <div style="background:var(--sur);border:1.5px solid var(--bdr);border-radius:14px;padding:16px;">
+                <div style="font-weight:700;font-size:14px;color:var(--pd);margin-bottom:12px;"><i class="fas fa-thumbs-up" style="margin-right:8px;color:#16a34a;"></i> Efectividad de Respuesta</div>
+                <div style="font-size:34px;font-weight:800;color:var(--pd);" th:text="${chatFeedbackTotal > 0 ? chatFeedbackPct : '—'} + (${chatFeedbackTotal > 0} ? '%' : '')">0%</div>
+                <div style="font-size:12px;color:var(--mx);margin:4px 0 10px;">votos del usuario por respuesta (up / down)</div>
+                <div style="font-size:12px;color:#16a34a;margin-bottom:4px;"><i class="fas fa-thumbs-up"></i> <span th:text="|${chatFeedbackUp} útiles|">0</span></div>
+                <div style="font-size:12px;color:#dc2626;"><i class="fas fa-thumbs-down"></i> <span th:text="|${chatFeedbackDown} no útiles|">0</span></div>
+            </div>
+            <div style="background:var(--sur);border:1.5px solid var(--bdr);border-radius:14px;padding:16px;">
+                <div style="font-weight:700;font-size:14px;color:var(--pd);margin-bottom:12px;"><i class="fas fa-inbox" style="margin-right:8px;color:#8b5cf6;"></i> Solicitudes v&iacute;a Chat</div>
+                <div style="font-size:34px;font-weight:800;color:var(--pd);" th:text="${chatContactRequests}">0</div>
+                <div style="font-size:12px;color:var(--mx);margin:4px 0 10px;">solicitudes enviadas desde el formulario del chatbot</div>
+                <div style="font-size:12px;color:#8b5cf6;">Gestionarlas en <strong>Solicitudes</strong></div>
+            </div>
+        </div>
+
+        <div style="background:var(--sur);border:1.5px solid var(--bdr);border-radius:14px;padding:16px;margin-bottom:12px;">
+            <div style="font-weight:700;font-size:14px;color:var(--pd);margin-bottom:12px;"><i class="fas fa-tags" style="margin-right:8px;color:var(--ag);"></i> Desglose de Respuestas</div>
+            <div style="font-size:12px;color:var(--mx);margin-bottom:10px;">para <span th:text="${chatTypeAnswered}">0</span> respuestas emitidas</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <span style="width:110px;font-size:12px;font-weight:600;color:var(--pd);">FAQ</span>
+                <div style="flex:1;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;"><div class="rating-fill" th:style="|width: ${chatTypePctFaq}%|" style="width:0;"></div></div>
+                <span style="width:110px;font-size:11px;color:var(--mx);text-align:right;" th:text="|${chatTypeFaq} (${chatTypePctFaq}%)|">0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <span style="width:110px;font-size:12px;font-weight:600;color:var(--pd);">Base de conocimiento</span>
+                <div style="flex:1;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;"><div class="rating-fill" th:style="|width: ${chatTypePctLlmRag}%|" style="width:0;"></div></div>
+                <span style="width:110px;font-size:11px;color:var(--mx);text-align:right;" th:text="|${chatTypeLlmRag} (${chatTypePctLlmRag}%)|">0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <span style="width:110px;font-size:12px;font-weight:600;color:var(--pd);">IA general</span>
+                <div style="flex:1;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;"><div class="rating-fill" th:style="|width: ${chatTypePctLlm}%|" style="width:0;"></div></div>
+                <span style="width:110px;font-size:11px;color:var(--mx);text-align:right;" th:text="|${chatTypeLlm} (${chatTypePctLlm}%)|">0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <span style="width:110px;font-size:12px;font-weight:600;color:var(--pd);">Fuera de tema</span>
+                <div style="flex:1;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;"><div class="rating-fill" th:style="|width: ${chatTypePctOutOfBounds}%|" style="width:0;"></div></div>
+                <span style="width:110px;font-size:11px;color:var(--mx);text-align:right;" th:text="|${chatTypeOutOfBounds} (${chatTypePctOutOfBounds}%)|">0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span style="width:110px;font-size:12px;font-weight:600;color:var(--pd);">Solicitud contacto</span>
+                <div style="flex:1;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;"><div class="rating-fill" th:style="|width: ${chatTypePctForm}%|" style="width:0;"></div></div>
+                <span style="width:110px;font-size:11px;color:var(--mx);text-align:right;" th:text="|${chatTypeForm} (${chatTypePctForm}%)|">0</span>
+            </div>
+        </div>
+
+        <div style="background:var(--sur);border:1.5px solid var(--bdr);border-radius:14px;padding:16px;">
+            <div style="font-weight:700;font-size:14px;color:var(--pd);margin-bottom:12px;"><i class="fas fa-star" style="margin-right:8px;color:var(--ag);"></i> Distribuci&oacute;n de Calificaciones</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <span style="width:28px;font-size:12px;font-weight:700;color:var(--ag);">5★</span>
+                <div style="flex:1;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;"><div class="rating-fill" th:style="|width: ${chatRatingPct5}%|" style="width:0;"></div></div>
+                <span style="width:30px;font-size:11px;color:var(--mx);text-align:right;" th:text="|${chatRatingDist5} (${chatRatingPct5}%)|">0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <span style="width:28px;font-size:12px;font-weight:700;color:var(--ag);">4★</span>
+                <div style="flex:1;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;"><div class="rating-fill" th:style="|width: ${chatRatingPct4}%|" style="width:0;"></div></div>
+                <span style="width:30px;font-size:11px;color:var(--mx);text-align:right;" th:text="|${chatRatingDist4} (${chatRatingPct4}%)|">0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <span style="width:28px;font-size:12px;font-weight:700;color:var(--ag);">3★</span>
+                <div style="flex:1;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;"><div class="rating-fill" th:style="|width: ${chatRatingPct3}%|" style="width:0;"></div></div>
+                <span style="width:30px;font-size:11px;color:var(--mx);text-align:right;" th:text="|${chatRatingDist3} (${chatRatingPct3}%)|">0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <span style="width:28px;font-size:12px;font-weight:700;color:var(--ag);">2★</span>
+                <div style="flex:1;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;"><div class="rating-fill" th:style="|width: ${chatRatingPct2}%|" style="width:0;"></div></div>
+                <span style="width:30px;font-size:11px;color:var(--mx);text-align:right;" th:text="|${chatRatingDist2} (${chatRatingPct2}%)|">0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span style="width:28px;font-size:12px;font-weight:700;color:var(--ag);">1★</span>
+                <div style="flex:1;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;"><div class="rating-fill" th:style="|width: ${chatRatingPct1}%|" style="width:0;"></div></div>
+                <span style="width:30px;font-size:11px;color:var(--mx);text-align:right;" th:text="|${chatRatingDist1} (${chatRatingPct1}%)|">0</span>
+            </div>
+        </div>
+
+        <div style="margin-top:14px;font-size:12px;color:var(--mx);text-align:center;background:#f8fafc;border:1px dashed var(--bdr);border-radius:12px;padding:12px;">
+            <i class="fas fa-info-circle" style="margin-right:6px;color:var(--ac);"></i>
+            Los tiempos incluyen el streaming de la respuesta. Los mensajes se registran autom&aacute;ticamente cuando el usuario conversa con el asistente.
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="document.getElementById('chatDashboardModal').classList.remove('show')">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="logoutModal">
+    <div class="modal-box">
+        <i class="fas fa-sign-out-alt" style="font-size: 46px; color: var(--ag); margin-bottom: 12px; display: block;"></i>
+        <h2>Cerrar Sesi&oacute;n</h2>
+        <p>¿Estás seguro de que deseas cerrar tu sesi&oacute;n?</p>
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="document.getElementById('logoutModal').classList.remove('show')">Cancelar</button>
+            <form th:action="@{/logout}" method="post" style="display:inline;"><button type="submit" class="btn btn-red"><i class="fas fa-sign-out-alt"></i> Cerrar Sesi&oacute;n</button></form>
+        </div>
+    </div>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<nav class="mobile-nav-drawer" id="mobileDrawer" aria-label="Menú móvil">
+    <div class="drawer-header">
+        <img src="/images/Logo.png" alt="Mardique">
+        <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&times;</button>
+    </div>
+    <div class="drawer-nav">
+        <a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a th:if="${isFullAdmin}" href="/admin/users"><i class="fas fa-users-cog"></i> Usuarios</a>
+        <a href="/admin/solicitudes"><i class="fas fa-file-alt"></i> Solicitudes</a>
+        <a href="/admin/mensajes"><i class="fas fa-envelope"></i> Mensajes</a>
+        <a th:if="${isFullAdmin}" href="/admin/chatbot" class="active"><i class="fas fa-robot"></i> Chatbot</a>
+        <div class="drawer-divider"></div>
+        <button class="drawer-logout-btn" onclick="closeDrw();document.getElementById('logoutModal').classList.add('show')">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesi&oacute;n
+        </button>
+    </div>
+</nav>
+
+<script>
+    const progressBar = document.getElementById('scroll-progress');
+    const mainHdr = document.getElementById('main-header');
+    let ticking = false;
+    function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            ticking = false;
+            if (progressBar) progressBar.style.width = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100) + '%';
+            mainHdr.classList.toggle('scrolled', window.scrollY > 60);
+        });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0, rootMargin: '0px 0px 60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    function revealInView() {
+        const vh = window.innerHeight;
+        document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+            const r = el.getBoundingClientRect();
+            if (r.top < vh - 20) el.classList.add('visible');
+        });
+    }
+    window.addEventListener('load', revealInView);
+    revealInView();
+    document.getElementById('logoutModal').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+    document.getElementById('uploadPdfModal')?.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+    document.getElementById('manualTextModal')?.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+    document.getElementById('chatDashboardModal')?.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+    document.getElementById('faqModal')?.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+
+    function openFaqModal() {
+        document.getElementById('faqForm').reset();
+        document.getElementById('faqId').value = '';
+        document.getElementById('faqModalTitle').textContent = 'Agregar Pregunta Frecuente';
+        document.getElementById('faqActivo').checked = true;
+        document.getElementById('faqOrden').value = 0;
+        document.getElementById('faqModal').classList.add('show');
+    }
+
+    function toggleCollapse(btn) {
+        const group = btn.closest('.source-group');
+        const body = group.querySelector('.collapse-body');
+        body.classList.toggle('open');
+        btn.classList.toggle('open');
+        const label = btn.querySelector('.cb-label');
+        const expanded = body.classList.contains('open');
+        label.textContent = expanded ? 'Ocultar' : 'Ver fragmentos';
+    }
+
+    const ratingsList = document.getElementById('ratingsList');
+    const ratingsToggle = document.getElementById('ratingsToggle');
+    let ratingsShown = 5;
+    function applyRatings() {}
+    function toggleRatings() {
+        if (!ratingsList) return;
+        ratingsList.classList.toggle('open');
+        if (ratingsToggle) {
+            const label = ratingsToggle.querySelector('.cb-label');
+            label.textContent = ratingsList.classList.contains('open') ? 'Ocultar' : 'Ver todas';
+        }
+    }
+    applyRatings();
+
+    function editFaq(btn) {
+        document.getElementById('faqForm').reset();
+        document.getElementById('faqId').value = btn.getAttribute('data-id');
+        document.getElementById('faqQuestion').value = btn.getAttribute('data-q');
+        document.getElementById('faqAnswer').value = btn.getAttribute('data-a');
+        document.getElementById('faqOrden').value = btn.getAttribute('data-orden') || '0';
+        document.getElementById('faqActivo').checked = btn.getAttribute('data-activo') !== 'false';
+        document.getElementById('faqModalTitle').textContent = 'Editar Pregunta Frecuente';
+        document.getElementById('faqModal').classList.add('show');
+    }
+
+    const tog = document.getElementById('mobileToggle');
+    const drw = document.getElementById('mobileDrawer');
+    const ov = document.getElementById('drawerOverlay');
+    const cl = document.getElementById('drawerClose');
+    function openDrw() { drw.classList.add('open'); ov.classList.add('open'); tog.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeDrw() { drw.classList.remove('open'); ov.classList.remove('open'); tog.classList.remove('open'); document.body.style.overflow = ''; }
+    tog && tog.addEventListener('click', () => drw.classList.contains('open') ? closeDrw() : openDrw());
+    cl && cl.addEventListener('click', closeDrw);
+    ov && ov.addEventListener('click', closeDrw);
+
+    /* Index pages: show toast and submit */
+    document.querySelector('form[action="/admin/chatbot/index-pages"]').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = this.querySelector('.stat-box');
+        var orig = btn.style.opacity;
+        btn.style.opacity = '0.6';
+        btn.style.pointerEvents = 'none';
+        fetch('/admin/chatbot/index-pages', { method: 'POST', redirect: 'follow' })
+            .then(function() { showToast('Páginas del sitio indexadas correctamente'); })
+            .catch(function() { showToast('Error al indexar páginas del sitio', true); })
+            .finally(function() {
+                setTimeout(function() { window.location.reload(); }, 1200);
+            });
+    });
+    function showToast(msg, isErr) {
+        var t = document.createElement('div');
+        t.textContent = msg;
+        t.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;padding:12px 22px;border-radius:10px;font-size:13px;font-weight:600;color:#fff;box-shadow:0 6px 20px rgba(10,46,77,.25);animation:cbMsgIn .3s;transition:opacity .4s;background:' + (isErr ? '#dc2626' : '#16a34a');
+        document.body.appendChild(t);
+        setTimeout(function() { t.style.opacity = '0'; setTimeout(function() { t.remove(); }, 500); }, 2500);
+    }
+</script>
+<script src="/js/panel-nav.js"></script>
+<a href="/admin/dashboard" class="float-home" aria-label="Ir a inicio"><i class="fas fa-home"></i></a>
+</body>
+</html>

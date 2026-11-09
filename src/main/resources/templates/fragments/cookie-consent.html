@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+<!--
+  cookie-consent.html — Fragmento de consentimiento de cookies
+  Uso: <div th:replace="~{fragments/cookie-consent :: cookieBanner}"></div>
+  Coloca esta línea justo antes de </body> en cada plantilla pública.
+-->
+<th:block th:fragment="cookieBanner">
+
+    <!-- ── Hoja de estilos ───────────────────────────────────────────── -->
+    <link rel="stylesheet" th:href="@{/css/cookie-consent.css}">
+
+    <!-- ══════════════════════════════════════════════════════════════
+         BANNER — aparece en la parte inferior en la primera visita
+    ══════════════════════════════════════════════════════════════════ -->
+    <aside id="cc-banner"
+           role="region"
+           aria-label="Aviso de cookies"
+           aria-live="polite"
+           aria-hidden="true"
+           hidden>
+        <div class="cc-banner-inner">
+
+            <!-- Texto informativo -->
+            <div class="cc-banner-text">
+                <p>Este sitio web utiliza cookies esenciales para su funcionamiento y, con su
+                   autorización, tecnologías de personalización y contenido externo.
+                   Puede aceptar todas las cookies, rechazar las no esenciales o administrar
+                   sus preferencias en cualquier momento.</p>
+                <a href="/privacidad" target="_blank" rel="noopener">
+                    <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                    Política de privacidad
+                </a>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="cc-banner-actions" role="group" aria-label="Opciones de cookies">
+                <button type="button"
+                        class="cc-btn cc-btn-outline"
+                        data-cc-action="open-modal"
+                        aria-haspopup="dialog">
+                    <i class="fas fa-sliders-h" aria-hidden="true"></i>
+                    Administrar preferencias
+                </button>
+                <button type="button"
+                        class="cc-btn cc-btn-primary"
+                        data-cc-action="accept-all">
+                    <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    Aceptar todo
+                </button>
+                <button type="button"
+                        class="cc-btn cc-btn-ghost"
+                        data-cc-action="reject">
+                    <i class="fas fa-times-circle" aria-hidden="true"></i>
+                    Rechazar lo no esencial
+                </button>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         MODAL DE PREFERENCIAS
+    ══════════════════════════════════════════════════════════════════ -->
+    <div id="cc-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="cc-modal-title"
+         aria-describedby="cc-modal-desc"
+         aria-hidden="true"
+         hidden>
+
+        <!-- Fondo semi-transparente — clic cierra el modal -->
+        <div class="cc-modal-backdrop" data-cc-action="close-modal" aria-hidden="true"></div>
+
+        <!-- Caja del modal -->
+        <div class="cc-modal-box">
+
+            <!-- Cabecera -->
+            <div class="cc-modal-header">
+                <h2 id="cc-modal-title">Preferencias de cookies</h2>
+                <button type="button"
+                        class="cc-modal-close"
+                        data-cc-action="close-modal"
+                        aria-label="Cerrar preferencias de cookies">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <!-- Cuerpo con categorías -->
+            <div class="cc-modal-body">
+                <p id="cc-modal-desc" class="cc-modal-intro">
+                    Seleccione las categorías de cookies que desea permitir. Las cookies
+                    estrictamente necesarias siempre están activas porque el sitio no puede
+                    funcionar correctamente sin ellas.
+                </p>
+
+                <!-- Categoría 1: Estrictamente necesarias -->
+                <div class="cc-category">
+                    <div class="cc-category-header">
+                        <h3 class="cc-category-title">
+                            <i class="fas fa-lock" aria-hidden="true" style="font-size:.8em;margin-right:5px;opacity:.7;"></i>
+                            Cookies estrictamente necesarias
+                        </h3>
+                        <span class="cc-always-on" aria-label="Siempre activas">Siempre activas</span>
+                    </div>
+                    <p class="cc-category-desc">
+                        Gestión de sesión, protección CSRF y funciones imprescindibles para la
+                        navegación y los formularios del sitio. No pueden desactivarse.
+                    </p>
+                </div>
+
+                <!-- Categoría 2: Personalización -->
+                <div class="cc-category">
+                    <div class="cc-category-header">
+                        <h3 class="cc-category-title">
+                            <i class="fas fa-palette" aria-hidden="true" style="font-size:.8em;margin-right:5px;opacity:.7;"></i>
+                            Cookies de personalización
+                        </h3>
+                        <label class="cc-switch" title="Activar o desactivar personalización">
+                            <input type="checkbox"
+                                   id="cc-toggle-personalization"
+                                   class="cc-toggle"
+                                   role="switch"
+                                   aria-checked="false"
+                                   aria-label="Cookies de personalización">
+                            <span class="cc-switch-track" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                    <p class="cc-category-desc">
+                        Tipografía personalizada mediante Google Fonts. Permite al navegador
+                        cargar fuentes desde los servidores de Google para mantener la identidad
+                        visual del sitio.
+                    </p>
+                </div>
+
+                <!-- Categoría 3: Contenido externo -->
+                <div class="cc-category">
+                    <div class="cc-category-header">
+                        <h3 class="cc-category-title">
+                            <i class="fas fa-map-marked-alt" aria-hidden="true" style="font-size:.8em;margin-right:5px;opacity:.7;"></i>
+                            Contenido externo
+                        </h3>
+                        <label class="cc-switch" title="Activar o desactivar contenido externo">
+                            <input type="checkbox"
+                                   id="cc-toggle-external"
+                                   class="cc-toggle"
+                                   role="switch"
+                                   aria-checked="false"
+                                   aria-label="Cookies de contenido externo">
+                            <span class="cc-switch-track" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                    <p class="cc-category-desc">
+                        Mapa de Google Maps integrado en la página de Contacto. Al activar esta
+                        opción, Google puede registrar su dirección IP y establecer sus propias
+                        cookies.
+                    </p>
+                </div>
+
+            </div><!-- /cc-modal-body -->
+
+            <!-- Pie del modal -->
+            <div class="cc-modal-footer">
+                <button type="button"
+                        class="cc-btn cc-btn-modal-secondary"
+                        data-cc-action="save-preferences">
+                    <i class="fas fa-save" aria-hidden="true"></i>
+                    Guardar preferencias
+                </button>
+                <button type="button"
+                        class="cc-btn cc-btn-modal-primary"
+                        data-cc-action="accept-all">
+                    <i class="fas fa-check-double" aria-hidden="true"></i>
+                    Aceptar todo
+                </button>
+            </div>
+
+        </div><!-- /cc-modal-box -->
+    </div><!-- /cc-modal -->
+
+    <!-- ── Módulo JavaScript ─────────────────────────────────────────── -->
+    <script th:src="@{/js/cookie-consent.js}" defer="defer"></script>
+
+</th:block>
+</body>
+</html>

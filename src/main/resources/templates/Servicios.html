@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Servicios – Sociedad Portuaria Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link data-cc-href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" data-cc-category="personalization" rel="stylesheet" id="cc-font-jakarta">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+    <link data-cc-href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" data-cc-category="personalization" rel="stylesheet" id="cc-font-kaushan">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/inicio.css">
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <style>
+        :root {
+            --primary-blue: var(--navy); --primary-dark: var(--navy); --accent-gold: var(--miel);
+            --accent-cyan: var(--cian); --bg-light: #f5f7fa; --text-light: #ffffff;
+            --text-muted: #94a3b8; --text-dark: #1e293b; --border-color: #e2e8f0;
+            --radius: 8px; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans',sans-serif; }
+        body { background: #fff; color: var(--text-dark); -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; color: inherit; } ul { list-style: none; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; width: 100%; }
+
+        /* SCROLL PROGRESS */
+        #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan)); z-index: 9999; transition: width 0.1s linear; }
+
+        /* BOTONES */
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; font-size: 12.5px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.5px; position: relative; overflow: hidden; z-index: 1; border: none; }
+        .btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transform: skewX(-25deg); z-index: -1; }
+        .btn:hover::after { left: 150%; transition: 0.55s ease-in-out; }
+        .btn i { margin-left: 8px; font-size: 11px; transition: var(--transition); }
+        .btn:hover i { transform: translateX(4px); }
+        .btn-orange { background-color: var(--accent-gold); color: #fff; box-shadow: 0 4px 15px rgba(230,171,9,0.25); }
+        .btn-orange:hover { background-color: var(--miel); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(230,171,9,0.4); }
+        .btn-outline-dark { background: transparent; color: var(--primary-dark); border: 2px solid var(--primary-dark); }
+        .btn-outline-dark:hover { background: var(--primary-dark); color: #fff; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .btn-outline-light { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.6); }
+        .btn-outline-light:hover { background: #fff; color: var(--primary-blue); transform: translateY(-2px); }
+
+        /* HEADER STICKY */
+
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        nav { flex: 1; display: flex; justify-content: center; padding-right: 20px; }
+        .nav-menu { display: flex; gap: 35px; align-items: center; }
+        .nav-menu li a { color: rgba(255,255,255,0.75); font-size: 12.5px; font-weight: 500; text-transform: uppercase; position: relative; padding: 8px 0; letter-spacing: 0.5px; transition: color 0.25s ease; }
+        .nav-menu li a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent-gold); transition: var(--transition); }
+        .nav-menu li.active a, .nav-menu li a:hover { color: #fff; font-weight: 600; }
+        .nav-menu li.active a::after, .nav-menu li a:hover::after { width: 100%; }
+        .nav-menu li a i { margin-left: 4px; font-size: 10px; vertical-align: middle; }
+        .nav-menu li.dropdown { position: relative; }
+        .nav-menu li.dropdown .dropdown-trigger {
+            color: rgba(255,255,255,0.75); font-size: 12.5px; font-weight: 500;
+            text-transform: uppercase; padding: 8px 0; letter-spacing: 0.5px; cursor: default;
+            display: inline-block;
+        }
+        .nav-menu li.dropdown .dropdown-trigger i { margin-left: 4px; font-size: 10px; vertical-align: middle; }
+        .nav-menu li.dropdown:hover .dropdown-trigger,
+        .nav-menu li.dropdown.active .dropdown-trigger { color: #fff; font-weight: 600; }
+        .nav-menu li.dropdown .dropdown-menu {
+            position: absolute; top: 100%; left: 0; padding-top: 4px;
+            background: rgba(10,46,77,0.72); min-width: 210px; border-radius: 10px;
+            padding: 6px 0; opacity: 0 !important; visibility: hidden !important;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06);
+            z-index: 1000; list-style: none;
+            pointer-events: none;
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+        }
+        .nav-menu li.dropdown .dropdown-menu::before {
+            content: ''; position: absolute; top: -4px; left: 0; right: 0; height: 4px;
+        }
+        .nav-menu li.dropdown:last-child .dropdown-menu { left: auto; right: 0; }
+        .nav-menu li.dropdown .dropdown-menu li { display: block; margin: 0; padding: 0; }
+        .nav-menu li.dropdown .dropdown-menu li a {
+            display: block; width: 100%; padding: 10px 22px; margin: 0;
+            font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,0.7);
+            text-transform: none; letter-spacing: 0.3px; text-decoration: none;
+            background: none; border: none; line-height: 1.4;
+            position: static; white-space: nowrap; box-sizing: border-box;
+        }
+        .nav-menu li.dropdown .dropdown-menu li a:hover {
+            color: #fff; background: rgba(255,255,255,0.04); padding-left: 26px;
+        }
+
+        /* HERO PARALLAX */
+        .page-hero { position: relative; height: 540px; display: flex; align-items: flex-end; overflow: hidden; }
+        /* CORRECCIÓN: Se eliminó background-image del CSS para añadirlo inline en el HTML */
+        .page-hero-bg { position: absolute; top: -80px; left: 0; width: 100%; height: calc(100% + 80px); background-size: cover; background-position: center; z-index: 1; will-change: transform; }
+        .page-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,46,77,0.45) 0%, rgba(10,46,77,0.65) 45%, rgba(10,46,77,0.93) 100%); z-index: 2; }
+        .hero-particles { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
+        .hero-particle { position: absolute; border-radius: 50%; background: rgba(230,171,9,0.12); animation: floatParticle linear infinite; }
+        @keyframes floatParticle { 0%,100%{transform:translateY(0) scale(1);opacity:.5} 50%{transform:translateY(-28px) scale(1.08);opacity:.2} }
+        .page-hero .container { position: relative; z-index: 3; padding-bottom: 52px; }
+        .page-hero-breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; animation: fadeInUp 0.6s ease both; }
+        .page-hero-breadcrumb a { color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; transition: color 0.2s; }
+        .page-hero-breadcrumb a:hover { color: var(--accent-gold); }
+        .page-hero-breadcrumb span { color: rgba(255,255,255,0.35); font-size: 10px; }
+        .page-hero-breadcrumb .current { color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+        .page-hero-title { font-size: 54px; font-weight: 300; color: #fff; letter-spacing: -0.5px; line-height: 1.1; animation: fadeInUp 0.7s ease 0.1s both; }
+        .page-hero-title strong { font-weight: 800; color: var(--accent-gold); }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+        .page-hero-line { width: 0; height: 3px; margin-top: 14px; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan)); border-radius: 2px; transition: width 1s ease 0.4s; }
+        .page-hero-line.animate { width: 60px; }
+        .scroll-hint { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 4; display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.45); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; animation: bounceDown 2s ease infinite; }
+        .scroll-hint i { font-size: 15px; }
+        @keyframes bounceDown { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+        /* NAVEGADOR STICKY - FIX (Hueco visual y borde recortado) */
+
+        /* STATS */
+        .stats-strip { background: var(--primary-dark); }
+        .stats-inner { display: grid; grid-template-columns: repeat(4, 1fr); }
+        .stat-cell { padding: 28px 24px; display: flex; align-items: center; gap: 16px; border-right: 1px solid rgba(255,255,255,0.07); transition: background 0.3s; cursor: default; }
+        .stat-cell:last-child { border-right: none; }
+        .stat-cell:hover { background: rgba(255,255,255,0.04); }
+        .stat-cell-icon { font-size: 34px; flex-shrink: 0; line-height: 1; color: transparent; -webkit-text-stroke: 1.4px rgba(255,255,255,0.82); transition: var(--transition); }
+        .stat-cell:hover .stat-cell-icon { color: var(--accent-gold); -webkit-text-stroke: 1.4px var(--accent-gold); transform: scale(1.1); }
+        .stat-num { font-size: 26px; font-weight: 800; color: #fff; line-height: 1; }
+        .stat-unit { color: var(--accent-gold); }
+        .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* REVEAL */
+        .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.65s cubic-bezier(0.4,0,0.2,1), transform 0.65s cubic-bezier(0.4,0,0.2,1); }
+        .reveal.visible { opacity: 1; transform: none; }
+        .reveal-left  { opacity: 0; transform: translateX(-44px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        .reveal-right { opacity: 0; transform: translateX( 44px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        .reveal-left.visible, .reveal-right.visible { opacity: 1; transform: none; }
+        .delay-1{transition-delay:.1s} .delay-2{transition-delay:.2s} .delay-3{transition-delay:.3s} .delay-4{transition-delay:.4s}
+
+        /* SECCIONES */
+        .section-block { padding: 56px 0; }
+        .section-bg-light { background: var(--bg-light); }
+        .section-header { margin-bottom: 36px; }
+        .section-label { color: var(--primary-blue); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px; }
+        .section-title { font-size: 28px; color: var(--primary-dark); font-weight: 800; }
+        .section-line { width: 50px; height: 3px; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan)); margin-top: 12px; border-radius: 2px; }
+        .premium-divider { display: flex; align-items: center; justify-content: flex-start; gap: 16px; margin: 28px 0; }
+        .premium-divider .line { height: 1px; width: 60px; background: linear-gradient(90deg, rgba(0,0,0,0.2), transparent); }
+        .premium-divider .line.right { background: linear-gradient(270deg, transparent, rgba(0,0,0,0.2)); }
+        .premium-divider .diamond { width: 8px; height: 8px; background: var(--accent-gold); transform: rotate(45deg); opacity: 0.8; }
+
+        /* ═══════════════════════════════════════════════════════════════
+           SERVICIOS v3 — tarjetas, MARPOL y CTA (alcance: body.svc-v3)
+           ═══════════════════════════════════════════════════════════════ */
+        body.svc-v3 { --svc-ink: #0a2e4d; --svc-muted: #62788d; --svc-line: rgba(16,82,116,.13); }
+
+        /* Sección base con fondo azul claro + decoración */
+        .svc-sec { position: relative; overflow: hidden; background: linear-gradient(180deg, #f1f8fd 0%, #f6fafd 55%, #eef6fb 100%); padding: clamp(48px,5vw,76px) 0 clamp(40px,4vw,64px); }
+        .svc-sec > .container { position: relative; z-index: 2; }
+        .svc-cranes { position: absolute; top: 0; right: 0; width: min(54vw, 780px); height: auto; color: rgba(30,152,217,.17); pointer-events: none; z-index: 1;
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 38%); mask-image: linear-gradient(90deg, transparent 0%, #000 38%); }
+        .svc-waves { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: clamp(64px,7.5vw,118px); z-index: 1; pointer-events: none; display: block; }
+
+        /* Encabezado */
+        .svc-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; margin-bottom: clamp(24px,3vw,40px); }
+        .svc-head-text { max-width: 640px; }
+        .svc-eyebrow { display: flex; align-items: center; gap: 10px; color: var(--cian-mid); font-size: 12.5px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; }
+        .svc-eyebrow .dia { width: 9px; height: 9px; background: var(--miel); transform: rotate(45deg); flex: none; }
+        .svc-eyebrow .bar { width: 28px; height: 3px; border-radius: 3px; background: var(--miel); flex: none; }
+        .svc-eyebrow .bar2 { width: 34px; height: 4px; border-radius: 3px; flex: none; background: linear-gradient(90deg, var(--miel) 0 55%, var(--cian) 55% 100%); }
+        .svc-title { font-size: clamp(28px,3.4vw,44px); font-weight: 800; color: var(--navy); letter-spacing: -.6px; line-height: 1.12; margin: 10px 0 14px; }
+        .svc-lead { font-size: clamp(14px,1.15vw,15.5px); color: var(--svc-muted); line-height: 1.65; margin: 0; }
+        .svc-script { position: relative; flex: none; margin-top: 6px; padding-bottom: 14px; text-align: right; transform: rotate(-6deg);
+            font-family: 'Kaushan Script','Brush Script MT',cursive; font-size: clamp(20px,2.1vw,29px); line-height: 1.18; color: var(--cian-mid); }
+        .svc-script::after { content: ""; position: absolute; right: 0; bottom: 0; width: 78%; height: 9px; border-bottom: 4px solid var(--miel); border-radius: 0 0 70% 40% / 0 0 100% 100%; }
+
+        /* Tarjeta de servicio */
+        .svc-card { position: relative; display: grid; grid-template-columns: minmax(0,.78fr) minmax(0,1fr); background: rgba(255,255,255,.88); border-radius: 20px; border: 1px solid rgba(30,152,217,.10);
+            box-shadow: 0 18px 50px rgba(10,46,77,.09), 0 2px 8px rgba(10,46,77,.04); margin-bottom: clamp(24px,2.6vw,34px); }
+        .svc-card--rev { grid-template-columns: minmax(0,.84fr) minmax(0,1fr); }
+        .svc-card--rev .svc-media { order: 2; border-radius: 0 20px 20px 0; }
+        .svc-card:not(.svc-card--rev)::before { content: ""; position: absolute; left: 0; top: 0; width: 7px; height: 30%; min-height: 64px; border-radius: 20px 0 0 20px; z-index: 3;
+            background: linear-gradient(180deg, var(--miel-light), var(--miel)); }
+
+        .svc-media { position: relative; min-height: 310px; overflow: hidden; cursor: pointer; border-radius: 20px 0 0 20px; background: #dcecf7; }
+        .svc-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
+        .svc-card:hover .svc-media img { transform: scale(1.04); }
+        .svc-chip { position: absolute; left: 14px; bottom: 14px; z-index: 3; display: inline-flex; align-items: center; gap: 10px; padding: 5px 18px 5px 5px; border-radius: 999px;
+            background: rgba(7,31,54,.84); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .9px; text-transform: uppercase; }
+        .svc-chip i { width: 32px; height: 32px; border-radius: 50%; background: var(--cian-mid); display: grid; place-items: center; font-size: 14px; }
+        .svc-expand { position: absolute; top: 14px; right: 14px; z-index: 3; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.94); color: var(--navy);
+            font-size: 14px; box-shadow: 0 6px 16px rgba(10,46,77,.22); opacity: 0; transform: translateY(-6px); transition: opacity .3s ease, transform .3s ease, background .25s, color .25s; }
+        .svc-card:hover .svc-expand, .svc-media:focus-visible .svc-expand { opacity: 1; transform: none; }
+        .svc-expand:hover { background: var(--miel-light); }
+        .svc-loc { position: absolute; right: 0; bottom: 0; z-index: 3; width: min(48%,330px); height: 118px; pointer-events: none; }
+        .svc-loc svg { overflow: hidden; position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+        .svc-loc span { position: absolute; right: 18px; bottom: 16px; display: flex; align-items: center; gap: 9px; color: #fff; font-size: 9.5px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; line-height: 1.45; text-align: left; }
+        .svc-loc i { font-size: 16px; color: #fff; opacity: .9; }
+
+        .svc-body { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: clamp(20px,2.4vw,32px); padding: clamp(22px,2.4vw,32px) clamp(22px,2.6vw,34px); }
+        .svc-main { min-width: 0; }
+        .svc-kicker { display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--cian-dark); }
+        .svc-kicker::before { content: ""; width: 30px; height: 3px; border-radius: 3px; background: var(--miel); flex: none; }
+        .svc-main h3 { font-size: clamp(26px,2.5vw,34px); font-weight: 800; color: var(--navy); letter-spacing: -.4px; line-height: 1.1; margin: 8px 0 12px; }
+        .svc-main p { font-size: 14.5px; line-height: 1.65; color: var(--svc-muted); margin: 0; }
+        .svc-list { display: flex; flex-direction: column; gap: 9px; margin-top: 18px; }
+        .svc-list li { display: flex; align-items: center; gap: 14px; font-size: 14px; font-weight: 600; color: var(--navy); line-height: 1.4; transition: transform .25s ease; }
+        .svc-list li:hover { transform: translateX(4px); }
+        .svc-li-ico { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--cian-tint); color: var(--cian-dark); font-size: 14px; transition: background .25s, color .25s; }
+        .svc-list li:hover .svc-li-ico { background: var(--navy); color: var(--miel-light); }
+
+        .svc-aside { width: clamp(200px,18vw,250px); min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 34px; padding-left: clamp(18px,2vw,26px); border-left: 1px solid var(--svc-line); }
+        .btn-navy { background: var(--navy); color: #fff; border-radius: 999px; padding: 13px 22px; font-size: 11.5px; letter-spacing: .6px; white-space: nowrap; align-self: flex-start; box-shadow: 0 8px 20px rgba(10,46,77,.18); }
+        .btn-navy:hover { background: var(--cian-mid); color: #fff; transform: translateY(-2px); box-shadow: 0 12px 26px rgba(22,113,161,.3); }
+        .svc-tag { display: flex; align-items: center; gap: 14px; color: #7d91a5; font-size: 10px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; line-height: 1.6; min-width: 0; }
+        .svc-tag-ico { flex: none; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: var(--cian-tint); color: var(--cian); }
+        .svc-tag-ico svg { width: 30px; height: 30px; }
+
+        /* Tarjeta invertida: botón + etiqueta en una sola fila al pie */
+        .svc-card--rev .svc-body { grid-template-columns: 1fr; align-content: space-between; }
+        .svc-card--rev .svc-aside { width: auto; flex-direction: row; align-items: center; justify-content: flex-start; gap: 22px; padding-left: 0; border-left: 0; margin-top: 6px; }
+        .svc-card--rev .svc-tag { border-left: 1px solid var(--svc-line); padding-left: 22px; }
+
+        /* PLANTA MARPOL */
+        .svc-sec--marpol { background: linear-gradient(180deg, #eef6fb 0%, #f4f9fd 55%, #fff 100%); padding: clamp(52px,5vw,80px) 0 clamp(64px,6vw,96px); }
+        .svc-sec--marpol::before { content: ""; position: absolute; left: -8%; bottom: 0; width: 60%; height: 70%; z-index: 0; pointer-events: none;
+            background: radial-gradient(ellipse at 20% 80%, rgba(30,152,217,.09) 0%, transparent 65%); }
+        .mp-card { display: grid; grid-template-columns: minmax(0,.78fr) minmax(0,1fr); gap: clamp(28px,3.6vw,48px); align-items: stretch; }
+        .mp-eyebrow { display: flex; align-items: center; gap: 12px; color: var(--cian); font-size: 15px; font-weight: 500; letter-spacing: .8px; text-transform: uppercase; }
+        .mp-text h3 { font-size: clamp(34px,3.7vw,52px); font-weight: 800; color: var(--navy); letter-spacing: -1px; line-height: 1.05; margin: 8px 0 14px; }
+        .mp-text h3 span { color: var(--cian); }
+        .mp-text > p { font-size: clamp(14.5px,1.25vw,17px); line-height: 1.55; color: #12385a; margin: 0; }
+        .mp-cap { display: inline-flex; align-items: stretch; margin: 22px 0 22px; border-radius: 999px; overflow: hidden; background: var(--navy); color: #fff; box-shadow: 0 10px 24px rgba(10,46,77,.16); }
+        .mp-cap-ico { width: 66px; display: grid; place-items: center; background: var(--miel-light); color: var(--navy); font-size: 22px; }
+        .mp-cap-txt { margin: 12px 0; padding: 0 28px 0 18px; border-left: 1px solid rgba(255,255,255,.22); display: flex; align-items: center; font-size: clamp(14px,1.3vw,18px); font-weight: 700; margin-left: 0; }
+        .mp-cap-txt b { color: var(--miel-light); font-weight: 800; margin: 0 .3em; }
+        .mp-list { display: flex; flex-direction: column; gap: 12px; }
+        .mp-item { display: flex; align-items: center; gap: 16px; padding: 11px 20px 11px 14px; border-radius: 14px; background: rgba(255,255,255,.94); border: 1px solid rgba(16,82,116,.06);
+            box-shadow: 0 4px 14px rgba(10,46,77,.06); color: var(--navy); font-size: 14.5px; font-weight: 500; transition: transform .25s ease, box-shadow .25s ease; }
+        .mp-item:hover { transform: translateX(5px); box-shadow: 0 10px 24px rgba(10,46,77,.12); }
+        .mp-item-ico { flex: none; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--navy); color: #fff; font-size: 16px; }
+        .mp-item > .fa-chevron-right { margin-left: auto; color: var(--miel); font-size: 14px; transition: transform .25s ease; }
+        .mp-item:hover > .fa-chevron-right { transform: translateX(4px); }
+
+        .marpol-slider-wrap { position: relative; overflow: hidden; border-radius: 20px; min-height: 380px; box-shadow: 0 20px 44px rgba(10,46,77,.16); background: #dcecf7; }
+        .marpol-track { display: flex; height: 100%; transition: transform .5s cubic-bezier(.4,0,.2,1); }
+        .marpol-slide { position: relative; min-width: 100%; height: auto; }
+        .marpol-slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+        .slider-controls { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 10px; z-index: 10; }
+        .slider-btn { width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer; display: grid; place-items: center; font-size: 14px; transition: transform .25s ease, background .25s ease, color .25s ease; box-shadow: 0 6px 16px rgba(10,46,77,.28); }
+        .slider-btn#btnPrev { background: #fff; color: var(--navy); }
+        .slider-btn#btnNext { background: var(--navy); color: #fff; }
+        .slider-btn:hover { transform: scale(1.08); background: var(--miel-light); color: var(--navy); }
+        .slider-dots { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; opacity: .95; cursor: pointer; transition: all .3s; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+        .dot.active { background: var(--miel-light); width: 30px; border-radius: 6px; }
+
+        /* CTA FINAL — idéntico al de Inicio */
+        body.svc-v3 .cta-band { position: relative; overflow: hidden; text-align: center; background: var(--cian-deep); padding: clamp(120px,13vw,180px) 0 clamp(80px,10vw,130px); border: 0 !important; border-image: none !important; box-shadow: none; margin-top: 0; }
+        body.svc-v3 .cta-band::before, body.svc-v3 .cta-band::after { content: none !important; display: none !important; animation: none !important; }
+        body.svc-v3 .cta-band .cta-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: .5; transform: none !important; }
+        body.svc-v3 .cta-band .cta-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(135deg, rgba(11,56,81,.90) 0%, rgba(16,82,116,.76) 55%, rgba(22,113,161,.60) 100%) !important; }
+        body.svc-v3 .cta-wave { position: absolute; left: 0; right: 0; top: -1px; width: 100%; height: clamp(54px,6.5vw,96px); z-index: 2; pointer-events: none; }
+        body.svc-v3 .cta-wave svg { display: block; width: 100%; height: 100%; }
+        body.svc-v3 .cta-band > .container { position: relative; z-index: 3; }
+        body.svc-v3 .cta-band h2 { text-wrap: balance; color: #fff !important; font-size: clamp(28px,3.6vw,46px); font-weight: 800; letter-spacing: -.5px; margin: 0 0 14px; }
+        body.svc-v3 .cta-band h2::after { content: ""; display: block; width: 56px; height: 3px; border-radius: 2px; margin: 18px auto 0; background: var(--grad-brand); }
+        body.svc-v3 .cta-band p { color: var(--cian-soft) !important; font-size: clamp(15px,1.4vw,19px); line-height: 1.6; margin: 0 auto 34px; max-width: 760px; text-wrap: balance; }
+        body.svc-v3 .cta-buttons { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+        body.svc-v3 .btn-outline-light { padding: 12px 26px; font-size: 13px; }
+
+        /* ── FOOTER ── */
+        footer {
+            background: linear-gradient(180deg, var(--primary-dark) 0%, #0a1a2b 100%);
+            padding: 60px 0 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            position: relative;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-gold));
+            opacity: .5;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.8fr 1.2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-logo {
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 18px;
+            position: relative;
+        }
+        .footer-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 15%;
+            width: 70%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        .footer-logo img { height: 34px; object-fit: contain; }
+        .footer-desc { margin-bottom: 20px; line-height: 1.65; font-size: 12.5px; color: rgba(148,163,184,.85); }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a {
+            display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px;
+            border: 1px solid rgba(148,163,184,.2);
+            border-radius: 50%;
+            color: #94a3b8;
+            transition: all .3s ease;
+            font-size: 14px;
+        }
+        .social-icons a:hover {
+            color: #fff;
+            border-color: var(--accent-gold);
+            background: rgba(230,171,9,.12);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(230,171,9,.2);
+        }
+        .footer-title {
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 26px; height: 2.5px;
+            background: var(--accent-gold);
+            border-radius: 2px;
+        }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a {
+            transition: all .25s ease;
+            font-size: 12.5px;
+            color: rgba(148,163,184,.85);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-links a:hover {
+            color: var(--accent-gold);
+            padding-left: 5px;
+        }
+        .contact-info { list-style: none; padding: 0; }
+        .contact-info li {
+            display: flex; gap: 10px;
+            margin-bottom: 14px;
+            align-items: flex-start;
+            font-size: 12.5px;
+            color: rgba(148,163,184,.85);
+        }
+        .contact-info i { margin-top: 3px; font-size: 14px; color: var(--accent-gold); }
+        .certs-container { display: flex; gap: 14px; }
+        .cert-item { text-align: center; flex: 1; }
+        .cert-circle {
+            width: 54px; height: 54px;
+            border: 1.5px solid rgba(148,163,184,.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 10px auto;
+            font-size: 8px;
+            font-weight: 800;
+            color: #fff;
+            transition: all .35s ease;
+            background: rgba(255,255,255,.03);
+        }
+        .cert-item:hover .cert-circle {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 16px rgba(230,171,9,.25);
+            transform: scale(1.08);
+        }
+        .cert-item p { font-size: 9.5px; line-height: 1.3; color: rgba(148,163,184,.75); }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,.05);
+            padding: 18px 0;
+            text-align: center;
+            font-size: 12px;
+        }
+        .footer-bottom-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .footer-bottom-links a {
+            color: rgba(148,163,184,.7);
+            text-decoration: none;
+            transition: all .25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            margin-left: 0;
+        }
+        .footer-bottom-links a:hover { color: #fff; }
+        .footer-bottom-links a i { font-size: 11px; }
+
+        /* FOOTER — idéntico al de Inicio (alcance: body.svc-v3) */
+        body.svc-v3 footer { padding: clamp(48px,6vw,80px) 0 0; background: linear-gradient(180deg, var(--cian-dark) 0%, var(--cian-deep) 100%) !important; }
+        body.svc-v3 .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1.2fr 1fr; gap: clamp(28px,4vw,56px); margin-bottom: 0; }
+        body.svc-v3 .footer-logo { display: inline-block; background: #fff; border-radius: 14px; padding: 12px 18px; margin-bottom: 18px; }
+        body.svc-v3 .footer-logo img { height: 44px; width: auto; display: block; }
+        body.svc-v3 .footer-desc { color: var(--cian-soft); font-size: 14px; line-height: 1.7; max-width: 380px; }
+        body.svc-v3 .footer-links a, body.svc-v3 .contact-info li { color: rgba(255,255,255,.80); font-size: 14px; }
+        body.svc-v3 .footer-links a:hover { color: var(--miel); }
+        body.svc-v3 .footer-links li, body.svc-v3 .contact-info li { margin-bottom: 12px; }
+        body.svc-v3 .contact-info li i { color: var(--miel); }
+        body.svc-v3 .certs-container { display: flex; gap: 22px; flex-wrap: wrap; }
+        body.svc-v3 .footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: clamp(32px,4vw,52px); padding: 22px 0; border-top: 1px solid rgba(255,255,255,.12); text-align: left; }
+        body.svc-v3 .footer-bottom span { color: rgba(255,255,255,.65); font-size: 13px; }
+        body.svc-v3 .footer-bottom-links { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 0; justify-content: flex-start; }
+        body.svc-v3 .footer-bottom-links a { color: rgba(255,255,255,.75); font-size: 13px; }
+        body.svc-v3 .footer-bottom-links a:hover { color: var(--miel); }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .stats-inner { grid-template-columns: repeat(2, 1fr); }
+            .svc-head { flex-direction: column; gap: 14px; }
+            .svc-script { transform: none; text-align: left; align-self: flex-start; }
+            .svc-card, .svc-card--rev { grid-template-columns: 1fr; }
+            .svc-media, .svc-card--rev .svc-media { order: 0; min-height: 260px; border-radius: 20px 20px 0 0; }
+            .svc-expand { opacity: 1; transform: none; }
+            .svc-card:not(.svc-card--rev)::before { display: none; }
+            .svc-body, .svc-card--rev .svc-body { grid-template-columns: 1fr; }
+            .svc-aside, .svc-card--rev .svc-aside { width: auto; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 18px 22px; padding: 18px 0 0; border-left: 0; border-top: 1px solid var(--svc-line); }
+            .svc-tag, .svc-card--rev .svc-tag { border-left: 0; padding-left: 0; }
+            .mp-card { grid-template-columns: 1fr; }
+            .marpol-slider-wrap { min-height: 320px; }
+            body.svc-v3 .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .nav-menu, nav, .header-pse-btn { display: none; }
+            .mobile-menu-toggle { display: flex; }
+            .mobile-nav-drawer { display: flex; }
+            .page-hero-title { font-size: 32px; }
+            .stats-inner { grid-template-columns: repeat(2, 1fr); }
+            .svc-loc { height: 96px; width: 62%; }
+            .svc-loc span { font-size: 8.5px; right: 12px; bottom: 12px; }
+            .mp-cap { max-width: 100%; }
+            body.svc-v3 .footer-bottom { flex-direction: column; align-items: flex-start; }
+        }
+        @media (max-width: 640px) {
+            .svc-media, .svc-card--rev .svc-media { min-height: 220px; }
+            .svc-aside, .svc-card--rev .svc-aside { flex-direction: column; align-items: flex-start; }
+            .mp-cap-ico { width: 54px; font-size: 19px; }
+            .mp-cap-txt { padding: 0 18px 0 14px; font-size: 13.5px; }
+            .mp-item { font-size: 13.5px; }
+            body.svc-v3 .footer-grid { grid-template-columns: 1fr; }
+            body.svc-v3 .cta-buttons .btn { width: 100%; }
+        }
+
+        /* ── CARRUSEL MODAL (igual al de Inicio) ──────────────── */
+        .carousel-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10,18,32,0.92);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            animation: carouselFadeIn 0.25s ease;
+        }
+        .carousel-overlay.open { display: flex; }
+        @keyframes carouselFadeIn { from { opacity:0; } to { opacity:1; } }
+
+        .carousel-modal {
+            position: relative;
+            background: #0e1a2b;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 820px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: carouselSlideUp 0.3s cubic-bezier(.22,.68,0,1.2);
+        }
+        @keyframes carouselSlideUp { from { transform: translateY(40px) scale(0.97); opacity:0; } to { transform: none; opacity:1; } }
+
+        .carousel-close {
+            position: absolute;
+            top: 12px; right: 12px;
+            background: rgba(15,25,42,0.85);
+            border: 1.5px solid rgba(255,255,255,0.22);
+            color: #fff;
+            font-size: 18px;
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 20;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            box-shadow: 0 4px 16px rgba(10,46,77,0.45);
+        }
+        .carousel-close:hover {
+            background: #C9A84C;
+            border-color: #C9A84C;
+            color: #0e1a2b;
+        }
+
+        .carousel-img-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #07111e;
+            overflow: hidden;
+        }
+        .carousel-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+        .carousel-img.fading { opacity: 0; }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%; transform: translateY(-50%);
+            background: rgba(10,18,32,0.55);
+            border: 1.5px solid rgba(255,255,255,0.15);
+            color: #fff;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s, border-color 0.2s;
+            z-index: 5;
+        }
+        .carousel-arrow:hover { background: rgba(201,168,76,0.75); border-color: #C9A84C; }
+        .carousel-arrow-left  { left:  14px; }
+        .carousel-arrow-right { right: 14px; }
+
+        .carousel-info { padding: 22px 28px 12px; }
+        .carousel-label {
+            font-size: 11px; font-weight: 800; letter-spacing: 2px;
+            color: #C9A84C; margin-bottom: 6px;
+            font-family: 'Plus Jakarta Sans',sans-serif;
+        }
+        .carousel-title {
+            font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 8px;
+            font-family: 'Plus Jakarta Sans',sans-serif;
+        }
+        .carousel-desc {
+            font-size: 14px; color: #8da8c8; margin: 0; line-height: 1.65;
+            font-family: 'Plus Jakarta Sans',sans-serif;
+        }
+
+        .carousel-thumbs {
+            display: flex; gap: 10px; padding: 10px 28px 0;
+            overflow-x: auto; scrollbar-width: thin; scrollbar-color: #1B2A4A transparent;
+        }
+        .carousel-thumbs::-webkit-scrollbar { height: 4px; }
+        .carousel-thumbs::-webkit-scrollbar-thumb { background: #1B2A4A; border-radius: 4px; }
+
+        .carousel-thumb {
+            flex-shrink: 0; width: 72px; height: 50px; border-radius: 8px;
+            overflow: hidden; border: 2px solid transparent; cursor: pointer;
+            transition: border-color 0.2s, transform 0.2s; background: #07111e;
+        }
+        .carousel-thumb img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            opacity: 0.55; transition: opacity 0.2s;
+        }
+        .carousel-thumb:hover img { opacity: 0.85; }
+        .carousel-thumb.active { border-color: #C9A84C; transform: scale(1.06); }
+        .carousel-thumb.active img { opacity: 1; }
+
+        .carousel-dots { display: flex; justify-content: center; gap: 8px; padding: 14px 28px 20px; }
+        .carousel-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); border: none; cursor: pointer;
+            transition: background 0.2s, transform 0.2s; padding: 0;
+        }
+        .carousel-dot.active { background: #C9A84C; transform: scale(1.3); }
+
+        @media (max-width: 640px) {
+            .carousel-overlay { padding: 12px; align-items: center; justify-content: center; }
+            .carousel-modal {
+                border-radius: 14px; width: 100%; max-width: 100%; max-height: 92vh;
+                overflow: hidden; display: flex; flex-direction: column;
+            }
+            .carousel-img-wrap { aspect-ratio: 1/1; flex-shrink: 0; }
+            .carousel-close {
+                width: 48px; height: 48px; font-size: 20px; top: 10px; right: 10px;
+                background: rgba(10,18,32,0.88); border-color: rgba(255,255,255,0.25);
+            }
+            .carousel-arrow { width: 52px; height: 52px; font-size: 20px; background: rgba(10,18,32,0.65); }
+            .carousel-arrow-left  { left: 8px; }
+            .carousel-arrow-right { right: 8px; }
+            .carousel-info { padding: 14px 16px 8px; flex-shrink: 0; }
+            .carousel-label { font-size: 10px; margin-bottom: 4px; }
+            .carousel-title { font-size: 16px; margin-bottom: 6px; }
+            .carousel-desc  { font-size: 13px; line-height: 1.5; }
+            .carousel-thumbs { padding: 8px 16px 0; gap: 8px; flex-shrink: 0; }
+            .carousel-thumb { width: 60px; height: 44px; border-radius: 7px; }
+            .carousel-dots { padding: 10px 16px 14px; gap: 10px; flex-shrink: 0; }
+            .carousel-dot { width: 9px; height: 9px; }
+        }
+        .img-overlay span { cursor:pointer; }
+
+    </style>
+    <script th:inline="javascript">
+        window.PUB_CAROUSEL_JSON = /*[[${carouselJson}]]*/ null;
+    </script>
+    <script src="/js/inicio.js"></script>
+    <script src="/js/panel-nav.js"></script>
+    <link rel="stylesheet" href="/css/chatbot.css">
+    <link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body class="svc-v3">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+        <symbol id="svc-waves" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 10c3-3 6-3 9 0s6 3 9 0 6-3 8 0"/><path d="M3 16c3-3 6-3 9 0s6 3 9 0 6-3 8 0"/><path d="M3 22c3-3 6-3 9 0s6 3 9 0 6-3 8 0"/></g></symbol>
+        <g id="svc-crane" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M40 220V70M112 220V70"/><path d="M30 122H122" stroke-width="4"/>
+            <path d="M-14 62H214" stroke-width="7"/><path d="M76 8L40 62M76 8L112 62M76 8L214 62M76 8L-14 62" stroke-width="3.5"/>
+            <rect x="150" y="62" width="22" height="18" fill="currentColor" stroke="none"/><rect x="56" y="40" width="40" height="18" fill="currentColor" stroke="none"/>
+        </g>
+    </defs>
+</svg>
+<div id="scroll-progress"></div>
+<header id="main-header">
+    <div class="container header-content">
+        <a href="/inicio" class="logo-box"><img src="/images/Logo.png" alt="Sociedad Portuaria Mardique"></a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/inicio">INICIO</a></li>
+                <li><a href="/empresa">EMPRESA</a></li>
+                <li class="active"><a href="/servicios">SERVICIOS</a></li>
+                <li class="dropdown">
+                    <span class="dropdown-trigger">SERVICIO AL CLIENTE <i class="fas fa-chevron-down"></i></span>
+                    <ul class="dropdown-menu">
+                        <li><a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a></li>
+                        <li><a href="/procedimientos">PROCEDIMIENTOS</a></li>
+                        <li><a href="/tarifas">TARIFAS</a></li>
+                    </ul>
+                </li>
+                <li><a href="/contacto">CONTACTO</a></li>
+                <li><a href="/galeria">GALERÍA</a></li>
+                <li><a href="/login">ACCESO</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="header-pse-btn"><img src="/images/pse.png" alt="PSE"></a>
+        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+
+<div class="page-wrapper">
+    <section class="page-hero" id="hero">
+
+        <div class="page-hero-bg" id="heroBg" th:style="|background-image: url('${heroImage}');|"></div>
+        <div class="hero-particles" id="heroParticles"></div>
+        <div class="container">
+            <div class="page-hero-breadcrumb">
+                <a href="/inicio">INICIO</a><span>›</span><span class="current">SERVICIOS</span>
+            </div>
+            <h1 class="page-hero-title" th:utext="${pageContents['hero-title']} ?: 'Nuestros &lt;strong&gt;Servicios&lt;/strong&gt;'">Nuestros <strong>Servicios</strong></h1>
+            <div class="page-hero-line" id="heroLine"></div>
+        </div>
+        <div class="scroll-hint"><i class="fas fa-chevron-down"></i><span>Explorar</span></div>
+    </section>
+
+    <div class="stats-strip">
+        <div class="container">
+            <div class="stats-inner">
+                <div class="stat-cell reveal delay-1">
+                    <i class="fas fa-anchor stat-cell-icon"></i>
+                    <div><div class="stat-num"><span class="counter" data-target="150">0</span><span class="stat-unit">m</span></div><div class="stat-label">Longitud muelle marítimo</div></div>
+                </div>
+                <div class="stat-cell reveal delay-2">
+                    <i class="fas fa-water stat-cell-icon"></i>
+                    <div><div class="stat-num"><span class="counter" data-target="15">0</span><span class="stat-unit">m</span></div><div class="stat-label">Calado natural</div></div>
+                </div>
+                <div class="stat-cell reveal delay-3">
+                    <i class="fas fa-leaf stat-cell-icon"></i>
+                    <div><div class="stat-num"><span class="counter" data-target="65">0</span><span class="stat-unit">k ton</span></div><div class="stat-label">Capacidad MARPOL anual</div></div>
+                </div>
+                <div class="stat-cell reveal delay-4">
+                    <i class="fas fa-bolt stat-cell-icon"></i>
+                    <div><div class="stat-num">24<span class="stat-unit">/7</span></div><div class="stat-label">Operaciones continuas</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="svc-sec" id="sec-maritimos">
+        <svg class="svc-cranes" viewBox="0 0 640 230" aria-hidden="true">
+            <use href="#svc-crane" x="10"/><use href="#svc-crane" x="215"/><use href="#svc-crane" x="420"/>
+            <g fill="currentColor"><rect x="0" y="206" width="640" height="3" opacity=".7"/><rect x="250" y="190" width="26" height="16"/><rect x="278" y="190" width="26" height="16"/><rect x="264" y="174" width="26" height="16"/><rect x="520" y="190" width="26" height="16"/><rect x="548" y="190" width="26" height="16"/></g>
+        </svg>
+
+        <div class="container">
+            <div class="svc-head reveal">
+                <div class="svc-head-text">
+                    <span class="svc-eyebrow"><i class="dia"></i><i class="bar"></i>Infraestructura</span>
+                    <h2 class="svc-title" th:utext="${pageContents['section-title']} ?: 'Servicios Mar&iacute;timos y Fluviales'">Servicios Marítimos y Fluviales</h2>
+                    <p class="svc-lead">Conectamos la región y el mundo a través de soluciones logísticas eficientes, seguras y sostenibles. Nuestra infraestructura nos permite ofrecer servicios especializados en operaciones marítimas y fluviales de alto nivel.</p>
+                </div>
+                <p class="svc-script">Más que un puerto,<br>somos conexión</p>
+            </div>
+
+            <!-- Muelle Marítimo -->
+            <article class="svc-card reveal-left">
+                <div class="svc-media" onclick="openLightbox('MuelleMaritimo.jpg', SERVICIOS_IMAGE_DATA)" role="button" tabindex="0" aria-label="Ver instalación: Muelle Marítimo">
+                    <img src="/images/MuelleMaritimo.jpg" alt="Muelle Marítimo">
+                    <span class="svc-expand"><i class="fas fa-expand"></i></span>
+                    <span class="svc-chip"><i class="fas fa-anchor"></i> Operaciones Mayores</span>
+                </div>
+                <div class="svc-body">
+                    <div class="svc-main">
+                        <span class="svc-kicker">Operaciones Mayores</span>
+                        <h3>Muelle Marítimo</h3>
+                        <p th:utext="${pageContents['section-text']} ?: 'Operaciones de muellaje y atraque de embarcaciones respaldadas por infraestructura robusta y tecnología de precisión para garantizar la eficiencia en cada maniobra.'">Operaciones de muellaje y atraque de embarcaciones respaldadas por infraestructura robusta y tecnología de precisión para garantizar la eficiencia en cada maniobra.</p>
+                        <ul class="svc-list">
+                            <li><span class="svc-li-ico"><i class="fas fa-ship"></i></span>Muelle marítimo de 150 Mts de longitud operativa.</li>
+                            <li><span class="svc-li-ico"><i class="fas fa-water"></i></span>Calado natural excepcional de 15 Mts.</li>
+                            <li><span class="svc-li-ico"><i class="fas fa-ship"></i></span>Capacidad para buques de 180 a 200 mts de eslora.</li>
+                            <li><span class="svc-li-ico"><i class="fas fa-road"></i></span>Viaducto con 3 carriles y piñas de amarre externas.</li>
+                        </ul>
+                    </div>
+                    <aside class="svc-aside">
+                        <button type="button" onclick="openServiceForm('Solicite una Cotización', 'Cotización de Servicios', 'Muelle Marítimo', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted para preparar su cotización a la brevedad posible.')" class="btn btn-navy">Solicitar Cotización <i class="fas fa-arrow-right"></i></button>
+                        <div class="svc-tag"><span class="svc-tag-ico"><svg viewBox="0 0 32 32"><use href="#svc-waves"/></svg></span><span>Operando con eficiencia y seguridad en cada escala</span></div>
+                    </aside>
+                </div>
+            </article>
+
+            <!-- Muelle Fluvial -->
+            <article class="svc-card svc-card--rev reveal-right">
+                <div class="svc-media" onclick="openLightbox('MuelleFluvial.jpg', SERVICIOS_IMAGE_DATA)" role="button" tabindex="0" aria-label="Ver instalación: Muelle Fluvial">
+                    <img src="/images/MuelleFluvial.jpg" alt="Muelle Fluvial">
+                    <span class="svc-expand"><i class="fas fa-expand"></i></span>
+                    <div class="svc-loc" aria-hidden="true">
+                        <svg viewBox="0 0 330 118" preserveAspectRatio="none"><path d="M330 0C262 4 196 36 140 80 108 104 56 116 0 118H330Z" fill="#1e98d9"/><path d="M330 26C278 34 226 62 180 98 150 112 104 118 70 118H330Z" fill="#0a2e4d"/><path d="M330 8C262 12 198 44 142 86 112 106 70 114 30 115" fill="none" stroke="#e6ab09" stroke-width="2.6" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+                        <span><i class="fa-solid fa-location-dot"></i><em style="font-style:normal">Puerto multipropósito<br>Cartagena, Colombia</em></span>
+                    </div>
+                </div>
+                <div class="svc-body">
+                    <div class="svc-main">
+                        <span class="svc-kicker">Conexión Interior</span>
+                        <h3>Muelle Fluvial</h3>
+                        <p>Nuestra posición privilegiada permite operaciones de muellaje y atraque simultáneo de convoy, remolcadores, y embarcaciones marítimas y fluviales, conectando sus cargas con el interior del país.</p>
+                        <ul class="svc-list">
+                            <li><span class="svc-li-ico"><i class="fas fa-ship"></i></span>Línea de atraque especializada de 140 Mts.</li>
+                            <li><span class="svc-li-ico"><i class="fas fa-layer-group"></i></span>Plataforma principal operativa de 1.400 Mts².</li>
+                            <li><span class="svc-li-ico"><i class="fas fa-water"></i></span>Profundidad garantizada de 12 pies.</li>
+                            <li><span class="svc-li-ico"><i class="fas fa-exchange-alt"></i></span>Ventaja competitiva para distribución nacional.</li>
+                        </ul>
+                    </div>
+                    <aside class="svc-aside">
+                        <button type="button" onclick="openServiceForm('Solicite una Cotización', 'Cotización de Servicios', 'Muelle Fluvial', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted para preparar su cotización a la brevedad posible.')" class="btn btn-navy">Solicitar Cotización <i class="fas fa-arrow-right"></i></button>
+                        <div class="svc-tag"><span class="svc-tag-ico"><svg viewBox="0 0 32 32"><use href="#svc-waves"/></svg></span><span>Conectando<br>el interior<br>con el mundo</span></div>
+                    </aside>
+                </div>
+            </article>
+
+            <!-- Servicios Portuarios + Plataforma Logística (mismo lenguaje visual) -->
+            <div id="sec-portuarios">
+                <article class="svc-card reveal-left">
+                    <div class="svc-media" onclick="openLightbox('ServiciosPortuarios.jpg', SERVICIOS_IMAGE_DATA)" role="button" tabindex="0" aria-label="Ver operaciones: Servicios Portuarios">
+                        <img src="/images/ServiciosPortuarios.jpg" alt="Servicios Portuarios">
+                        <span class="svc-expand"><i class="fas fa-expand"></i></span>
+                        <span class="svc-chip"><i class="fas fa-boxes-stacked"></i> Carga Integral</span>
+                    </div>
+                    <div class="svc-body">
+                        <div class="svc-main">
+                            <span class="svc-kicker">Carga y Descarga</span>
+                            <h3>Servicios Portuarios</h3>
+                            <p>Contamos con personal altamente calificado, equipos de última tecnología e infraestructura dispuesta a ofrecerle el mejor manejo para su carga, diseñando servicios a la medida de sus necesidades logísticas.</p>
+                            <ul class="svc-list">
+                                <li><span class="svc-li-ico"><i class="fas fa-truck-ramp-box"></i></span>Cargue, descargue y recibo de mercancía.</li>
+                                <li><span class="svc-li-ico"><i class="fas fa-warehouse"></i></span>Almacenamiento, acopio y conservación segura.</li>
+                                <li><span class="svc-li-ico"><i class="fas fa-box-open"></i></span>Embalaje, empaque y reempaque especializado.</li>
+                                <li><span class="svc-li-ico"><i class="fas fa-clipboard-check"></i></span>Control de inventarios en tiempo real.</li>
+                            </ul>
+                        </div>
+                        <aside class="svc-aside">
+                            <button type="button" onclick="openServiceForm('Solicite Más Información', 'Información de Servicios Portuarios', 'Servicios Portuarios', 'Complete el formulario y nuestro equipo se pondrá en contacto con usted para brindarle la información solicitada a la brevedad posible.')" class="btn btn-navy">Más información <i class="fas fa-arrow-right"></i></button>
+                            <div class="svc-tag"><span class="svc-tag-ico"><svg viewBox="0 0 32 32"><use href="#svc-waves"/></svg></span><span>Servicios a<br>la medida de<br>su operación</span></div>
+                        </aside>
+                    </div>
+                </article>
+
+                <article class="svc-card svc-card--rev reveal-right">
+                    <div class="svc-media" onclick="openLightbox('PlataformaLogistica.jpg', SERVICIOS_IMAGE_DATA)" role="button" tabindex="0" aria-label="Ver plataforma: Plataforma Logística">
+                        <img src="/images/PlataformaLogistica.jpg" alt="Plataforma Logística">
+                        <span class="svc-expand"><i class="fas fa-expand"></i></span>
+                        <div class="svc-loc" aria-hidden="true">
+                            <svg viewBox="0 0 330 118" preserveAspectRatio="none"><path d="M330 0C262 4 196 36 140 80 108 104 56 116 0 118H330Z" fill="#1e98d9"/><path d="M330 26C278 34 226 62 180 98 150 112 104 118 70 118H330Z" fill="#0a2e4d"/><path d="M330 8C262 12 198 44 142 86 112 106 70 114 30 115" fill="none" stroke="#e6ab09" stroke-width="2.6" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+                            <span><i class="fa-solid fa-location-dot"></i><em style="font-style:normal">Puerto multipropósito<br>Cartagena, Colombia</em></span>
+                        </div>
+                    </div>
+                    <div class="svc-body">
+                        <div class="svc-main">
+                            <span class="svc-kicker">Distribución Global</span>
+                            <h3>Plataforma Logística</h3>
+                            <p>Somos una gran plataforma portuaria que brinda a sus clientes y usuarios la integración de todos los servicios en un solo lugar. Apoyamos el montaje de centros de distribución internacional.</p>
+                            <ul class="svc-list">
+                                <li><span class="svc-li-ico"><i class="fas fa-globe-americas"></i></span>Distribución desde Colombia hacia el exterior.</li>
+                                <li><span class="svc-li-ico"><i class="fas fa-map-marked-alt"></i></span>Distribución ágil a nivel nacional.</li>
+                                <li><span class="svc-li-ico"><i class="fas fa-truck-loading"></i></span>Integración total de la cadena de suministro.</li>
+                                <li><span class="svc-li-ico"><i class="fas fa-handshake"></i></span>Recibo eficiente de productos de exportación.</li>
+                            </ul>
+                        </div>
+                        <aside class="svc-aside">
+                            <button type="button" onclick="openServiceForm('Solicite Más Información', 'Información de Servicios Portuarios', 'Plataforma Logística', 'Complete el formulario y nuestro equipo se pondrá en contacto con usted para brindarle la información solicitada a la brevedad posible.')" class="btn btn-navy">Más información <i class="fas fa-arrow-right"></i></button>
+                            <div class="svc-tag"><span class="svc-tag-ico"><svg viewBox="0 0 32 32"><use href="#svc-waves"/></svg></span><span>Integrando toda<br>su cadena de<br>suministro</span></div>
+                        </aside>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- PLANTA MARPOL -->
+    <section class="svc-sec svc-sec--marpol" id="sec-marpol">
+        <svg class="svc-cranes" viewBox="0 0 640 230" aria-hidden="true">
+            <use href="#svc-crane" x="150"/><use href="#svc-crane" x="360"/>
+            <g fill="currentColor"><rect x="470" y="170" width="150" height="26" rx="3"/><path d="M455 196h185l-18 24H478z"/><rect x="540" y="146" width="34" height="24"/><rect x="552" y="128" width="12" height="18"/></g>
+            <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M70 40q8-8 16 0q8-8 16 0"/><path d="M110 70q6-6 12 0q6-6 12 0"/></g>
+        </svg>
+        <div class="container">
+            <div class="mp-card reveal">
+                <div class="mp-text">
+                    <span class="mp-eyebrow"><i class="bar2" style="display:inline-block;width:34px;height:4px;border-radius:3px;background:linear-gradient(90deg,var(--miel) 0 55%,var(--cian) 55% 100%)"></i>Gestión Ambiental</span>
+                    <h3>Planta <span>MARPOL</span></h3>
+                    <p>Somos el único terminal en Colombia con una planta especializada para el tratamiento y disposición de los residuos provenientes de buques, garantizando el cumplimiento de la normatividad ambiental internacional.</p>
+                    <div class="mp-cap"><span class="mp-cap-ico"><i class="fas fa-leaf"></i></span><span class="mp-cap-txt">Capacidad de <b>65.000</b> Toneladas Anuales</span></div>
+                    <div class="mp-list">
+                        <div class="mp-item"><span class="mp-item-ico"><i class="fas fa-droplet"></i></span>Tratamiento Marpol Anexo I — Hidrocarburos<i class="fas fa-chevron-right"></i></div>
+                        <div class="mp-item"><span class="mp-item-ico"><i class="fas fa-water"></i></span>Tratamiento Marpol Anexo IV — Aguas Residuales<i class="fas fa-chevron-right"></i></div>
+                        <div class="mp-item"><span class="mp-item-ico"><i class="fas fa-trash-can"></i></span>Tratamiento Marpol Anexo V — Basuras<i class="fas fa-chevron-right"></i></div>
+                        <div class="mp-item"><span class="mp-item-ico"><i class="fas fa-cloud"></i></span>Tratamiento Marpol Anexo VI — Contaminación Atmosférica<i class="fas fa-chevron-right"></i></div>
+                    </div>
+                </div>
+                <div class="marpol-slider-wrap">
+                    <div class="marpol-track" id="marpolTrack">
+                        <div class="marpol-slide"><img src="/images/PlantaMarpol1.jpg" alt="Planta Marpol 1"></div>
+                        <div class="marpol-slide"><img src="/images/PlantaMarpol2.jpg" alt="Planta Marpol 2"></div>
+                        <div class="marpol-slide"><img src="/images/PlantaMarpol3.jpg" alt="Planta Marpol 3"></div>
+                    </div>
+                    <div class="slider-dots" id="sliderDots"></div>
+                    <div class="slider-controls">
+                        <button class="slider-btn" id="btnPrev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+                        <button class="slider-btn" id="btnNext" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL (igual que Inicio) -->
+    <section class="cta-band">
+        <img th:src="@{${ctaImage}}" src="/images/Operar.png" alt="" class="cta-bg-img">
+        <div class="cta-overlay"></div>
+        <div class="cta-wave" aria-hidden="true">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+                <defs><linearGradient id="ctaGold" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#e6ab09" stop-opacity="0"/><stop offset=".12" stop-color="#e6ab09"/><stop offset=".88" stop-color="#f4c542"/><stop offset="1" stop-color="#f4c542" stop-opacity="0"/></linearGradient></defs>
+                <path d="M0 -2H1440V50C1380 52 1300 42 1180 40 950 36 790 70 560 80 330 90 180 64 0 58Z" fill="#fff"/>
+                <path d="M0 58C180 64 330 90 560 80 790 70 950 36 1180 40 1300 42 1380 52 1440 50V66C1380 68 1300 58 1180 56 950 52 790 84 560 94 330 100 180 78 0 72Z" fill="#1e98d9"/>
+                <path d="M0 56C180 62 330 88 560 78 790 68 950 34 1180 38 1300 40 1380 50 1440 48" fill="none" stroke="url(#ctaGold)" stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+            </svg>
+        </div>
+        <div class="container reveal">
+            <h2>¿Listo para operar con nosotros?</h2>
+            <p>Conozca todas las soluciones que Mardique tiene disponibles para su operación.</p>
+            <div class="cta-buttons">
+                <a href="/servicios" class="btn btn-orange">Ver todos los servicios <i class="fas fa-arrow-right"></i></a>
+                <button type="button" onclick="openServiceForm('Solicite una Cotización', 'Cotización de Servicios', 'Su operación portuaria', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted para preparar su cotización a la brevedad posible.')" class="btn btn-outline-light">Contáctenos <i class="fas fa-phone-alt"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo"><img src="/images/Logo.png" alt="Mardique Logo"></div>
+                    <p class="footer-desc">Puerto multipropósito privado de uso público con servicios portuarios y de infraestructura para el desarrollo del país.</p>
+                    <div class="social-icons">
+                        <a href="https://www.youtube.com/channel/UCaqN40lCIj_nm53aHPJEicQ" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="mailto:info@spmardique.com"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-title">ENLACES RÁPIDOS</h4>
+                    <ul class="footer-links">
+                        <li><a href="/inicio">Inicio</a></li><li><a href="/empresa">Empresa</a></li><li><a href="/servicios">Servicios</a></li>
+                        <li><a href="#">Servicio al Cliente</a></li><li><a href="/contacto">Contacto</a></li><li><a href="/galeria">Galería</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">CONTÁCTANOS</h4>
+                    <ul class="contact-info">
+                        <li><i class="fa-solid fa-location-dot"></i><span>Km 7 Vía a Mamonal, Cartagena</span></li>
+                        <li><i class="fa-solid fa-phone"></i><span>PBX: (57) (5) 669 0730</span></li>
+                        <li><i class="fa-solid fa-envelope"></i><span>info@spmardique.com</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">CERTIFICACIONES</h4>
+                    <div class="certs-container">
+                        <div class="cert-item"><div class="cert-circle"><i class="fas fa-certificate"></i></div><p>ISO<br>9001</p></div>
+                        <div class="cert-item"><div class="cert-circle"><i class="fas fa-hard-hat"></i></div><p>ISO<br>45001</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Sociedad Portuaria Mardique S.A. Todos los derechos reservados.</span>
+                <div class="footer-bottom-links">
+                    <a href="https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf" target="_blank"><i class="fas fa-file-pdf"></i> Reglamento Operativo</a>
+                    <a href="/privacidad"><i class="fas fa-shield-alt"></i> Políticas de Privacidad</a>
+                    <a href="#"><i class="fas fa-shield-halved"></i> Políticas de Seguridad</a>
+                    <a href="#" data-cc-action="open-modal"><i class="fas fa-cookie-bite"></i> Preferencias de cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /*<![CDATA[*/
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            /* DROPDOWN MENU FIX */
+            document.querySelectorAll('.nav-menu li.dropdown .dropdown-menu').forEach(function(m) {
+                m.style.setProperty('opacity', '0', 'important');
+                m.style.setProperty('visibility', 'hidden', 'important');
+            });
+            document.querySelectorAll('.nav-menu li.dropdown').forEach(function(li) {
+                var menu = li.querySelector('.dropdown-menu');
+                if (!menu) return;
+                var timer;
+                li.addEventListener('mouseenter', function() {
+                    clearTimeout(timer);
+                    menu.style.setProperty('opacity', '1', 'important');
+                    menu.style.setProperty('visibility', 'visible', 'important');
+                    menu.style.pointerEvents = 'auto';
+                });
+                li.addEventListener('mouseleave', function() {
+                    timer = setTimeout(function() {
+                        menu.style.setProperty('opacity', '0', 'important');
+                        menu.style.setProperty('visibility', 'hidden', 'important');
+                        menu.style.pointerEvents = '';
+                    }, 150);
+                });
+                menu.addEventListener('mouseenter', function() {
+                    clearTimeout(timer);
+                    menu.style.setProperty('opacity', '1', 'important');
+                    menu.style.setProperty('visibility', 'visible', 'important');
+                    menu.style.pointerEvents = 'auto';
+                });
+                menu.addEventListener('mouseleave', function() {
+                    menu.style.setProperty('opacity', '0', 'important');
+                    menu.style.setProperty('visibility', 'hidden', 'important');
+                    menu.style.pointerEvents = '';
+                });
+            });
+
+            /* 1 – SCROLL PROGRESS */
+            const bar = document.getElementById('scroll-progress');
+            window.addEventListener('scroll', () => {
+                bar.style.width = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100) + '%';
+            }, { passive: true });
+
+            /* 2 – HEADER SHRINK */
+            const hdr = document.getElementById('main-header');
+            window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', window.scrollY > 60), { passive: true });
+
+            /* 3 – HERO PARALLAX */
+            const bg = document.getElementById('heroBg');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY < 700) bg.style.transform = 'translateY(' + (window.scrollY * 0.35) + 'px)';
+            }, { passive: true });
+
+            /* 4 – HERO LINE */
+            setTimeout(() => document.getElementById('heroLine').classList.add('animate'), 250);
+
+            /* 5 – PARTÍCULAS */
+            const pc = document.getElementById('heroParticles');
+            for (let i = 0; i < 12; i++) {
+                const el = document.createElement('div'); el.className = 'hero-particle';
+                const s = Math.random() * 90 + 20;
+                el.style.cssText = 'width:'+s+'px;height:'+s+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-duration:'+(Math.random()*6+5)+'s;animation-delay:'+(Math.random()*4)+'s;opacity:'+(Math.random()*0.2+0.05)+';';
+                pc.appendChild(el);
+            }
+
+            /* 6 – REVEAL ON SCROLL */
+            const io = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+            document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => io.observe(el));
+
+            /* 7 – CONTADORES */
+            const co = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (!e.isIntersecting) return;
+                    const tgt = parseInt(e.target.dataset.target), step = tgt / 50; let cur = 0;
+                    const t = setInterval(() => { cur += step; if (cur >= tgt) { e.target.textContent = tgt; clearInterval(t); } else e.target.textContent = Math.floor(cur); }, 28);
+                    co.unobserve(e.target);
+                });
+            }, { threshold: 0.5 });
+            document.querySelectorAll('.counter').forEach(c => co.observe(c));
+
+            /* 8 – CARRUSEL MARPOL */
+            const track = document.getElementById('marpolTrack'), slides = Array.from(track.children);
+            const dotsW = document.getElementById('sliderDots'); let idx = 0;
+            slides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot'+(i===0?' active':''); d.onclick = () => { idx=i; go(); }; dotsW.appendChild(d); });
+            const allDots = () => dotsW.querySelectorAll('.dot');
+            function go() {
+                track.style.transform = 'translateX(-'+(slides[0].getBoundingClientRect().width*idx)+'px)';
+                allDots().forEach((d,i) => d.classList.toggle('active', i===idx));
+            }
+            document.getElementById('btnNext').onclick = () => { idx=(idx+1)%slides.length; go(); };
+            document.getElementById('btnPrev').onclick = () => { idx=(idx-1+slides.length)%slides.length; go(); };
+            window.addEventListener('resize', go);
+            setInterval(() => { idx=(idx+1)%slides.length; go(); }, 5000);
+            let sx=0;
+            track.addEventListener('touchstart', e => sx=e.touches[0].clientX, {passive:true});
+            track.addEventListener('touchend', e => { const dx=sx-e.changedTouches[0].clientX; if(Math.abs(dx)>40){idx=dx>0?(idx+1)%slides.length:(idx-1+slides.length)%slides.length;go();} });
+
+        });
+
+
+        /* El carrusel modal (openLightbox, closeCarousel, carouselNav, etc.)
+           ahora lo provee /js/inicio.js de forma global, usando SERVICIOS_IMAGE_DATA
+           definido ahí mismo para esta página. */
+
+        /*]]>*/
+    </script>
+
+    <div class="carousel-overlay" id="carouselOverlay" onclick="handleCarouselOverlayClick(event)">
+        <div class="carousel-modal" id="carouselModal">
+            <button class="carousel-close" onclick="closeCarousel()" aria-label="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="carousel-img-wrap">
+                <img class="carousel-img" id="carouselImg" src="" alt="">
+                <button class="carousel-arrow carousel-arrow-left" onclick="carouselNav(-1)" aria-label="Anterior">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-arrow carousel-arrow-right" onclick="carouselNav(1)" aria-label="Siguiente">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="carousel-info">
+                <div class="carousel-label" id="carouselLabel">MARDIQUE</div>
+                <h4 class="carousel-title" id="carouselTitle">Instalación</h4>
+                <p class="carousel-desc" id="carouselDesc">Descripción de la instalación</p>
+            </div>
+
+            <div class="carousel-thumbs" id="carouselThumbs"></div>
+            <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+    </div>
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <nav class="mobile-nav-drawer" id="mobileDrawer" aria-label="Menú móvil">
+        <div class="drawer-header">
+            <img src="/images/Logo.png" alt="Mardique">
+            <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&times;</button>
+        </div>
+        <div class="drawer-nav">
+            <a href="/inicio">INICIO</a>
+            <a href="/empresa">EMPRESA</a>
+            <a href="/servicios" class="active">SERVICIOS</a>
+            <div class="drawer-divider"></div>
+            <button class="drawer-item" id="drawerServCliente">
+                SERVICIO AL CLIENTE <i class="fas fa-chevron-down drawer-chevron"></i>
+            </button>
+            <div class="drawer-submenu" id="subServCliente">
+                <a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a>
+                <a href="/procedimientos">PROCEDIMIENTOS</a>
+                <a href="/tarifas">TARIFAS</a>
+            </div>
+            <a href="/contacto">CONTACTO</a>
+            <a href="/galeria">GALERÍA</a>
+            <div class="drawer-divider"></div>
+            <a href="/login">ACCESO</a>
+            <button type="button" class="drawer-contact-btn" onclick="openServiceForm('Contáctenos', 'Otro', 'Solicitud General', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted a la brevedad posible.')" style="border:none;cursor:pointer;"><i class="fas fa-phone-alt"></i> CONTÁCTANOS</button>
+        </div>
+    </nav>
+
+    <script src="/js/chatbot.js"></script>
+
+    <div th:replace="~{Inicio :: contactModal}"></div>
+</div>
+<div th:replace="~{fragments/cookie-consent :: cookieBanner}"></div>
+</body>
+</html>

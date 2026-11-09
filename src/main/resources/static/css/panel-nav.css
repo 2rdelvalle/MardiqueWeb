@@ -1,0 +1,288 @@
+/* =====================================================================
+   panel-nav.css  —  estilos globales de header y nav (todos los HTML)
+   ===================================================================== */
+
+/* ── Logo box ─────────────────────────────────────────────────────────── */
+.logo-box {
+    display: flex; align-items: center;
+    background: linear-gradient(160deg, #ffffff 0%, #f2f4f7 100%);
+    padding: 9px 20px 9px 15px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.16), 0 0 0 1px rgba(255,255,255,0.08);
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.logo-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 3px;
+    background: linear-gradient(90deg, #f09a36, #00a3e0);
+}
+.logo-box:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 16px rgba(0,0,0,0.22), 0 0 0 1px rgba(240,154,54,0.16);
+}
+.logo-box img {
+    height: 42px; width: auto; object-fit: contain;
+    transition: height 0.3s ease; position: relative; z-index: 1;
+}
+
+/* ── Header base ─────────────────────────────────────────────────────── */
+/* SIEMPRE fijo en la parte superior. Transparente encima del hero,      */
+/* con fondo blur al scrollear (JS añade .scrolled).                     */
+/* Las páginas de INTRANET además añaden .intranet al <body> o al header */
+/* para forzar el fondo desde el inicio sin esperar scroll.              */
+#main-header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    z-index: 9000;            /* por encima de todo */
+    padding: 14px 0;
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transition:
+            padding          0.4s cubic-bezier(0.4,0,0.2,1),
+            background       0.4s cubic-bezier(0.4,0,0.2,1),
+            backdrop-filter  0.4s cubic-bezier(0.4,0,0.2,1),
+            box-shadow       0.4s ease,
+            border-color     0.4s ease;
+    min-height: 56px;
+}
+
+/* ── Fondo activo: al scrollear o en páginas de intranet ─────────────── */
+#main-header.scrolled,
+#main-header.intranet-nav,
+body.intranet-page #main-header {
+    background: rgba(27, 69, 98, 0.65) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow: 0 4px 28px rgba(0,0,0,0.18) !important;
+    padding: 10px 0 !important;
+}
+#main-header.scrolled .logo-box,
+#main-header.intranet-nav .logo-box,
+body.intranet-page #main-header .logo-box {
+    padding: 7px 16px 7px 12px;
+}
+#main-header.scrolled .logo-box img,
+#main-header.intranet-nav .logo-box img,
+body.intranet-page #main-header .logo-box img {
+    height: 34px;
+}
+
+/* Brillo sutil desactivado para evitar línea visible */
+#main-header::before,
+#main-header::after,
+#main-header .header-content::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* ── body: comportamiento base ───────────────────────────────────────── */
+body {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /* El padding-top lo pone el JS de scroll o la clase intranet-page */
+}
+
+/* Páginas de intranet: compensar el header fijo desde el inicio */
+body.intranet-page {
+    padding-top: 56px;
+}
+
+/* ── Animación de entrada del header ─────────────────────────────────── */
+@keyframes hdrIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+#main-header .logo-box                   { animation: hdrIn 0.6s cubic-bezier(.24,1,.36,1) 0.08s both; }
+#main-header .header-pse-btn             { animation: hdrIn 0.6s cubic-bezier(.24,1,.36,1) 0.14s both; }
+#main-header .mobile-menu-toggle         { animation: hdrIn 0.6s cubic-bezier(.24,1,.36,1) 0.16s both; }
+#main-header .nav-menu > li:nth-child(1) { animation: hdrIn 0.6s cubic-bezier(.24,1,.36,1) 0.16s both; }
+#main-header .nav-menu > li:nth-child(2) { animation: hdrIn 0.6s cubic-bezier(.24,1,.36,1) 0.22s both; }
+#main-header .nav-menu > li:nth-child(3) { animation: hdrIn 0.6s cubic-bezier(.24,1,.36,1) 0.28s both; }
+#main-header .nav-menu > li:nth-child(4) { animation: hdrIn 0.6s cubic-bezier(.24,1,.36,1) 0.34s both; }
+#main-header .nav-menu > li:nth-child(5) { animation: hdrIn 0.6s cubic-bezier(.24,1,.36,1) 0.40s both; }
+#main-header .nav-menu > li:nth-child(6) { animation: hdrIn 0.6s cubic-bezier(.24,1,.36,1) 0.46s both; }
+#main-header .nav-menu > li:nth-child(7) { animation: hdrIn 0.6s cubic-bezier(.24,1,.36,1) 0.52s both; }
+
+@media (prefers-reduced-motion: reduce) {
+    #main-header .logo-box,
+    #main-header .header-pse-btn,
+    #main-header .mobile-menu-toggle,
+    #main-header .nav-menu > li { animation: none; }
+}
+
+/* ── Hamburguesa móvil ──────────────────────────────────────────────── */
+.mob-toggle span {
+    transition: transform 0.3s ease, opacity 0.2s;
+}
+.mob-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.mob-toggle.open span:nth-child(2) { opacity: 0; }
+.mob-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Nav links ──────────────────────────────────────────────────────── */
+.nav-menu li a,
+.nav-menu li.dropdown .dropdown-trigger {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* ── Botón logout desktop ───────────────────────────────────────────── */
+.btn-logout {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 16px;
+    border: 1.5px solid rgba(240,154,54,0.35);
+    border-radius: 8px;
+    background: rgba(240,154,54,0.08);
+    color: #f09a36;
+    font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    cursor: pointer; font-family: inherit;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+.btn-logout:hover {
+    background: #f09a36; color: #0e1a2b;
+    box-shadow: 0 4px 20px rgba(240,154,54,0.35);
+    transform: translateY(-1px);
+}
+
+/* ── Botón logout drawer móvil ──────────────────────────────────────── */
+.drawer-logout-btn {
+    display: flex; align-items: center;
+    justify-content: center; gap: 8px;
+    margin: 14px 18px 0; padding: 12px 16px;
+    border: 1.5px solid rgba(240,154,54,0.25);
+    border-left: 3px solid #f09a36;
+    border-radius: 8px;
+    background: rgba(240,154,54,0.06);
+    color: #f09a36;
+    font-size: 12px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    text-decoration: none; cursor: pointer;
+    font-family: inherit;
+    width: calc(100% - 36px);
+    transition: all 0.3s ease;
+}
+.drawer-logout-btn:hover {
+    background: #f09a36; color: #0e1a2b;
+    box-shadow: 0 4px 20px rgba(240,154,54,0.3);
+}
+
+/* ── Botón PSE ──────────────────────────────────────────────────────── */
+.header-pse-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0; border-radius: 8px; border: none;
+    background: transparent; box-shadow: none;
+    width: auto; height: auto;
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    text-decoration: none; cursor: pointer;
+    position: relative; overflow: hidden;
+    flex-shrink: 0;
+    transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
+    opacity: 0.92;
+}
+.header-pse-btn::before { display: none; }
+.header-pse-btn:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+.header-pse-btn img {
+    display: block; height: 54px; width: auto;
+    object-fit: contain; border-radius: 8px;
+}
+#main-header.scrolled .header-pse-btn img,
+#main-header.intranet-nav .header-pse-btn img { height: 44px; }
+
+/* ── Botón flotante home ────────────────────────────────────────────── */
+.float-home {
+    position: fixed; bottom: 28px; right: 28px;
+    width: 50px; height: 50px; border-radius: 50%;
+    background: #f09a36; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; box-shadow: 0 4px 16px rgba(240,154,54,0.35);
+    z-index: 999; transition: all 0.3s ease; text-decoration: none;
+}
+.float-home:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(240,154,54,0.5);
+    color: #fff;
+}
+
+/* =====================================================================
+   RESPONSIVE — aplica a TODAS las páginas
+   ===================================================================== */
+
+/* Tablet ancha (1200px): colapsar nav a hamburguesa */
+@media (max-width: 1200px) {
+    #main-header nav           { display: none !important; }
+    #main-header .hdr-right    { display: none !important; }
+    #main-header .mobile-menu-toggle { display: flex !important; margin-left: auto; }
+    #main-header .header-content { gap: 12px; }
+    #main-header .logo-box     { flex-shrink: 0; }
+    #main-header               { padding: 12px 0; }
+    #main-header.scrolled,
+    #main-header.intranet-nav  { padding: 8px 0 !important; }
+    .header-pse-btn img        { height: 46px; }
+    #main-header.scrolled .header-pse-btn img,
+    #main-header.intranet-nav .header-pse-btn img { height: 38px; }
+}
+
+/* Tablet / móvil grande (768px) */
+@media (max-width: 768px) {
+    #main-header               { padding: 10px 0; }
+    #main-header.scrolled,
+    #main-header.intranet-nav  { padding: 7px 0 !important; }
+    #main-header .header-content { padding: 0 14px; }
+    .logo-box                  { padding: 6px 14px 6px 11px; border-radius: 10px; }
+    .logo-box img              { height: 28px; }
+    #main-header.scrolled .logo-box,
+    #main-header.intranet-nav .logo-box { padding: 4px 12px 4px 9px; }
+    #main-header.scrolled .logo-box img,
+    #main-header.intranet-nav .logo-box img { height: 24px; }
+    .header-pse-btn img        { height: 48px; }
+    #main-header.scrolled .header-pse-btn img,
+    #main-header.intranet-nav .header-pse-btn img { height: 38px; }
+    .float-home                { bottom: 18px; right: 18px; width: 44px; height: 44px; font-size: 17px; }
+    body.intranet-page         { padding-top: 52px; }
+}
+
+/* Móvil pequeño (480px) */
+@media (max-width: 480px) {
+    #main-header               { padding: 8px 0; }
+    #main-header.scrolled,
+    #main-header.intranet-nav  { padding: 6px 0 !important; }
+    .logo-box                  { padding: 5px 12px 5px 9px; }
+    .logo-box img              { height: 25px; }
+    #main-header.scrolled .logo-box,
+    #main-header.intranet-nav .logo-box { padding: 3px 10px 3px 7px; }
+    #main-header.scrolled .logo-box img,
+    #main-header.intranet-nav .logo-box img { height: 22px; }
+    .header-pse-btn img        { height: 44px; }
+    #main-header.scrolled .header-pse-btn img,
+    #main-header.intranet-nav .header-pse-btn img { height: 32px; }
+    body.intranet-page         { padding-top: 48px; }
+}
+
+/* Landscape móvil */
+@media (max-height: 600px) and (orientation: landscape) {
+    #main-header nav           { display: none !important; }
+    #main-header .mobile-menu-toggle { display: flex !important; }
+    #main-header .header-content { gap: 10px; padding: 0 14px; }
+    #main-header               { padding: 8px 0; }
+    #main-header.scrolled,
+    #main-header.intranet-nav  { padding: 6px 0 !important; }
+    .logo-box img              { height: 26px; }
+    #main-header.scrolled .logo-box img,
+    #main-header.intranet-nav .logo-box img { height: 22px; }
+}

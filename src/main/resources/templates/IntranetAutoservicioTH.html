@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Autoservicio Talento Humano — Intranet Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
+    <style>
+        :root{--pd:var(--navy);--pb:var(--navy);--ag:var(--miel);--ac:var(--cian);--gn:#16a34a;--rd:#dc2626;--bg:#f0f4f8;--sur:#fff;--bdr:#e2e8f2;--tx:#1e293b;--mx:#64748b;--r:8px;--rl:14px;}
+
+        /* Reseteo estricto para evitar desbordamiento horizontal */
+        html { width: 100%; max-width: 100%; overflow-x: clip; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--tx);
+            width: 100%;
+            max-width: 100%;
+            overflow-x: clip;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+        }
+        *, *::before, *::after { box-sizing: border-box; min-width: 0; }
+
+        /* ── Animations ── */
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes floatIcon{0%,100%{transform:translateY(0)}25%{transform:translateY(-12px)}75%{transform:translateY(-8px)}}
+        @keyframes slideIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        @keyframes thReveal{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @keyframes thSidebarSlide{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes thCardPop{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+        /* ── Hero ── */
+        .phero{background:linear-gradient(155deg,var(--navy-deep) 0%,var(--pd) 55%,var(--navy-deep) 100%);padding:0 32px;position:relative;overflow:hidden;width:100%;max-width:100%;box-sizing:border-box;}
+        .phw-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;opacity:.35;width:520px;height:520px;background:radial-gradient(circle,rgba(30,152,217,.32),transparent 70%);top:-180px;right:-140px;}
+        .phw-glow2{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;opacity:.2;width:400px;height:400px;background:radial-gradient(circle,rgba(230,171,9,.25),transparent 70%);bottom:-100px;left:10%;}
+        .phw-container{position:relative;z-index:1;max-width:1200px;width:100%;margin:0 auto;padding:92px 0 52px;box-sizing:border-box;}
+        .phero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;width:100%;}
+        .phero-main{min-width:0;width:100%;}
+        .phero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(230,171,9,.14);border:1px solid rgba(230,171,9,.3);color:var(--ag);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:5px 14px;border-radius:50px;margin-bottom:18px;animation:fadeInDown .6s ease both;}
+        .phero h1{font-size:36px;font-weight:800;color:#fff;line-height:1.18;margin-bottom:14px;letter-spacing:-.5px;animation:fadeInUp .7s ease .1s both;word-break:break-word;}
+        .phero h1 strong{color:var(--ag);font-weight:800;}
+        .phero p{font-size:15px;color:rgba(255,255,255,.62);margin-bottom:26px;max-width:440px;line-height:1.65;animation:fadeInUp .7s ease .25s both;word-break:break-word;}
+        .phero-floaters{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+        .phero-floaters i{position:absolute;color:rgba(255,255,255,.08);animation:floatIcon 9s ease-in-out infinite}
+        .phero-floaters i:nth-child(1){font-size:60px;top:14%;left:6%;animation-delay:0s}
+        .phero-floaters i:nth-child(2){font-size:40px;top:62%;left:14%;animation-delay:1.4s}
+        .phero-floaters i:nth-child(3){font-size:48px;top:20%;right:8%;animation-delay:.7s}
+        .phero-floaters i:nth-child(4){font-size:36px;bottom:12%;right:16%;animation-delay:2.1s}
+        .phw-wave{position:relative;z-index:1;line-height:0;margin:36px -32px 0;overflow:hidden;width:calc(100% + 64px);max-width:none;}
+        .phw-wave svg{display:block;width:100%;height:52px;}
+
+        /* Hero stat pills */
+        .phero-stats{display:flex;gap:10px;flex-wrap:wrap;animation:fadeInUp .7s ease .4s both;}
+        .phero-stat{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:50px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-size:11px;font-weight:600;}
+        .phero-stat i{color:var(--ag);font-size:10px;}
+
+        /* ── Shell ── */
+        .intranet-shell{max-width:1200px;width:100%;margin:0 auto;padding:0 24px 80px;display:flex;flex-direction:column;gap:22px;box-sizing:border-box;}
+        .intranet-main{flex:1;min-width:0;width:100%;}
+
+        /* ── Main toolbar ── */
+        .th-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;animation:thReveal .5s cubic-bezier(.22,1,.36,1) .15s both;}
+        .th-toolbar-left{display:flex;align-items:center;gap:12px;min-width:0;}
+        .th-toolbar-left h2{font-size:22px;font-weight:800;color:var(--pd);margin:0;letter-spacing:-.4px;word-break:break-word;}
+
+        /* ── Layout 2-col ── */
+        .th-layout{display:grid;grid-template-columns:1fr 296px;gap:28px;width:100%;}
+        @media(max-width:920px){.th-layout{grid-template-columns:1fr;}}
+
+        /* ── Tabs ── */
+        .hr-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:24px;border-bottom:2px solid #eef1f4;padding-bottom:0;animation:thReveal .5s cubic-bezier(.22,1,.36,1) .2s both;max-width:100%;}
+        .hr-tab{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px 10px 0 0;font-size:12.5px;font-weight:700;border:none;cursor:pointer;font-family:inherit;background:transparent;color:var(--mx);transition:all .2s;margin-bottom:-2px;border-bottom:2px solid transparent;}
+        .hr-tab:hover{background:rgba(10,46,77,.04);color:var(--pd);}
+        .hr-tab.active{background:#fff;color:var(--pd);border:2px solid #eef1f4;border-bottom-color:#fff;box-shadow:0 -2px 8px rgba(15,42,58,.04);}
+        .hr-tab i{font-size:12px;}
+
+        /* ── Search ── */
+        .hr-search-wrap{position:relative;margin-bottom:24px;animation:thReveal .5s cubic-bezier(.22,1,.36,1) .25s both;width:100%;box-sizing:border-box;}
+        .hr-search-wrap i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--mx);font-size:14px;pointer-events:none;}
+        .hr-search-wrap input{width:100%;max-width:100%;border:1.5px solid var(--bdr);border-radius:50px;padding:12px 18px 12px 42px;font-size:13.5px;font-family:inherit;background:var(--sur);color:var(--tx);transition:all .25s;box-shadow:0 2px 8px rgba(15,42,58,.04);box-sizing:border-box;}
+        .hr-search-wrap input:focus{outline:none;border-color:var(--ag);box-shadow:0 0 0 3px rgba(230,171,9,.1);}
+        .hr-search-wrap input::placeholder{color:var(--mx);}
+
+        /* ── Section Cards ── */
+        .hr-card{background:var(--sur);border:1px solid var(--bdr);border-radius:18px;padding:0;margin-bottom:20px;box-shadow:0 2px 12px rgba(15,42,58,.04);transition:all .3s;animation:thCardPop .45s cubic-bezier(.22,1,.36,1) both;overflow:hidden;scroll-margin-top:90px;width:100%;box-sizing:border-box;}
+        .hr-card:hover{box-shadow:0 8px 30px rgba(15,42,58,.1);border-color:rgba(230,171,9,.22);transform:translateY(-1px);}
+        .hr-card-head{padding:22px 24px 0;display:flex;align-items:flex-start;gap:16px;width:100%;box-sizing:border-box;}
+        .hr-card-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;color:#fff;box-shadow:0 4px 14px rgba(10,46,77,.15);}
+        .hr-card-icon.reg{background:linear-gradient(135deg,var(--navy),var(--navy-deep));}
+        .hr-card-icon.perm{background:linear-gradient(135deg,var(--cian),#0080b0);}
+        .hr-card-icon.exc{background:linear-gradient(135deg,var(--miel),var(--miel));}
+        .hr-card-icon.vac{background:linear-gradient(135deg,#22c55e,#16a34a);}
+        .hr-card-icon.dl{background:linear-gradient(135deg,#9333ea,#7c3aed);}
+        .hr-card-icon.ces{background:linear-gradient(135deg,#7c3aed,#6d28d9);}
+        .hr-card-icon.rem{background:linear-gradient(135deg,#ea580c,#c2410c);}
+        .hr-card-icon.fam{background:linear-gradient(135deg,#e11d48,#be123c);}
+        .hr-card-icon.hrs{background:linear-gradient(135deg,#0891b2,#0e7490);}
+        .hr-card-info{flex:1;min-width:0;width:100%;}
+        .hr-card-title{font-size:17px;font-weight:800;color:var(--tx);margin:0 0 4px;line-height:1.25;word-break:break-word;}
+        .hr-card-sub{font-size:12.5px;color:var(--mx);line-height:1.5;margin:0;word-break:break-word;}
+        .hr-card-actions{display:flex;gap:8px;flex-shrink:0;padding-top:2px;}
+        .hr-card-actions button{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:700;border:1.5px solid transparent;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.2px;}
+        .hr-btn-qr{background:linear-gradient(135deg,var(--navy),var(--navy-deep));color:#fff;border-color:transparent;}
+        .hr-btn-qr:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(10,46,77,.3);}
+        .hr-btn-views{background:rgba(30,152,217,.08);color:var(--ac);border-color:rgba(30,152,217,.2);}
+        .hr-btn-views:hover{background:rgba(30,152,217,.15);}
+        .hr-btn-format{background:linear-gradient(135deg,var(--ag),#e08a20);color:#fff;border-color:transparent;}
+        .hr-btn-format:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(230,171,9,.35);}
+        .hr-card-body{padding:18px 24px 22px;width:100%;box-sizing:border-box;}
+        .hr-card-body h4{font-size:13px;font-weight:700;color:var(--pd);margin:0 0 10px;display:flex;align-items:center;gap:6px;}
+        .hr-card-body h4 i{color:var(--ag);font-size:12px;}
+
+        /* ── Steps ── */
+        .hr-steps{list-style:none;padding:0;margin:0 0 16px;width:100%;}
+        .hr-steps li{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:10px;margin-bottom:6px;transition:background .2s;width:100%;box-sizing:border-box;}
+        .hr-steps li:hover{background:#f8fafc;}
+        .hr-step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--pd),var(--navy-deep));box-shadow:0 2px 8px rgba(10,46,77,.2);}
+        .hr-step-text{flex:1;min-width:0;font-size:13px;color:var(--tx);line-height:1.55;padding-top:3px;word-break:break-word;}
+        .hr-step-text strong{color:var(--pd);font-weight:700;}
+
+        /* ── Upload Area ── */
+        .hr-upload-area{border:2px dashed var(--bdr);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .25s;background:#fafbfc;margin-top:10px;width:100%;box-sizing:border-box;}
+        .hr-upload-area:hover{border-color:var(--ag);background:rgba(230,171,9,.03);}
+        .hr-upload-area.dragover{border-color:var(--ac);background:rgba(30,152,217,.04);}
+        .hr-upload-area i{font-size:24px;color:var(--mx);margin-bottom:6px;display:block;}
+        .hr-upload-area span{font-size:12px;color:var(--mx);font-weight:600;display:block;word-break:break-word;}
+        .hr-upload-area small{font-size:11px;color:var(--mx);opacity:.7;display:block;margin-top:3px;}
+
+        /* ── Doc Card ── */
+        .hr-doc-card{background:#fff;border:1px solid #dfe3e8;border-radius:12px;overflow:hidden;margin-top:10px;transition:all .18s ease;width:100%;box-sizing:border-box;}
+        .hr-doc-card:hover{border-color:#c7cdd4;box-shadow:0 4px 14px rgba(15,42,58,.1);}
+        .hr-doc-card-inner{display:flex;align-items:stretch;gap:0;width:100%;}
+        .hr-doc-thumb{width:110px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;background:#f6f8fa;border-right:1px solid #eef1f4;overflow:hidden;}
+        .hr-doc-thumb svg{width:auto;height:auto;max-width:70%;max-height:85%;display:block;filter:drop-shadow(0 3px 8px rgba(15,42,58,.12));}
+        .hr-doc-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+        .hr-doc-thumb-badge{position:absolute;bottom:6px;right:6px;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;background:rgba(15,42,58,.72);color:#fff;z-index:1;}
+        .hr-doc-body{flex:1;min-width:0;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;}
+        .hr-doc-name{font-size:13px;font-weight:700;color:#3c4043;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none;line-height:1.3;}
+        .hr-doc-name:hover{color:var(--navy);}
+        .hr-doc-meta{font-size:10.5px;color:var(--mx);display:block;margin-top:3px;word-break:break-word;}
+        .hr-doc-actions{display:flex;gap:5px;padding:0 14px 12px;flex-wrap:wrap;}
+        .hr-doc-actions button{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:7px;font-size:10.5px;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:all .15s;}
+        .hr-doc-btn-view{background:rgba(10,46,77,.08);color:var(--pd);}
+        .hr-doc-btn-view:hover{background:rgba(10,46,77,.15);}
+        .hr-doc-btn-replace{background:rgba(30,152,217,.08);color:var(--ac);}
+        .hr-doc-btn-replace:hover{background:rgba(30,152,217,.15);}
+        .hr-doc-btn-del{background:rgba(220,38,38,.08);color:#dc2626;}
+        .hr-doc-btn-del:hover{background:rgba(220,38,38,.15);}
+        .hr-upload-progress{display:none;align-items:center;gap:8px;padding:10px 14px;background:rgba(30,152,217,.05);border-radius:8px;margin-top:8px;font-size:12px;color:var(--ac);font-weight:600;}
+        .hr-upload-progress.active{display:flex;}
+
+        /* ── Toast ── */
+        .intranet-toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:var(--r);font-size:13px;font-weight:600;z-index:9999;box-shadow:0 8px 32px rgba(10,46,77,.15);max-width:90%;text-align:center;}
+        .intranet-toast.success{background:#16a34a;color:#fff;}
+        .intranet-toast.error{background:#dc2626;color:#fff;}
+        .intranet-loading{text-align:center;padding:48px;color:var(--mx);}
+        .intranet-loading i{font-size:28px;margin-bottom:10px;display:block;}
+        .intranet-loading span{font-size:14px;}
+
+        /* ── Empty State ── */
+        .hr-empty{text-align:center;padding:50px 30px;border:2px dashed #e2e8f2;border-radius:16px;background:var(--sur);width:100%;box-sizing:border-box;}
+        .hr-empty-icon{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(10,46,77,.06),rgba(230,171,9,.06));display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px;color:var(--mx);opacity:.5;}
+        .hr-empty h3{font-size:16px;font-weight:700;color:var(--pd);margin:0 0 6px;}
+        .hr-empty p{font-size:13px;color:var(--mx);margin:0;line-height:1.5;}
+
+        /* ── Send Form ── */
+        .hr-send-form{background:var(--sur);border:1px solid var(--bdr);border-radius:14px;margin-top:16px;box-shadow:0 2px 12px rgba(15,42,58,.04);overflow:hidden;width:100%;box-sizing:border-box;}
+        .hr-send-toggle{display:flex;align-items:center;gap:8px;padding:14px 20px;cursor:pointer;user-select:none;transition:background .15s;font-size:13px;font-weight:700;color:var(--pd);margin:0;width:100%;box-sizing:border-box;}
+        .hr-send-toggle:hover{background:rgba(0,0,0,.03);}
+        .hr-send-toggle i.fa-paper-plane{color:var(--ag);font-size:12px;}
+        .hr-send-toggle .arrow{margin-left:auto;font-size:10px;color:var(--mx);transition:transform .25s;}
+        .hr-send-toggle.open .arrow{transform:rotate(180deg);}
+        .hr-send-body{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 22px;width:100%;box-sizing:border-box;}
+        .hr-send-body.open{max-height:800px;padding:0 22px 20px;}
+        .hr-send-field{margin-bottom:12px;width:100%;box-sizing:border-box;}
+        .hr-send-field label{display:block;font-size:11px;font-weight:700;color:var(--pd);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
+        .hr-send-field input[type="text"],.hr-send-field textarea{width:100%;max-width:100%;border:1.5px solid var(--bdr);border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;color:var(--tx);background:#fafbfc;transition:all .2s;resize:vertical;box-sizing:border-box;}
+        .hr-send-field input[type="text"]:focus,.hr-send-field textarea:focus{outline:none;border-color:var(--ag);box-shadow:0 0 0 3px rgba(230,171,9,.1);background:#fff;}
+        .hr-send-field textarea{min-height:72px;}
+        .hr-send-recipients{display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto;padding:2px 0;width:100%;}
+        .hr-rcpt-group{display:flex;flex-direction:column;gap:3px;width:100%;}
+        .hr-rcpt-group-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--ac);padding:4px 0 0 2px;}
+        .hr-rcpt-group-items{display:flex;flex-wrap:wrap;gap:5px;padding-left:2px;width:100%;}
+        .hr-send-recipient{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;border:1.5px solid var(--bdr);background:#fafbfc;font-size:11px;font-weight:600;color:var(--tx);cursor:pointer;transition:all .15s;user-select:none;max-width:100%;word-break:break-word;}
+        .hr-send-recipient:hover{border-color:var(--ac);background:rgba(30,152,217,.04);}
+        .hr-send-recipient input{display:none;}
+        .hr-send-recipient.selected{border-color:var(--ac);background:rgba(30,152,217,.08);color:var(--ac);}
+        .hr-send-attach{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1.5px solid var(--bdr);background:#fafbfc;font-size:12px;font-weight:600;color:var(--mx);cursor:pointer;transition:all .15s;max-width:100%;word-break:break-word;}
+        .hr-send-attach:hover{border-color:var(--ag);background:rgba(230,171,9,.04);color:var(--pd);}
+        .hr-send-attach i{color:var(--ag);font-size:13px;}
+        .hr-send-attach-name{font-size:11px;color:var(--ac);font-weight:700;margin-left:4px;}
+        .hr-send-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--pd),var(--navy-deep));color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.2px;}
+        .hr-send-btn:hover{background:linear-gradient(135deg,var(--navy),var(--pd));box-shadow:0 3px 12px rgba(10,46,77,.25);transform:translateY(-1px);}
+        .hr-send-btn i{font-size:12px;}
+        .hr-send-btn:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none;}
+        .hr-send-status{font-size:11px;font-weight:600;margin-top:8px;display:none;}
+        .hr-send-status.show{display:block;}
+        .hr-send-status.ok{color:#16a34a;}
+        .hr-send-status.err{color:#dc2626;}
+
+        /* ── Sent Tab ── */
+        .hr-sent-list{display:flex;flex-direction:column;gap:12px;width:100%;}
+        .hr-sent-card{background:var(--sur);border:1px solid var(--bdr);border-radius:14px;padding:18px 22px;box-shadow:0 2px 8px rgba(15,42,58,.03);animation:thCardPop .35s cubic-bezier(.22,1,.36,1) both;width:100%;box-sizing:border-box;}
+        .hr-sent-card:hover{box-shadow:0 4px 16px rgba(15,42,58,.07);}
+        .hr-sent-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;width:100%;}
+        .hr-sent-title{font-size:14px;font-weight:800;color:var(--tx);margin:0;line-height:1.3;word-break:break-word;}
+        .hr-sent-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:50px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;white-space:nowrap;}
+        .hr-sent-badge.pendiente{background:rgba(251,191,36,.12);color:#b45309;border:1px solid rgba(251,191,36,.25);}
+        .hr-sent-badge.en_proceso{background:rgba(30,152,217,.1);color:#0369a1;border:1px solid rgba(30,152,217,.2);}
+        .hr-sent-badge.procesado{background:rgba(22,163,74,.1);color:#15803d;border:1px solid rgba(22,163,74,.2);}
+        .hr-sent-desc{font-size:12.5px;color:var(--mx);margin:0 0 10px;line-height:1.5;word-break:break-word;}
+        .hr-sent-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--mx);}
+        .hr-sent-meta span{display:inline-flex;align-items:center;gap:4px;}
+        .hr-sent-meta i{color:var(--ag);font-size:10px;}
+        .hr-sent-recipients-list{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;}
+        .hr-sent-recipient-tag{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:5px;background:rgba(0,0,0,.05);font-size:10px;font-weight:600;color:var(--pd);word-break:break-word;}
+        .hr-sent-recipient-tag i{font-size:9px;color:var(--mx);}
+
+        /* ── Sidebar ── */
+        .th-sidebar{position:sticky;top:80px;align-self:start;animation:thSidebarSlide .6s cubic-bezier(.22,1,.36,1) .35s both;display:flex;flex-direction:column;gap:16px;width:100%;box-sizing:border-box;}
+
+        /* Sidebar card base */
+        .th-side-card{background:#fff;border:1px solid var(--bdr);border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(15,42,58,.06);width:100%;box-sizing:border-box;}
+        .th-side-header{background:linear-gradient(135deg,var(--navy-deep) 0%,var(--navy) 100%);padding:14px 18px;display:flex;align-items:center;gap:9px;}
+        .th-side-header i{color:var(--ag);font-size:15px;}
+        .th-side-header span{font-size:11px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.5px;}
+
+        /* Firma widget */
+        .th-sig-widget{padding:16px;}
+        .th-sig-preview{display:flex;align-items:center;justify-content:center;background:#f8fafc;border:1.5px solid var(--bdr);border-radius:10px;min-height:64px;margin-bottom:12px;overflow:hidden;}
+        .th-sig-preview img{max-height:56px;max-width:100%;object-fit:contain;display:block;}
+        .th-sig-none{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px;color:var(--mx);text-align:center;}
+        .th-sig-none i{font-size:20px;opacity:.3;}
+        .th-sig-none span{font-size:11px;font-weight:600;}
+        .th-sig-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--ag),#e08820);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}
+        .th-sig-btn:hover{box-shadow:0 4px 14px rgba(230,171,9,.35);transform:translateY(-1px);}
+
+        /* Acceso rápido */
+        .th-quicklinks{padding:10px 8px;display:flex;flex-direction:column;gap:2px;width:100%;}
+        .th-quicklink{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;text-decoration:none;color:var(--pd);font-size:12px;font-weight:700;transition:all .18s;cursor:pointer;border:none;background:transparent;font-family:inherit;width:100%;text-align:left;box-sizing:border-box;}
+        .th-quicklink:hover{background:rgba(10,46,77,.05);transform:translateX(2px);}
+        .th-ql-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;}
+        .th-ql-icon.reg{background:linear-gradient(135deg,var(--navy),var(--navy-deep));color:#fff;}
+        .th-ql-icon.perm{background:linear-gradient(135deg,var(--cian),#0080b0);color:#fff;}
+        .th-ql-icon.vac{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;}
+        .th-ql-icon.exc{background:linear-gradient(135deg,var(--miel),var(--miel));color:#fff;}
+        .th-ql-icon.dl{background:linear-gradient(135deg,#9333ea,#7c3aed);color:#fff;}
+        .th-ql-icon.ces{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;}
+        .th-ql-icon.rem{background:linear-gradient(135deg,#ea580c,#c2410c);color:#fff;}
+        .th-ql-icon.fam{background:linear-gradient(135deg,#e11d48,#be123c);color:#fff;}
+        .th-ql-icon.hrs{background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;}
+        .th-ql-label{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11.5px;}
+        .th-ql-arrow{color:var(--mx);font-size:9px;flex-shrink:0;}
+
+        /* Info/tip card */
+        .th-tip-card{background:linear-gradient(135deg,rgba(30,152,217,.06),rgba(10,46,77,.04));border:1px solid rgba(30,152,217,.15);border-radius:14px;padding:14px 16px;width:100%;box-sizing:border-box;}
+        .th-tip-title{font-size:11px;font-weight:800;color:var(--pd);display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+        .th-tip-title i{color:var(--ac);}
+        .th-tip-body{font-size:11.5px;color:var(--mx);line-height:1.6;word-break:break-word;}
+
+        /* ── Modales ── */
+        .hr-modal,.hr-detail-modal,.hr-sig-overlay{box-sizing:border-box;}
+        .hr-modal *, .hr-detail-modal *, .hr-sig-overlay * {box-sizing:border-box;}
+
+        .hr-modal{display:none;position:fixed;inset:0;z-index:3000;align-items:center;justify-content:center;padding:16px;}
+        .hr-modal.open{display:flex;}
+        .hr-modal-overlay{position:absolute;inset:0;background:rgba(15,26,38,.55);backdrop-filter:blur(4px);}
+        .hr-modal-box{position:relative;z-index:1;background:var(--sur);border-radius:18px;box-shadow:0 24px 64px rgba(15,42,58,.25);max-height:90vh;overflow-y:auto;width:min(430px,92vw);box-sizing:border-box;}
+        .hr-modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;color:var(--mx);cursor:pointer;z-index:2;padding:4px;line-height:1;}
+        .hr-qr-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #eef1f4;}
+        .hr-qr-title{font-size:14px;font-weight:700;color:var(--pd);display:flex;align-items:center;gap:8px;}
+        .hr-qr-title i{color:var(--ag);}
+        .hr-qr-body{padding:18px;}
+        .hr-qr-print{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;text-align:center;}
+        .hr-qr-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px;border-bottom:2px solid var(--miel);padding-bottom:12px;}
+        .hr-qr-brand img{height:44px;object-fit:contain;}
+        .hr-qr-brand-text{text-align:left;}
+        .hr-qr-company{display:block;font-weight:800;font-size:15px;color:var(--navy);letter-spacing:.3px;}
+        .hr-qr-section{display:block;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-top:2px;}
+        .hr-qr-frame{border:2px dashed var(--miel);border-radius:12px;padding:16px;background:#fffaf3;}
+        .hr-qr-frame img{width:100%;max-width:240px;height:auto;object-fit:contain;display:block;margin:0 auto;}
+        .hr-qr-name{font-size:12.5px;font-weight:700;color:var(--navy);margin-top:12px;padding:0 8px;word-break:break-word;line-height:1.4;}
+        .hr-qr-foot{font-size:11px;color:#64748b;margin-top:14px;}
+        .hr-qr-foot i{margin-right:5px;color:var(--miel);}
+        .hr-qr-actions{display:flex;justify-content:flex-end;gap:10px;padding:14px 18px;border-top:1px solid #eef1f4;}
+
+        /* ── Detail Modal ── */
+        .hr-detail-modal{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;padding:16px;}
+        .hr-detail-modal.open{display:flex;}
+        .hr-detail-overlay{position:absolute;inset:0;background:rgba(15,26,38,.55);backdrop-filter:blur(4px);}
+        .hr-detail-box{position:relative;z-index:1;background:var(--sur);border-radius:18px;box-shadow:0 24px 64px rgba(15,42,58,.25);max-height:94vh;overflow-y:auto;width:min(720px,96vw);box-sizing:border-box;}
+        .hr-detail-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;color:var(--mx);cursor:pointer;z-index:2;padding:4px;line-height:1;}
+        .hr-detail-head{padding:20px 24px 0;border-bottom:1px solid #eef1f4;padding-bottom:16px;}
+        .hr-detail-title{font-size:18px;font-weight:800;color:var(--pd);margin:0 0 6px;line-height:1.3;word-break:break-word;}
+        .hr-detail-meta{font-size:12px;color:var(--mx);display:flex;flex-wrap:wrap;gap:12px;}
+        .hr-detail-meta span{display:inline-flex;align-items:center;gap:4px;}
+        .hr-detail-meta i{color:var(--ag);font-size:11px;}
+        .hr-detail-body{padding:20px 24px;}
+        .hr-detail-section{margin-bottom:20px;}
+        .hr-detail-section-title{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--pd);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+        .hr-detail-section-title i{color:var(--ag);font-size:11px;}
+        .hr-detail-pdf-viewer{width:100%;height:60vh;border:none;border-radius:10px;overflow:hidden;background:#454a52;}
+        .hr-detail-pdf-viewer iframe{display:block;width:100%;height:100%;border:none;background:#fff;}
+        .hr-detail-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#e6e8ec;font-size:13px;gap:8px;}
+        .hr-detail-placeholder i{font-size:32px;opacity:.3;}
+        .hr-detail-timeline{position:relative;padding-left:24px;margin:0;}
+        .hr-detail-timeline::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:#e2e8f2;}
+        .hr-detail-tl-item{position:relative;padding:8px 0 8px 16px;margin-bottom:4px;}
+        .hr-detail-tl-item::before{content:'';position:absolute;left:-19px;top:12px;width:10px;height:10px;border-radius:50%;border:2px solid #e2e8f2;background:#fff;}
+        .hr-detail-tl-item.done::before{background:var(--gn);border-color:var(--gn);}
+        .hr-detail-tl-item.active::before{background:var(--ag);border-color:var(--ag);box-shadow:0 0 0 4px rgba(230,171,9,.2);}
+        .hr-detail-tl-item.rejected::before{background:var(--rd);border-color:var(--rd);}
+        .hr-detail-tl-item.waiting::before{background:#e2e8f2;border-color:#e2e8f2;}
+        .hr-detail-tl-item.final::before{background:var(--gn);border-color:var(--gn);width:12px;height:12px;left:-20px;top:10px;}
+        .hr-detail-tl-item.final .hr-detail-tl-name{font-size:13px;color:var(--gn);font-weight:800;}
+        .hr-detail-tl-name{font-size:12.5px;font-weight:700;color:var(--pd);word-break:break-word;}
+        .hr-detail-tl-role{font-size:11px;color:var(--mx);word-break:break-word;}
+        .hr-detail-tl-status{font-size:10.5px;font-weight:700;margin-top:2px;}
+        .hr-detail-tl-status.done{color:var(--gn);}
+        .hr-detail-tl-status.rejected{color:var(--rd);}
+        .hr-detail-tl-status.active{color:var(--ag);}
+        .hr-detail-tl-status.waiting{color:var(--mx);}
+        .hr-detail-tl-comment{font-size:11px;color:var(--mx);background:#f9fafc;border:1px solid #eef1f4;border-radius:6px;padding:6px 10px;margin-top:4px;line-height:1.5;word-break:break-word;}
+        .hr-detail-doc-btns{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+        .hr-detail-doc-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .15s;text-decoration:none;}
+        .hr-detail-doc-btn.open{background:rgba(10,46,77,.08);color:var(--pd);}
+        .hr-detail-doc-btn.open:hover{background:rgba(10,46,77,.15);}
+        .hr-detail-doc-btn.dl{background:rgba(30,152,217,.08);color:var(--ac);}
+        .hr-detail-doc-btn.dl:hover{background:rgba(30,152,217,.15);}
+
+        /* ── Signature Manager ── */
+        .hr-sig-overlay{position:fixed;inset:0;z-index:10002;background:rgba(15,26,38,.6);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;}
+        .hr-sig-box{background:var(--sur);border-radius:18px;box-shadow:0 24px 64px rgba(15,42,58,.3);max-width:520px;width:94vw;padding:28px;box-sizing:border-box;}
+        .hr-sig-box h2{font-size:18px;font-weight:800;color:var(--pd);margin:0 0 6px;}
+        .hr-sig-canvas-wrap{border:1.5px solid var(--bdr);border-radius:10px;overflow:hidden;background:#fff;margin-bottom:16px;}
+        .hr-sig-canvas-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#f9fafc;border-bottom:1px solid #eef1f4;}
+        .hr-sig-canvas-header span{font-size:11px;font-weight:700;color:var(--pd);display:flex;align-items:center;gap:5px;}
+        .hr-sig-canvas{display:block;width:100%;cursor:crosshair;background:#fff;}
+        .hr-sig-clear{padding:4px 10px;border-radius:6px;border:1px solid #e2e8f0;background:#fff;color:#64748b;font-size:10.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+        .hr-sig-clear:hover{background:#fee2e2;color:var(--rd);border-color:#fca5a5;}
+        .hr-sig-tab{flex:1;padding:10px;border:2px solid #e2e8f0;background:#fff;color:var(--mx);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}
+        .hr-sig-tab.active{border-color:var(--pd);background:var(--pd);color:#fff;}
+        .hr-sig-btn{width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,var(--pd),var(--navy-deep));color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+        /* ── Views Modal ── */
+        .hr-views-box{width:min(660px,94vw);box-sizing:border-box;}
+        .hr-views-body{padding:16px 18px;display:flex;flex-direction:column;gap:12px;max-height:62vh;overflow-y:auto;}
+        .hr-views-section{font-size:13px;font-weight:700;color:var(--pd);padding:9px 12px;background:#f8fafc;border:1px solid #eef1f4;border-radius:8px;word-break:break-word;}
+        .hr-views-wrap{overflow:auto;width:100%;}
+        .hr-views-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:480px;}
+        .hr-views-table th{text-align:left;padding:8px 10px;background:#f1f5f9;color:var(--mx);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.3px;position:sticky;top:0;}
+        .hr-views-table td{padding:9px 10px;border-bottom:1px solid #eef1f4;color:#334155;vertical-align:middle;}
+        .hr-views-table tr:hover td{background:#fafbfc;}
+        .hr-views-mail{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--navy);word-break:break-word;}
+        .hr-views-mail i{color:var(--ag);font-size:11px;}
+        .hr-views-name{display:block;font-size:11px;color:#64748b;margin-top:2px;word-break:break-word;}
+        .hr-views-count{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:22px;padding:0 8px;border-radius:50px;background:var(--miel);color:#fff;font-weight:800;font-size:12px;}
+        .hr-views-empty{text-align:center;padding:30px;color:var(--mx);font-size:13px;font-style:italic;}
+
+        /* ── Print Buttons ── */
+        .hr-print-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--pd),var(--navy-deep));color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}
+        .hr-print-btn:hover{box-shadow:0 3px 12px rgba(10,46,77,.25);transform:translateY(-1px);}
+        .hr-close-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:1.5px solid var(--bdr);background:var(--sur);color:#334155;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}
+        .hr-close-btn:hover{background:#eef1f4;}
+
+        /* ── Footer ── */
+        .pfooter{text-align:center;padding:22px 28px;border-top:1px solid var(--bdr);color:var(--mx);font-size:12px;margin-top:auto;background:var(--bg);position:relative;width:100%;box-sizing:border-box;}
+        .pfooter::before{content:'';position:absolute;top:0;left:15%;width:70%;height:2px;background:linear-gradient(90deg,transparent,var(--ag),transparent);opacity:.35;}
+
+        /* ── Mobile Responsive ── */
+        @media(max-width:700px){
+            .phero{padding:0 16px;width:100%;max-width:100%;}
+            .phw-container{padding:68px 0 20px;grid-template-columns:1fr;width:100%;}
+            .phw-wave{margin:16px -16px 0;overflow:hidden;width:calc(100% + 32px);max-width:none;}
+            .phw-wave svg{height:28px;width:100%;}
+
+            .phero-grid{grid-template-columns:1fr;gap:16px;text-align:center;width:100%;}
+            .phero-main{display:flex;flex-direction:column;align-items:center;width:100%;}
+            .phero-badge{margin:0 auto 14px;}
+            .phero h1{font-size:22px;margin-bottom:8px;letter-spacing:-.3px;}
+            .phero p{font-size:12px;margin-bottom:16px;text-align:center;max-width:100%;}
+            .phero-stats{justify-content:center;gap:6px;flex-wrap:wrap;}
+            .phero-stat{font-size:10px;padding:5px 10px;}
+
+            .phero-floaters i,.phw-glow,.phw-glow2{display:none;}
+
+            .intranet-shell{padding:0 12px 70px;gap:16px;width:100%;box-sizing:border-box;}
+
+            .th-toolbar{flex-direction:column;align-items:stretch;gap:10px;width:100%;}
+            .th-toolbar-left{justify-content:center;width:100%;}
+            .th-toolbar-left h2{font-size:16px;}
+
+            .hr-tabs{gap:3px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px;-webkit-overflow-scrolling:touch;width:100%;}
+            .hr-tab{padding:8px 12px;font-size:11px;white-space:nowrap;flex-shrink:0;}
+
+            .th-layout{grid-template-columns:1fr;gap:16px;width:100%;}
+            .th-sidebar{position:static;width:100%;}
+
+            .hr-card-head{padding:16px 16px 0;flex-direction:column;gap:12px;width:100%;}
+            .hr-card-info{width:100%;min-width:0;}
+            .hr-card-icon{width:40px;height:40px;border-radius:10px;font-size:16px;}
+            .hr-card-title{font-size:15px;}
+            .hr-card-sub{font-size:11.5px;}
+            .hr-card-actions{width:100%;display:flex;gap:8px;}
+            .hr-card-actions button{flex:1;justify-content:center;padding:7px 10px;font-size:11px;}
+            .hr-card-body{padding:14px 16px 18px;width:100%;box-sizing:border-box;}
+            .hr-steps li{font-size:11.5px;gap:8px;padding:8px 10px;width:100%;}
+            .hr-step-num{width:24px;height:24px;font-size:11px;}
+
+            .hr-doc-card-inner{flex-direction:column;width:100%;}
+            .hr-doc-thumb{width:100%;height:84px;border-right:none;border-bottom:1px solid #eef1f4;}
+            .hr-doc-body{padding:10px 12px;width:100%;}
+            .hr-doc-actions{padding:0 12px 12px;width:100%;}
+            .hr-doc-actions button{flex:1;justify-content:center;}
+
+            .hr-send-body{padding:0 12px;width:100%;}
+            .hr-send-body.open{padding:0 12px 14px;width:100%;}
+            .hr-send-btn{width:100%;justify-content:center;}
+
+            .hr-sent-card{padding:14px 16px;border-radius:14px;width:100%;}
+            .hr-sent-head{flex-direction:column;gap:6px;width:100%;}
+            .hr-sent-title{font-size:13.5px;}
+
+            .hr-modal-box,.hr-sig-box,.hr-detail-box{width:96vw;padding:14px;max-height:90vh;}
+            .hr-qr-actions,.hr-modal-actions{flex-direction:column;gap:8px;width:100%;}
+            .hr-print-btn,.hr-close-btn,.hr-sig-btn{width:100%;justify-content:center;}
+        }
+
+        @media(max-width:420px){
+            .phero-stats{flex-direction:column;align-items:center;}
+            .phero h1{font-size:20px;}
+        }
+
+        @media(min-width:701px) and (max-width:920px){
+            .th-layout{grid-template-columns:1fr;width:100%;}
+            .th-sidebar{position:static;width:100%;}
+        }
+    </style>
+    <link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body class="intranet-page">
+
+<div th:replace="~{IntranetNav :: nav(current='autoservicio-th')}"></div>
+
+<div class="phero">
+    <div class="phw-glow"></div>
+    <div class="phw-glow2"></div>
+    <div class="phero-floaters">
+        <i class="fas fa-id-card"></i>
+        <i class="fas fa-file-signature"></i>
+        <i class="fas fa-umbrella-beach"></i>
+        <i class="fas fa-plane-departure"></i>
+    </div>
+    <div class="phw-container">
+        <div class="phero-grid">
+            <div class="phero-main">
+                <div class="phero-badge"><i class="fas fa-users"></i> Talento Humano</div>
+                <h1>Autoservicio <strong>Talento Humano</strong></h1>
+                <p>Documentos, trámites y servicios de Recursos Humanos de forma digital. Solicita permisos, consulta reglamentos y gestiona tu información.</p>
+                <div class="phero-stats">
+                    <span class="phero-stat"><i class="fas fa-file-alt"></i> Documentos en línea</span>
+                    <span class="phero-stat"><i class="fas fa-paper-plane"></i> Solicitudes digitales</span>
+                    <span class="phero-stat"><i class="fas fa-signature"></i> Firma electrónica</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="phw-wave"></div>
+</div>
+
+<div class="intranet-shell">
+    <div class="intranet-main">
+
+        <!-- Toolbar -->
+        <div class="th-toolbar">
+            <div class="th-toolbar-left">
+                <h2><i class="fas fa-id-card" style="color:var(--ag);margin-right:8px;font-size:18px;"></i>Trámites y Servicios</h2>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="hr-tabs" id="hrTabs">
+            <button class="hr-tab active" data-tab="docs" onclick="switchHrTab('docs')"><i class="fas fa-file-alt"></i> Documentos y Diligenciamiento</button>
+            <button class="hr-tab" data-tab="sent" onclick="switchHrTab('sent')"><i class="fas fa-paper-plane"></i> Enviados</button>
+        </div>
+
+        <!-- Search -->
+        <div class="hr-search-wrap" id="searchWrap">
+            <i class="fas fa-search"></i>
+            <input type="text" id="hrSearch" placeholder="Buscar secciones...">
+        </div>
+
+        <!-- Layout -->
+        <div class="th-layout">
+            <!-- Main content -->
+            <div style="min-width:0;width:100%;">
+                <div id="hr-sections"></div>
+                <div id="hr-sent" style="display:none;"></div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="th-sidebar" id="thSidebar">
+
+                <!-- Firma digital -->
+                <div class="th-side-card">
+                    <div class="th-side-header">
+                        <i class="fas fa-signature"></i>
+                        <span>Mi Firma Digital</span>
+                    </div>
+                    <div class="th-sig-widget">
+                        <div class="th-sig-preview" id="thSigPreview">
+                            <div class="th-sig-none">
+                                <i class="fas fa-pen-nib"></i>
+                                <span>Sin firma configurada</span>
+                            </div>
+                        </div>
+                        <button class="th-sig-btn" onclick="openHrSignatureManager()">
+                            <i class="fas fa-cog"></i> Gestionar firma
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Acceso rápido -->
+                <div class="th-side-card">
+                    <div class="th-side-header">
+                        <i class="fas fa-bolt"></i>
+                        <span>Acceso Rápido</span>
+                    </div>
+                    <div class="th-quicklinks" id="thQuicklinks">
+                        <!-- populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Tip -->
+                <div class="th-tip-card">
+                    <div class="th-tip-title"><i class="fas fa-circle-info"></i> ¿Cómo funciona?</div>
+                    <div class="th-tip-body">Selecciona un trámite, descarga o adjunta documentos y envía tu solicitud directamente a los responsables. Podrás hacer seguimiento desde la pestaña <strong>Enviados</strong>.</div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="pfooter">
+    &copy; 2026 Sociedad Portuaria Mardique S.A. Intranet Corporativa &mdash; Todos los derechos reservados.
+</div>
+
+<div id="intranet-toast" class="intranet-toast"></div>
+
+<!-- Detail Modal -->
+<div class="hr-detail-modal" id="hrDetailModal">
+    <div class="hr-detail-overlay" onclick="closeHrDetail()"></div>
+    <div class="hr-detail-box">
+        <button class="hr-detail-close" onclick="closeHrDetail()">&times;</button>
+        <div class="hr-detail-head">
+            <h2 class="hr-detail-title" id="detailTitle"></h2>
+            <div class="hr-detail-meta">
+                <span><i class="fas fa-user"></i> <span id="detailSender"></span></span>
+                <span><i class="fas fa-calendar"></i> <span id="detailDate"></span></span>
+                <span id="detailStatusWrap"></span>
+            </div>
+        </div>
+        <div class="hr-detail-body">
+            <div class="hr-detail-section" id="detailDescSection">
+                <div class="hr-detail-section-title"><i class="fas fa-align-left"></i> Descripción</div>
+                <div style="font-size:13.5px;color:var(--tx);line-height:1.7;background:#f9fafc;border:1px solid #eef1f4;border-radius:10px;padding:14px 16px;word-break:break-word;" id="detailDesc"></div>
+            </div>
+            <div class="hr-detail-section" id="detailPdfSection">
+                <div class="hr-detail-section-title"><i class="fas fa-file-pdf"></i> Documento</div>
+                <div class="hr-detail-doc-btns" id="detailDocBtns">
+                    <a class="hr-detail-doc-btn open" id="detailBtnOpen" href="#" target="_blank" style="display:none;"><i class="fas fa-external-link-alt"></i> Abrir en nueva pestaña</a>
+                    <a class="hr-detail-doc-btn dl" id="detailBtnDl" href="#" style="display:none;"><i class="fas fa-download"></i> Descargar PDF</a>
+                </div>
+                <div class="hr-detail-pdf-viewer" id="detailPdfWrap">
+                    <div class="hr-detail-placeholder"><i class="fas fa-file-pdf"></i><span>Sin documento adjunto</span></div>
+                </div>
+            </div>
+            <div class="hr-detail-section">
+                <div class="hr-detail-section-title"><i class="fas fa-route"></i> Flujo de Aprobación</div>
+                <div class="hr-detail-timeline" id="detailTimeline"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- QR Modal -->
+<div class="hr-modal" id="hrQrModal">
+    <div class="hr-modal-overlay" onclick="closeHrQr()"></div>
+    <div class="hr-modal-box">
+        <button class="hr-modal-close" onclick="closeHrQr()">&times;</button>
+        <div class="hr-qr-head">
+            <span class="hr-qr-title"><i class="fas fa-qrcode"></i> Código QR de la sección</span>
+        </div>
+        <div class="hr-qr-body">
+            <div class="hr-qr-print" id="hrQrPrintArea">
+                <div class="hr-qr-brand">
+                    <img src="/images/Logo.png" alt="Mardique">
+                    <div class="hr-qr-brand-text">
+                        <span class="hr-qr-company">Sociedad Portuaria Mardique S.A.</span>
+                        <span class="hr-qr-section">Autoservicio Talento Humano</span>
+                    </div>
+                </div>
+                <div class="hr-qr-frame">
+                    <img id="hrQrImage" alt="Código QR" crossorigin="anonymous">
+                    <div class="hr-qr-name" id="hrQrSectionName"></div>
+                </div>
+                <div class="hr-qr-foot">
+                    <i class="fas fa-mobile-alt"></i> Escanee con su celular para acceder a esta sección
+                </div>
+            </div>
+        </div>
+        <div class="hr-qr-actions">
+            <button class="hr-print-btn" onclick="printHrQr()"><i class="fas fa-print"></i> Imprimir QR</button>
+            <button class="hr-close-btn" onclick="closeHrQr()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Views Modal -->
+<div class="hr-modal" id="hrViewsModal">
+    <div class="hr-modal-overlay" onclick="closeHrViews()"></div>
+    <div class="hr-modal-box hr-views-box">
+        <button class="hr-modal-close" onclick="closeHrViews()">&times;</button>
+        <div class="hr-qr-head">
+            <span class="hr-qr-title"><i class="fas fa-eye"></i> Quiénes vieron esta sección</span>
+        </div>
+        <div class="hr-views-body" id="hrViewsBody">
+            <div class="hr-views-empty">Cargando...</div>
+        </div>
+        <div class="hr-qr-actions">
+            <button class="hr-close-btn" onclick="closeHrViews()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<script src="/js/msal-config.js"></script>
+<script src="/js/api-service.js?v=2"></script>
+<script src="/js/intranet.js"></script>
+<script>
+    /* ── Helpers ── */
+    async function _apiGet(url){const r=await fetch(url);if(!r.ok)throw new Error("Error del servidor ("+r.status+")");const t=await r.text();try{return JSON.parse(t);}catch(e){return null;}}
+    async function _apiPost(url,data){const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});if(!r.ok)throw new Error("Error del servidor ("+r.status+")");const t=await r.text();try{return JSON.parse(t);}catch(e){return null;}}
+    async function _apiDelete(url){const r=await fetch(url,{method:"DELETE"});const t=await r.text();try{return JSON.parse(t);}catch(e){return null;}}
+    async function _uploadFile(file){const fd=new FormData();fd.append("file",file);const r=await fetch("/api/intranet/upload",{method:"POST",body:fd});const t=await r.text();try{return JSON.parse(t);}catch(e){return null;}}
+    function isMsalAuthenticated(){return!!sessionStorage.getItem("msalToken");}
+    async function getCurrentUser(){
+        try{
+            const token=sessionStorage.getItem("msalToken");
+            if(token){
+                const r=await fetch("https://graph.microsoft.com/v1.0/me?$select=displayName,mail,userPrincipalName",{headers:{"Authorization":"Bearer "+token}});
+                if(r.ok){const data=await r.json();if(data&&data.userPrincipalName)return data;}
+            }
+        }catch(e){}
+        return{displayName:"Adelino Aragon",mail:"AdelinoAragon@spmardique.co",userPrincipalName:"AdelinoAragon@spmardique.co"};
+    }
+    function showIntranetToast(msg,type){
+        const t=document.getElementById('intranet-toast');
+        if(!t)return;
+        t.textContent=msg;t.className='intranet-toast '+(type||'success');t.style.display='block';
+        setTimeout(()=>{t.style.display='none';},3500);
+    }
+    function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+    function escapeHtml(str){if(!str)return'';const d=document.createElement('div');d.textContent=str;return d.innerHTML;}
+
+    /* ── API calls ── */
+    async function getHrDocs(s){return await _apiGet("/api/intranet/hr/"+encodeURIComponent(s)+"/docs");}
+    async function addHrDoc(s,n,u,d,by){return await _apiPost("/api/intranet/hr/"+encodeURIComponent(s)+"/docs",{fileName:n,fileUrl:u,description:d,uploadedBy:by});}
+    async function deleteHrDoc(id){return await _apiDelete("/api/intranet/hr/docs/"+id);}
+    async function recordHrSectionView(s,e,n){try{await _apiPost("/api/intranet/hr/"+encodeURIComponent(s)+"/view",{email:e,name:n});}catch(x){}}
+    async function getHrSectionViews(s){return await _apiGet("/api/intranet/hr/"+encodeURIComponent(s)+"/views");}
+    async function getSentSolicitudes(e){return await _apiGet("/api/intranet/solicitudes-hr/sent?email="+encodeURIComponent(e));}
+    async function getSolicitudHr(id){const res=await fetch("/api/intranet/solicitudes-hr/"+id);const t=await res.text();try{return JSON.parse(t);}catch(e){return null;}}
+    function intranetHrQrUrl(sectionId){return"/api/intranet/hr/"+encodeURIComponent(sectionId)+"/qr";}
+    function downloadHrFormat(sectionId){window.open("/api/intranet/hr/"+encodeURIComponent(sectionId)+"/format","_blank");}
+
+    /* ── Data ── */
+    let STAFF_DIRECTORY=[];
+    async function loadStaffDirectory(){try{const res=await fetch('/api/intranet/hr-staff');if(res.ok)STAFF_DIRECTORY=await res.json();}catch(e){console.warn('Error loading staff directory:',e);}}
+
+    const HR_SECTIONS=[
+        {id:'reglamento',title:'Reglamento Interno de Trabajo',desc:'Conoce las normas, derechos y obligaciones que regulan la relación laboral en la empresa.',icon:'fas fa-gavel',iconClass:'reg',solicitable:false,
+            steps:['El reglamento está disponible para consulta en la sección de documentos de Talento Humano.','Si tienes dudas sobre alguna cláusula, contacta al departamento de Recursos Humanos.','Todos los colaboradores deben firmar de recibido al ingreso a la empresa.','Las actualizaciones se notifican por correo electrónico y tablero de la intranet.']},
+        {id:'permisos',title:'Solicitud de Permiso',desc:'Gestiona permisos personales, médicos, académicos y de cualquier tipo de forma digital.',icon:'fas fa-file-signature',iconClass:'perm',solicitable:true,requiredRoles:['empleado','jefe','talento'],maxRecipients:3,formatCode:'FT-GATH-SPM-008',
+            steps:['<strong>Solicitud:</strong> Ingresa al sistema de solicitudes o envía un correo a talento.humano@mardique.com con el motivo.','<strong>Documentos:</strong> Adjunta los soportes requeridos (certificado médico, carta institucional, etc.).','<strong>Aprobación:</strong> Tu jefe directo revisa y autoriza la solicitud. Recibirás notificación del resultado.','<strong>Registro:</strong> Una vez aprobado, el permiso queda registrado en tu historial laboral.']},
+        {id:'vacaciones',title:'Solicitud de Vacaciones',desc:'Planifica y solicita tus vacaciones siguiendo el proceso establecido por la empresa.',icon:'fas fa-umbrella-beach',iconClass:'vac',solicitable:true,requiredRoles:['empleado','jefe','gerente','talento'],maxRecipients:4,formatCode:'FT-GATH-SPM-009',
+            steps:['<strong>Consulta tu saldo:</strong> Revisa los días de vacaciones disponibles en tu perfil de la intranet.','<strong>Solicitud:</strong> Registra tu solicitud con las fechas deseadas al menos 15 días antes del inicio.','<strong>Aprobación:</strong> Tu jefe directo autoriza la solicitud según las necesidades operativas del área.','<strong>Confirmación:</strong> Recibirás una notificación con la confirmación de tus vacaciones.','<strong>Entrega:</strong> Presenta la carta de vacaciones a Talento Humano antes del inicio del período.']},
+        {id:'compensacion-vacaciones',title:'Compensación de Vacaciones',desc:'FT-GATH-SPM-010 — Solicitud para el pago en dinero de vacaciones pendientes; requiere firma de Gerencia y TH.',icon:'fas fa-money-bill-transfer',iconClass:'vac',solicitable:true,requiredRoles:['empleado','gerente','talento'],maxRecipients:3,formatCode:'FT-GATH-SPM-010',
+            steps:['<strong>Documento:</strong> Descarga el formato FT-GATH-SPM-010 de compensación de vacaciones.','<strong>Diligenciamiento:</strong> Completa el formulario con tus datos personales, fechas y días a compensar.','<strong>Aprobación:</strong> Envía el formato a Gerencia y Talento Humano para revisión.','<strong>Registro:</strong> Una vez aprobado, la compensación queda registrada en tu historial laboral.']},
+        {id:'retiro-cesantias',title:'Retiro Parcial de Cesantías',desc:'FT-GATH-SPM-022 — Solicitud para retiro parcial de cesantías con carta del fondo. Requiere firma del trabajador y autorización RRHH.',icon:'fas fa-piggy-bank',iconClass:'ces',solicitable:true,requiredRoles:['empleado','talento'],maxRecipients:2,formatCode:'FT-GATH-SPM-022',
+            steps:['<strong>Documento:</strong> Descarga el formato FT-GATH-SPM-022 de retiro parcial de cesantías.','<strong>Diligenciamiento:</strong> Completa el formulario con tus datos, motivo del retiro y datos del fondo.','<strong>Soportes:</strong> Adjunta la carta del fondo de cesantías (vivienda, educación, etc.).','<strong>Aprobación:</strong> Presenta el formato a Talento Humano para autorización.','<strong>Trámite:</strong> Una vez aprobado, TH procesa el retiro ante el fondo.']},
+        {id:'reembolso-gastos',title:'Reembolso de Gastos',desc:'FT-GATH-SPM-025 — Reporta gastos operativos y adjunta facturas o recibos. Firma de colaborador y de quien recibe (seleccionado).',icon:'fas fa-receipt',iconClass:'rem',solicitable:true,requiredRoles:['empleado','jefe','coordinador','talento'],maxRecipients:3,formatCode:'FT-GATH-SPM-025',
+            steps:['<strong>Documento:</strong> Descarga el formato FT-GATH-SPM-025 de reembolso de gastos.','<strong>Diligenciamiento:</strong> Completa el detalle de gastos con descripción, valor y fecha de cada uno.','<strong>Soportes:</strong> Adjunta facturas o recibos originales de cada gasto.','<strong>Firma:</strong> Firma como colaborador y selecciona a quien autoriza (coordinador, jefe o TH).','<strong>Entrega:</strong> Envía el formato completo a Contabilidad o Talento Humano.']},
+        {id:'dia-familia',title:'Solicitud Día de la Familia',desc:'FT-GATH-SPM-026 — Solicitud formal del día de la familia. Firma del colaborador y aval de quien autoriza (seleccionado).',icon:'fas fa-users',iconClass:'fam',solicitable:true,requiredRoles:['empleado','jefe','coordinador','talento'],maxRecipients:3,formatCode:'FT-GATH-SPM-026',
+            steps:['<strong>Documento:</strong> Descarga el formato FT-GATH-SPM-026 de solicitud del Día de la Familia.','<strong>Diligenciamiento:</strong> Completa tus datos, fecha del día de la familia y nombre del grupo familiar.','<strong>Firma:</strong> Firma como solicitante y selecciona a quien autoriza (coordinador, jefe o TH).','<strong>Aprobación:</strong> Presenta la carta a tu autoridad directa para firma de aval.','<strong>Registro:</strong> Entrega la carta firmada a Talento Humano para registro.']},
+        {id:'horas-extras',title:'Horas Extras y Recargos',desc:'FT-GATH-SPM-004/027 — Reporte o solicitud de horas suplementarias. Firma del colaborador y autorización del jefe inmediato.',icon:'fas fa-clock',iconClass:'hrs',solicitable:true,requiredRoles:['empleado','jefe'],maxRecipients:2,formatCode:'FT-GATH-SPM-004',
+            steps:['<strong>Documento:</strong> Descarga el formato FT-GATH-SPM-004 de horas extras y recargos.','<strong>Diligenciamiento:</strong> Registra las horas realizadas con fecha, horario, tipo de recargo y horas.','<strong>Soportes:</strong> Adjunta evidencia del trabajo realizado (si aplica).','<strong>Firma:</strong> Firma como colaborador y envía a tu jefe inmediato para autorización.','<strong>Aprobación:</strong> Tu jefe revisa y autoriza; TH procesa el pago en nómina.']}
+    ];
+
+    let currentUserName='',currentUserEmail='',currentQrSection=null;
+
+    /* ── Render sidebar quicklinks ── */
+    function renderSidebarQuicklinks(){
+        const cont=document.getElementById('thQuicklinks');
+        if(!cont)return;
+        cont.innerHTML=HR_SECTIONS.map(s=>
+            `<button class="th-quicklink" onclick="scrollToSection('${s.id}')">
+            <span class="th-ql-icon ${s.iconClass}"><i class="${s.icon}"></i></span>
+            <span class="th-ql-label">${escapeHtml(s.title)}</span>
+            <i class="fas fa-chevron-right th-ql-arrow"></i>
+        </button>`
+        ).join('');
+    }
+
+    function scrollToSection(id){
+        const el=document.getElementById(id);
+        if(!el)return;
+        if(document.getElementById('hr-sections').style.display==='none'){
+            switchHrTab('docs');
+        }
+        setTimeout(()=>{el.scrollIntoView({behavior:'smooth',block:'start'});},80);
+    }
+
+    /* ── Tab switch ── */
+    function switchHrTab(tab){
+        document.querySelectorAll('.hr-tab').forEach(b=>{b.classList.toggle('active',b.dataset.tab===tab);});
+        const secEl=document.getElementById('hr-sections');
+        const sentEl=document.getElementById('hr-sent');
+        const searchWrap=document.getElementById('searchWrap');
+        if(tab==='docs'){
+            secEl.style.display='';sentEl.style.display='none';
+            if(searchWrap)searchWrap.style.display='';
+        } else {
+            secEl.style.display='none';sentEl.style.display='';
+            if(searchWrap)searchWrap.style.display='none';
+            loadSentSolicitudes();
+        }
+    }
+
+    /* ── Send form toggle ── */
+    function toggleSendForm(el){
+        el.classList.toggle('open');
+        const bodyId=el.nextElementSibling;
+        if(bodyId)bodyId.classList.toggle('open');
+    }
+
+    /* ── Render HR sections ── */
+    function renderHrSections(filter){
+        const cont=document.getElementById('hr-sections');
+        if(!cont)return;
+        const q=(filter||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+        const filtered=HR_SECTIONS.filter(s=>{
+            if(!q)return true;
+            return s.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(q)
+                ||s.desc.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(q);
+        });
+        if(!filtered.length){
+            cont.innerHTML='<div class="hr-empty"><div class="hr-empty-icon"><i class="fas fa-search"></i></div><h3>Sin resultados</h3><p>No se encontraron secciones con ese término.</p></div>';
+            return;
+        }
+        cont.innerHTML=filtered.map((s,i)=>{
+            const canRequest=s.solicitable!==false;
+            return `<div class="hr-card" id="${s.id}" style="animation-delay:${i*.1}s">
+            <div class="hr-card-head">
+                <div class="hr-card-icon ${s.iconClass}"><i class="${s.icon}"></i></div>
+                <div class="hr-card-info">
+                    <h3 class="hr-card-title">${escapeHtml(s.title)}</h3>
+                    <p class="hr-card-sub">${escapeHtml(s.desc)}</p>
+                </div>
+                <div class="hr-card-actions">
+                    ${s.formatCode?`<button class="hr-btn-format" onclick="downloadHrFormat('${s.id}')"><i class="fas fa-file-download"></i> Descargar formato</button>`:''}
+                    <button class="hr-btn-qr" onclick="openHrQr('${s.id}','${escapeHtml(s.title).replace(/'/g,"\\'")}')"><i class="fas fa-qrcode"></i> QR</button>
+                    <button class="hr-btn-views" onclick="openHrViews('${s.id}','${escapeHtml(s.title).replace(/'/g,"\\'")}')"><i class="fas fa-eye"></i> Vistas</button>
+                </div>
+            </div>
+            <div class="hr-card-body">
+                <h4><i class="fas fa-list-ol"></i> Procedimiento / Guía</h4>
+                <ol class="hr-steps">
+                    ${s.steps.map((step,j)=>`<li><span class="hr-step-num">${j+1}</span><span class="hr-step-text">${step}</span></li>`).join('')}
+                </ol>
+                <div id="hr-docs-${s.id}"></div>
+                <div class="hr-upload-progress" id="hr-progress-${s.id}"><i class="fas fa-spinner fa-spin"></i> Subiendo archivo...</div>
+                <input type="file" id="hr-file-${s.id}" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png,.gif,.webp,.txt" style="display:none">
+                ${canRequest?`
+                <div class="hr-send-form" id="hr-send-form-${s.id}">
+                    <div class="hr-send-toggle" onclick="toggleSendForm(this)">
+                        <i class="fas fa-paper-plane"></i> Solicitar
+                        <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="hr-send-body" id="hr-send-body-${s.id}">
+                        <div class="hr-send-field">
+                            <label>Asunto</label>
+                            <input type="text" id="hr-send-title-${s.id}" value="${escapeHtml(s.title)}">
+                        </div>
+                        <div class="hr-send-field">
+                            <label>Descripción</label>
+                            <textarea id="hr-send-desc-${s.id}" rows="3">Buenos días, le escribe ${escapeHtml(currentUserName)} para solicitarle ${escapeHtml(s.title)}.</textarea>
+                        </div>
+                        <div class="hr-send-field">
+                            <label>Adjunto</label>
+                            <label class="hr-send-attach" for="hr-send-file-${s.id}">
+                                <i class="fas fa-paperclip"></i> Adjuntar archivo<span class="hr-send-attach-name" id="hr-send-file-name-${s.id}"></span>
+                            </label>
+                            <input type="file" id="hr-send-file-${s.id}" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png,.gif,.webp,.txt" style="display:none">
+                        </div>
+                        <div class="hr-send-field">
+                            <label>Destinatarios (máx. ${s.maxRecipients||3})</label>
+                            <div class="hr-send-recipients" id="hr-send-recipients-${s.id}"></div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;margin-top:6px;flex-wrap:wrap;">
+                            <button class="hr-send-btn" id="hr-send-btn-${s.id}" onclick="submitSolicitudHr('${s.id}','${escapeHtml(s.title).replace(/'/g,"\\'")}')"><i class="fas fa-paper-plane"></i> Enviar Solicitud</button>
+                            <span class="hr-send-status" id="hr-send-status-${s.id}"></span>
+                        </div>
+                    </div>
+                </div>`
+                :'<div style="padding:12px 0;text-align:center;color:var(--mx);font-size:12px;font-style:italic;"><i class="fas fa-info-circle" style="margin-right:4px;"></i>Documento informativo — no requiere solicitud</div>'}
+            </div>
+        </div>`;
+        }).join('');
+
+        filtered.forEach(s=>initUploadListeners(s.id));
+        filtered.forEach(s=>loadSectionDocs(s.id));
+        filtered.filter(s=>s.solicitable!==false).forEach(s=>loadSendRecipients(s.id));
+        filtered.filter(s=>s.solicitable!==false).forEach(s=>initSendFileListeners(s.id));
+
+        if(currentUserEmail){
+            const observer=new IntersectionObserver(entries=>{
+                entries.forEach(entry=>{
+                    if(entry.isIntersecting){
+                        const sectionId=entry.target.id;
+                        if(sectionId&&HR_SECTIONS.find(s=>s.id===sectionId)){
+                            recordHrSectionView(sectionId,currentUserEmail,currentUserName);
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },{threshold:0.5});
+            document.querySelectorAll('.hr-card').forEach(card=>observer.observe(card));
+        }
+    }
+
+    /* ── Doc rendering ── */
+    function getDocColor(name){const ext=(name||'').split('.').pop().toLowerCase();const c={pdf:'#dc2626',doc:'#2563eb',docx:'#2563eb',xls:'#16a34a',xlsx:'#16a34a',csv:'#0e7490',jpg:'#a855f7',jpeg:'#a855f7',png:'#a855f7',gif:'#a855f7',webp:'#a855f7',txt:'#64748b'};return c[ext]||'#94a3b8';}
+    function docPagePreviewSVG(name){const color=getDocColor(name);const ext=(name||'').split('.').pop().toUpperCase();return'<svg viewBox="0 0 120 156" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"><path d="M8 0 H90 L120 30 V150 A6 6 0 0 1 114 156 H8 A6 6 0 0 1 2 150 V6 A6 6 0 0 1 8 0 Z" fill="#ffffff" stroke="#e1e5ea" stroke-width="1.5"/><path d="M90 0 L90 30 H120 Z" fill="#eef1f4" stroke="#e1e5ea" stroke-width="1.5"/><rect x="16" y="14" width="8" height="8" rx="2" fill="'+color+'"/><rect x="28" y="16" width="34" height="4.5" rx="2" fill="'+color+'" opacity=".55"/><rect x="16" y="46" width="88" height="5" rx="2" fill="#e6e9ed"/><rect x="16" y="59" width="88" height="5" rx="2" fill="#e6e9ed"/><rect x="16" y="72" width="62" height="5" rx="2" fill="#e6e9ed"/><rect x="16" y="92" width="88" height="5" rx="2" fill="#eef1f4"/><rect x="16" y="105" width="88" height="5" rx="2" fill="#eef1f4"/><rect x="16" y="118" width="88" height="5" rx="2" fill="#eef1f4"/><rect x="16" y="131" width="48" height="5" rx="2" fill="#eef1f4"/></svg>';}
+    function getDocThumbUrl(fileUrl,fileName,docId){if(!fileUrl||!docId)return'';return'/api/intranet/hr/docs/'+docId+'/thumbnail';}
+
+    async function loadSectionDocs(sectionId){
+        const container=document.getElementById('hr-docs-'+sectionId);
+        if(!container)return;
+        try{
+            const docs=await getHrDocs(sectionId);
+            if(!docs||!docs.length){
+                container.innerHTML='<div class="hr-upload-area" onclick="triggerUpload(\''+sectionId+'\')"><i class="fas fa-cloud-arrow-up"></i><span>Arrastra un archivo o haz clic para subir</span><small>PDF, Word, Excel, imágenes (máx. 20 MB)</small></div>';
+                setupUploadDrag(sectionId);return;
+            }
+            const doc=docs[0];
+            const dt=(()=>{try{return new Date(doc.uploadedAt).toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return'';}})();
+            const ext=(doc.fileName||'').split('.').pop();
+            const thumbUrl=getDocThumbUrl(doc.fileUrl,doc.fileName,doc.id);
+            let thumbHtml;
+            if(thumbUrl){thumbHtml='<img src="'+thumbUrl+'" alt="" loading="lazy" onerror="this.outerHTML=\''+docPagePreviewSVG(doc.fileName).replace(/'/g,"\\'").replace(/"/g,"&quot;")+'\'">';}
+            else{thumbHtml=docPagePreviewSVG(doc.fileName);}
+            container.innerHTML='<div class="hr-doc-card"><div class="hr-doc-card-inner"><div class="hr-doc-thumb">'+thumbHtml+'<span class="hr-doc-thumb-badge">.'+ext+'</span></div><div class="hr-doc-body"><a class="hr-doc-name" href="'+escapeHtml(doc.fileUrl)+'" target="_blank" rel="noopener" title="'+escapeHtml(doc.fileName)+'">'+escapeHtml(doc.fileName)+'</a><span class="hr-doc-meta">'+(doc.uploadedBy?escapeHtml(doc.uploadedBy)+' · ':'')+dt+'</span><div class="hr-doc-actions"><button class="hr-doc-btn-view" onclick="window.open(\''+escapeHtml(doc.fileUrl)+'\',\'_blank\')" title="Ver"><i class="fas fa-eye"></i> Ver</button><button class="hr-doc-btn-replace" onclick="triggerUpload(\''+sectionId+'\')" title="Reemplazar"><i class="fas fa-arrows-rotate"></i></button><button class="hr-doc-btn-del" onclick="deleteHrDocConfirm('+doc.id+',\''+sectionId+'\')" title="Eliminar"><i class="fas fa-trash-can"></i></button></div></div></div></div>';
+        }catch(e){container.innerHTML='<div style="padding:8px 0;font-size:12px;color:#dc2626;">Error al cargar documentos.</div>';}
+    }
+
+    function triggerUpload(sectionId){document.getElementById('hr-file-'+sectionId)?.click();}
+
+    function setupUploadDrag(sectionId){
+        const area=document.getElementById('hr-docs-'+sectionId)?.querySelector('.hr-upload-area');
+        if(!area)return;
+        area.addEventListener('dragover',e=>{e.preventDefault();area.classList.add('dragover');});
+        area.addEventListener('dragleave',()=>area.classList.remove('dragover'));
+        area.addEventListener('drop',e=>{e.preventDefault();area.classList.remove('dragover');if(e.dataTransfer.files.length)uploadHrFile(sectionId,e.dataTransfer.files[0]);});
+        const fi=document.getElementById('hr-file-'+sectionId);
+        if(fi){fi.onchange=()=>{if(fi.files.length)uploadHrFile(sectionId,fi.files[0]);fi.value='';}}
+    }
+
+    function initUploadListeners(sectionId){
+        const fi=document.getElementById('hr-file-'+sectionId);
+        if(fi){fi.onchange=()=>{if(fi.files.length)uploadHrFile(sectionId,fi.files[0]);fi.value='';}}
+    }
+
+    async function uploadHrFile(sectionId,file){
+        const progress=document.getElementById('hr-progress-'+sectionId);
+        if(progress)progress.classList.add('active');
+        try{
+            const uploadResult=await _uploadFile(file);
+            if(uploadResult&&uploadResult.url){
+                await addHrDoc(sectionId,file.name,uploadResult.url,'',currentUserName);
+                showIntranetToast('Documento subido correctamente','success');
+                loadSectionDocs(sectionId);
+            }else{showIntranetToast('Error al subir: '+(uploadResult?.error||'Intenta de nuevo'),'error');}
+        }catch(e){showIntranetToast('Error al subir archivo','error');}
+        if(progress)progress.classList.remove('active');
+    }
+
+    async function deleteHrDocConfirm(docId,sectionId){
+        if(!confirm('¿Eliminar este documento?'))return;
+        try{await deleteHrDoc(docId);showIntranetToast('Documento eliminado','success');loadSectionDocs(sectionId);}
+        catch(e){showIntranetToast('Error al eliminar','error');}
+    }
+
+    /* ── QR ── */
+    function openHrQr(sectionId,sectionName){
+        currentQrSection={id:sectionId,name:sectionName};
+        document.getElementById('hrQrSectionName').textContent=sectionName;
+        document.getElementById('hrQrImage').src=intranetHrQrUrl(sectionId)+'?t='+Date.now();
+        document.getElementById('hrQrModal').classList.add('open');
+        document.body.style.overflow='hidden';
+    }
+    function closeHrQr(){document.getElementById('hrQrModal').classList.remove('open');document.body.style.overflow='';currentQrSection=null;}
+
+    function printHrQr(){
+        const img=document.getElementById('hrQrImage');
+        const sectionName=currentQrSection?currentQrSection.name:'Sección';
+        const logoEl=document.querySelector('.intranet-hdr-logo img');
+        const logoSrc=logoEl?logoEl.src:'/images/Logo.png';
+        let qrDataUrl=img.src||'';
+        try{const c=document.createElement('canvas');c.width=img.naturalWidth||300;c.height=img.naturalHeight||300;c.getContext('2d').drawImage(img,0,0);qrDataUrl=c.toDataURL('image/png');}catch(e){}
+        const win=window.open('','_blank','width=700,height=960');
+        if(!win)return;
+        win.document.write(`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>QR — ${sectionName}</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><style>:root{--pd:#0a2e4d;--pb:#0a2e4d;--ag:#e6ab09;--cy:#1e98d9;--tx:#1e293b;--mt:#64748b;--bdr:#e2e8f0;--bg:#f5f7fa;}@page{size:A4;margin:0;}@media print{.no-print{display:none!important;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}body{background:#dde4ec!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:32px 20px!important;}.sheet{box-shadow:none!important;}}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#dde4ec;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:44px 20px;}.sheet{width:100%;max-width:500px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 64px rgba(15,30,50,.2);}.hd{background:linear-gradient(145deg,#0a2e4d,#0a2e4d);padding:28px 32px 24px;position:relative;overflow:hidden;}.hd-row{display:flex;align-items:center;gap:18px;}.logo-box{display:flex;align-items:center;background:#fff;padding:8px 16px 8px 12px;border-radius:12px;flex-shrink:0;}.logo-box img{height:38px;width:auto;object-fit:contain;display:block;}.hd-sep{width:1px;height:50px;background:rgba(255,255,255,.18);flex-shrink:0;}.hd-text{flex:1;}.hd-company{display:block;font-size:15px;font-weight:900;color:#fff;line-height:1.2;}.hd-sub{display:block;font-size:9px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1.3px;margin-top:5px;}.hd-badge{display:inline-flex;align-items:center;gap:6px;margin-top:18px;padding:5px 13px;border-radius:50px;background:rgba(230,171,9,.18);border:1px solid rgba(230,171,9,.38);color:#f7c46b;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;}.bd{padding:30px 32px 28px;display:flex;flex-direction:column;align-items:center;gap:24px;}.qr-outer{position:relative;padding:18px;background:#fff;border-radius:16px;border:1.5px solid #dde6f0;box-shadow:0 10px 32px rgba(0,0,0,.12);}.qr-img{display:block;width:230px;height:230px;object-fit:contain;image-rendering:pixelated;}.doc-title{font-size:17px;font-weight:900;color:var(--tx);text-align:center;line-height:1.35;}.ft{background:var(--bg);border-top:1px solid var(--bdr);padding:12px 32px;display:flex;align-items:center;justify-content:space-between;}.ft-label{font-size:9px;font-weight:700;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;}.print-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 36px;background:var(--pd);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;}</style></head><body><div class="sheet"><div class="hd"><div class="hd-row"><div class="logo-box"><img src="${logoSrc}" alt="Mardique" onerror="this.parentNode.innerHTML='<span style=\\'font-weight:900;color:#0a2e4d;\\'>MARDIQUE</span>'"></div><div class="hd-sep"></div><div class="hd-text"><span class="hd-company">Sociedad Portuaria<br>Mardique S.A.</span><span class="hd-sub">Intranet Corporativa</span></div></div><div class="hd-badge">Autoservicio Talento Humano</div></div><div class="bd"><div class="qr-outer"><img class="qr-img" src="${qrDataUrl}" alt="QR"></div><div class="doc-title">${sectionName}</div></div><div class="ft"><span class="ft-label">Sociedad Portuaria Mardique S.A.</span></div></div><button class="print-btn no-print" onclick="window.print()">Imprimir QR</button></body>`);
+        win.document.close();
+    }
+
+    /* ── Views modal ── */
+    async function openHrViews(sectionId,sectionName){
+        document.getElementById('hrViewsBody').innerHTML='<div class="hr-views-empty"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
+        document.getElementById('hrViewsModal').classList.add('open');
+        document.body.style.overflow='hidden';
+        try{
+            const views=await getHrSectionViews(sectionId);
+            if(!Array.isArray(views)||!views.length){document.getElementById('hrViewsBody').innerHTML='<div class="hr-views-empty">Nadie ha visto esta sección aún.</div>';return;}
+            const rows=views.map(v=>{let dt='';try{dt=new Date(v.lastViewedAt||v.viewedAt).toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){}
+                return '<tr><td><div class="hr-views-mail"><i class="fas fa-user-circle"></i>'+escapeHtml(v.email||'')+'<span class="hr-views-name">'+escapeHtml(v.name||'')+'</span></div></td><td><span class="hr-views-count">'+((v.viewCount)||1)+'</span></td><td>'+dt+'</td></tr>';}).join('');
+            document.getElementById('hrViewsBody').innerHTML='<div class="hr-views-section">'+escapeHtml(sectionName)+'</div><div class="hr-views-wrap"><table class="hr-views-table"><thead><tr><th>Usuario</th><th>Veces</th><th>Última vez</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+        }catch(e){document.getElementById('hrViewsBody').innerHTML='<div class="hr-views-empty">Error al cargar vistas.</div>';}
+    }
+    function closeHrViews(){document.getElementById('hrViewsModal').classList.remove('open');document.body.style.overflow='';}
+
+    /* ── Send form ── */
+    function initSendFileListeners(sectionId){
+        const fi=document.getElementById('hr-send-file-'+sectionId);
+        const label=document.getElementById('hr-send-file-name-'+sectionId);
+        if(fi&&label){fi.onchange=()=>{if(fi.files.length){label.textContent=' — '+fi.files[0].name;}else{label.textContent='';}}}
+    }
+
+    async function loadSendRecipients(sectionId){
+        const container=document.getElementById('hr-send-recipients-'+sectionId);
+        if(!container)return;
+        const section=HR_SECTIONS.find(s=>s.id===sectionId);
+        const requiredRoles=section?(section.requiredRoles||[]):[];
+        const maxR=section?(section.maxRecipients||3):3;
+        try{
+            const groups={};
+            const order=['Gerencia','Coordinadores','Talento Humano','Administración'];
+            STAFF_DIRECTORY.forEach((p,i)=>{
+                if(requiredRoles.length>0){
+                    const roleLower=(p.role||'').toLowerCase();
+                    const groupLower=(p.group||'').toLowerCase();
+                    const matches=requiredRoles.some(r=>{
+                        if(r==='empleado')return false;
+                        if(r==='jefe')return roleLower.includes('coordinador')||groupLower.includes('coordinador');
+                        if(r==='gerente')return groupLower.includes('gerencia');
+                        if(r==='talento')return groupLower.includes('talento');
+                        return false;
+                    });
+                    if(!matches)return;
+                }
+                const g=p.group||'Otros';
+                if(!groups[g])groups[g]=[];
+                groups[g].push({...p,idx:i});
+            });
+            let html='';
+            order.forEach(gName=>{
+                if(!groups[gName]||groups[gName].length===0)return;
+                html+='<div class="hr-rcpt-group"><div class="hr-rcpt-group-title">'+escapeHtml(gName)+'</div><div class="hr-rcpt-group-items">';
+                groups[gName].forEach(p=>{const id='hr-rcpt-'+sectionId+'-'+p.idx;html+='<label class="hr-send-recipient" for="'+id+'"><input type="checkbox" id="'+id+'" value="'+escapeHtml(p.email)+'" data-name="'+escapeHtml(p.name)+'" data-role="'+escapeHtml(p.role)+'"><span>'+escapeHtml(p.name)+'</span></label>';});
+                html+='</div></div>';
+            });
+            Object.keys(groups).forEach(gName=>{
+                if(!order.includes(gName)){
+                    html+='<div class="hr-rcpt-group"><div class="hr-rcpt-group-title">'+escapeHtml(gName)+'</div><div class="hr-rcpt-group-items">';
+                    groups[gName].forEach(p=>{const id='hr-rcpt-'+sectionId+'-'+p.idx;html+='<label class="hr-send-recipient" for="'+id+'"><input type="checkbox" id="'+id+'" value="'+escapeHtml(p.email)+'" data-name="'+escapeHtml(p.name)+'" data-role="'+escapeHtml(p.role)+'"><span>'+escapeHtml(p.name)+'</span></label>';});
+                    html+='</div></div>';
+                }
+            });
+            container.innerHTML=html;
+            container.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+                cb.addEventListener('change',()=>{
+                    const checked=container.querySelectorAll('input[type="checkbox"]:checked');
+                    if(checked.length>maxR){cb.checked=false;showIntranetToast('Máximo '+maxR+' destinatarios','error');return;}
+                    cb.closest('.hr-send-recipient').classList.toggle('selected',cb.checked);
+                });
+            });
+        }catch(e){container.innerHTML='<span style="font-size:12px;color:var(--mx);">Error al cargar directorio.</span>';}
+    }
+
+    async function submitSolicitudHr(sectionId,sectionTitle){
+        const btn=document.getElementById('hr-send-btn-'+sectionId);
+        const status=document.getElementById('hr-send-status-'+sectionId);
+        const titleInput=document.getElementById('hr-send-title-'+sectionId);
+        const descInput=document.getElementById('hr-send-desc-'+sectionId);
+        const fileInput=document.getElementById('hr-send-file-'+sectionId);
+        const recipientsContainer=document.getElementById('hr-send-recipients-'+sectionId);
+        const title=titleInput?titleInput.value.trim():sectionTitle;
+        const description=descInput?descInput.value.trim():'';
+        const selectedCbs=recipientsContainer?recipientsContainer.querySelectorAll('input[type="checkbox"]:checked'):[];
+        const recipients=Array.from(selectedCbs).map(cb=>({email:cb.value,name:cb.dataset.name||''}));
+        if(!title){if(status){status.className='hr-send-status show err';status.textContent='Escribe un título para la solicitud.';}return;}
+        if(!recipients.length){if(status){status.className='hr-send-status show err';status.textContent='Selecciona al menos un destinatario.';}return;}
+        if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Enviando...';}
+        if(status){status.className='hr-send-status';status.textContent='';}
+        try{
+            const fd=new FormData();
+            fd.append('sectionId',sectionId);fd.append('title',title);fd.append('description',description);
+            fd.append('senderEmail',currentUserEmail);fd.append('senderName',currentUserName);
+            fd.append('recipients',JSON.stringify(recipients));
+            if(fileInput&&fileInput.files.length)fd.append('file',fileInput.files[0]);
+            const res=await fetch("/api/intranet/solicitudes-hr",{method:'POST',body:fd});
+            const result=await res.json();
+            if(result&&result.id){if(status){status.className='hr-send-status show ok';status.textContent='Solicitud enviada correctamente.';}showIntranetToast('Solicitud enviada','success');}
+            else{throw new Error(result?.error||'Error al enviar');}
+            if(fileInput)fileInput.value='';
+            const fileNameLabel=document.getElementById('hr-send-file-name-'+sectionId);if(fileNameLabel)fileNameLabel.textContent='';
+            selectedCbs.forEach(cb=>{cb.checked=false;cb.closest('.hr-send-recipient').classList.remove('selected');});
+        }catch(e){if(status){status.className='hr-send-status show err';status.textContent='Error al enviar: '+(e.message||'Intenta de nuevo');}showIntranetToast('Error al enviar solicitud','error');}
+        if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Enviar Solicitud';}
+    }
+
+    /* ── Sent tab ── */
+    async function loadSentSolicitudes(){
+        const container=document.getElementById('hr-sent');
+        if(!container)return;
+        container.innerHTML='<div class="intranet-loading"><i class="fas fa-spinner fa-spin"></i><span>Cargando solicitudes enviadas...</span></div>';
+        try{
+            if(!currentUserEmail){container.innerHTML='<div class="hr-empty"><div class="hr-empty-icon"><i class="fas fa-user"></i></div><h3>Sesión no disponible</h3><p>No se pudo identificar al usuario actual.</p></div>';return;}
+            const solicitudes=await getSentSolicitudes(currentUserEmail);
+            if(!solicitudes||!solicitudes.length){container.innerHTML='<div class="hr-empty"><div class="hr-empty-icon"><i class="fas fa-inbox"></i></div><h3>Sin solicitudes enviadas</h3><p>Aún no has enviado ninguna solicitud de Talento Humano.</p></div>';return;}
+            container.innerHTML='<div class="hr-sent-list">'+solicitudes.map((sol,i)=>{
+                const statusClass=(sol.status||'PENDIENTE').toLowerCase().replace(' ','_');
+                const statusLabel=(sol.status||'PENDIENTE').replace('_',' ');
+                const dt=(()=>{try{return new Date(sol.createdAt||sol.sentAt).toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return'';}})();
+                const recipientsHtml=(sol.recipients||[]).map(r=>'<span class="hr-sent-recipient-tag"><i class="fas fa-user"></i> '+escapeHtml(r.name||r.email)+'</span>').join('');
+                return '<div class="hr-sent-card" style="animation-delay:'+(i*.06)+'s"><div class="hr-sent-head"><h3 class="hr-sent-title">'+escapeHtml(sol.title||'Sin título')+'</h3><span class="hr-sent-badge '+statusClass+'">'+statusLabel+'</span></div>'+(sol.description?'<p class="hr-sent-desc">'+escapeHtml(sol.description)+'</p>':'')+'<div class="hr-sent-meta"><span><i class="fas fa-calendar"></i> '+dt+'</span>'+(sol.sectionTitle?'<span><i class="fas fa-folder"></i> '+escapeHtml(sol.sectionTitle)+'</span>':'')+(sol.documentName?'<span><i class="fas fa-paperclip"></i> '+escapeHtml(sol.documentName)+'</span>':'')+'</div>'+(recipientsHtml?'<div class="hr-sent-recipients-list">'+recipientsHtml+'</div>':'')+'<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;"><button onclick="openHrDetail('+sol.id+')" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;font-size:11px;font-weight:700;background:rgba(10,46,77,.08);color:#0a2e4d;border:none;cursor:pointer;font-family:inherit;"><i class="fas fa-eye"></i> Ver</button>'+(sol.documentUrl?'<a href="/api/intranet/solicitudes-hr/'+sol.id+'/pdf/download" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;font-size:11px;font-weight:700;background:rgba(30,152,217,.08);color:#1e98d9;"><i class="fas fa-download"></i> Descargar PDF</a>':'')+'</div></div>';
+            }).join('')+'</div>';
+        }catch(e){container.innerHTML='<div class="hr-empty"><div class="hr-empty-icon"><i class="fas fa-exclamation-triangle"></i></div><h3>Error al cargar</h3><p>No se pudieron cargar las solicitudes enviadas.</p></div>';}
+    }
+
+    /* ── Detail Modal ── */
+    async function openHrDetail(id){
+        const sol=await getSolicitudHr(id);
+        if(!sol){showIntranetToast('Error al cargar solicitud','error');return;}
+        document.getElementById('detailTitle').textContent=sol.title||'Sin título';
+        document.getElementById('detailSender').textContent=sol.senderName||sol.senderEmail||'Desconocido';
+        document.getElementById('detailDate').textContent=(()=>{try{return new Date(sol.createdAt).toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return'';}})();
+        const stCls=sol.status||'PENDIENTE';
+        document.getElementById('detailStatusWrap').innerHTML='<span class="hr-sent-badge '+stCls.toLowerCase()+'">'+( sol.status||'PENDIENTE').replace('_',' ')+'</span>';
+        if(sol.description){document.getElementById('detailDesc').textContent=sol.description;document.getElementById('detailDescSection').style.display='';}
+        else{document.getElementById('detailDescSection').style.display='none';}
+        const pdfWrap=document.getElementById('detailPdfWrap');pdfWrap.innerHTML='';
+        const pdfEndpoint='/api/intranet/solicitudes-hr/'+sol.id+'/pdf?v='+Date.now();
+        const btnOpen=document.getElementById('detailBtnOpen');const btnDl=document.getElementById('detailBtnDl');
+        btnOpen.href=pdfEndpoint;btnDl.href='/api/intranet/solicitudes-hr/'+sol.id+'/pdf/download';
+        if(sol.documentUrl){
+            btnOpen.style.display='';btnDl.style.display='';
+            pdfWrap.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#454a52;color:#fff;font-size:13px;gap:10px;" id="detailPdfLoading"><i class="fas fa-spinner fa-spin"></i> Cargando documento...</div>';
+            const iframe=document.createElement('iframe');iframe.title=sol.documentName||'Documento';iframe.setAttribute('allowfullscreen','');
+            iframe.onload=function(){const ld=document.getElementById('detailPdfLoading');if(ld)ld.style.display='none';};
+            iframe.src=pdfEndpoint;pdfWrap.appendChild(iframe);
+        }else{btnOpen.style.display='none';btnDl.style.display='none';pdfWrap.innerHTML='<div class="hr-detail-placeholder"><i class="fas fa-file-pdf"></i><span>Sin documento adjunto</span></div>';}
+        const tl=document.getElementById('detailTimeline');
+        const recips=sol.recipients||[];
+        if(!recips.length){tl.innerHTML='<div style="font-size:12px;color:var(--mx);padding:8px 0;">Sin flujo de aprobación definido.</div>';}
+        else{
+            const sorted=[...recips].sort((a,b)=>(a.orderIndex||0)-(b.orderIndex||0));
+            let tlHtml=sorted.map(r=>{
+                let cls='waiting',statusText='En espera';
+                if(r.status==='APROBADO'){cls='done';statusText='Aprobado';}
+                else if(r.status==='RECHAZADO'){cls='rejected';statusText='Rechazado';}
+                else if(r.status==='PENDIENTE'){cls='active';statusText='Pendiente de revisión';}
+                return '<div class="hr-detail-tl-item '+cls+'"><div class="hr-detail-tl-name">'+escapeHtml(r.name||r.email)+'</div><div class="hr-detail-tl-role">'+escapeHtml(r.role||'')+'</div><div class="hr-detail-tl-status '+cls+'">'+statusText+'</div>'+(r.comment?'<div class="hr-detail-tl-comment">'+escapeHtml(r.comment)+'</div>':'')+'</div>';
+            }).join('');
+            tl.innerHTML=tlHtml+'<div class="hr-detail-tl-item final"><div class="hr-detail-tl-name">Proceso completado</div></div>';
+        }
+        document.getElementById('hrDetailModal').classList.add('open');document.body.style.overflow='hidden';
+    }
+    function closeHrDetail(){document.getElementById('hrDetailModal').classList.remove('open');document.body.style.overflow='';}
+
+    /* ── Signature Manager ── */
+    let hrUserSignature=null,hrUserName='',hrUserEmail='';
+    async function loadHrSignature(){
+        try{
+            const sig=await _apiGet("/api/intranet/solicitudes-hr/signature/"+encodeURIComponent(hrUserEmail));
+            if(sig&&sig.signatureUrl){hrUserSignature=sig;updateSidebarSig();}
+        }catch(e){}
+    }
+
+    function updateSidebarSig(){
+        const preview=document.getElementById('thSigPreview');
+        if(!preview)return;
+        if(hrUserSignature&&hrUserSignature.signatureUrl){
+            preview.innerHTML='<img src="'+esc(hrUserSignature.signatureUrl)+'" alt="Firma" style="max-height:56px;max-width:100%;object-fit:contain;display:block;">';
+        }else{
+            preview.innerHTML='<div class="th-sig-none"><i class="fas fa-pen-nib"></i><span>Sin firma configurada</span></div>';
+        }
+    }
+
+    let _hrSavedScrollY=0;
+    function openHrSignatureManager(){
+        if(document.getElementById('hrSigOverlay'))return;
+        _hrSavedScrollY=window.scrollY;
+        const hasSig=hrUserSignature&&hrUserSignature.signatureUrl;
+        const overlay=document.createElement('div');
+        overlay.id='hrSigOverlay';overlay.className='hr-sig-overlay';
+        overlay.innerHTML=`<div class="hr-sig-box">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <h2 style="margin:0;font-size:18px;"><i class="fas fa-signature" style="color:var(--ag);margin-right:8px;"></i>Mi Firma Digital</h2>
+            <button onclick="closeHrSigManager()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--mx);">&times;</button>
+        </div>
+        ${hasSig?`<div style="text-align:center;padding:16px;background:#f0fdf4;border:2px solid #bbf7d0;border-radius:12px;margin-bottom:16px;"><div style="font-size:12px;color:#16a34a;font-weight:700;margin-bottom:8px;"><i class="fas fa-check-circle"></i> Firma configurada</div><img src="${esc(hrUserSignature.signatureUrl)}" style="max-height:60px;max-width:240px;" alt="Firma"><div style="font-size:11px;color:var(--mx);margin-top:4px;">${esc(hrUserSignature.name||hrUserName)}</div></div>`
+            :`<div style="text-align:center;padding:16px;background:#fef3c7;border:2px solid #fde68a;border-radius:12px;margin-bottom:16px;"><div style="font-size:12px;color:#d97706;font-weight:700;"><i class="fas fa-exclamation-triangle"></i> No tienes firma configurada</div><div style="font-size:11px;color:var(--mx);margin-top:4px;">Dibuja o sube tu firma para enviar documentos firmados.</div></div>`}
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <button class="hr-sig-tab active" id="hrSigTabDraw" onclick="switchHrSigTab('draw')"><i class="fas fa-pen-nib"></i> Dibujar</button>
+            <button class="hr-sig-tab" id="hrSigTabUpload" onclick="switchHrSigTab('upload')"><i class="fas fa-cloud-arrow-up"></i> Subir</button>
+            ${hasSig?'<button class="hr-sig-tab" onclick="deleteHrSignature()" style="flex:none;padding:10px 16px;border-color:#fecaca;color:var(--rd);"><i class="fas fa-trash"></i></button>':''}
+        </div>
+        <div id="hrSigPanelDraw">
+            <div class="hr-sig-canvas-wrap">
+                <div class="hr-sig-canvas-header"><span><i class="fas fa-pen-nib"></i> Dibuja tu firma</span><button class="hr-sig-clear" onclick="clearHrSig()"><i class="fas fa-eraser"></i> Limpiar</button></div>
+                <canvas id="hrSigCanvas" class="hr-sig-canvas" width="400" height="150"></canvas>
+            </div>
+            <button class="hr-sig-btn" id="btnHrSaveSig" onclick="saveHrSignature()">Guardar Firma</button>
+        </div>
+        <div id="hrSigPanelUpload" style="display:none;">
+            <label style="display:flex;align-items:center;gap:10px;padding:20px;border:2px dashed #e2e8f0;border-radius:10px;background:#f9fafc;cursor:pointer;font-size:13px;font-weight:600;color:var(--mx);justify-content:center;">
+                <i class="fas fa-cloud-arrow-up" style="font-size:24px;color:var(--ag);"></i>
+                <span id="hrSigUploadLabel">Seleccionar imagen...</span>
+                <input type="file" id="hrSigFileInput" accept="image/*" style="display:none;" onchange="handleHrSigUpload(this)">
+            </label>
+            <button class="hr-sig-btn" id="btnHrUploadSig" onclick="uploadHrSignature()" disabled style="opacity:.5;">Subir y Guardar</button>
+        </div>
+    </div>`;
+        document.body.appendChild(overlay);
+        setTimeout(initHrSigCanvas,100);
+    }
+
+    function closeHrSigManager(){const o=document.getElementById('hrSigOverlay');if(o)o.remove();requestAnimationFrame(()=>window.scrollTo(0,_hrSavedScrollY));}
+
+    function switchHrSigTab(tab){
+        document.getElementById('hrSigPanelDraw').style.display=tab==='draw'?'':'none';
+        document.getElementById('hrSigPanelUpload').style.display=tab==='upload'?'':'none';
+        ['hrSigTabDraw','hrSigTabUpload'].forEach(id=>{const btn=document.getElementById(id);if(btn){btn.style.borderColor='#e2e8f0';btn.style.background='#fff';btn.style.color='#64748b';btn.classList.remove('active');}});
+        const active=document.getElementById(tab==='draw'?'hrSigTabDraw':'hrSigTabUpload');
+        if(active){active.style.borderColor='var(--pd)';active.style.background='var(--pd)';active.style.color='#fff';active.classList.add('active');}
+    }
+
+    let _hrSigCtx=null,_hrSigCanvas=null,_hrSigDrawing=false,_hrSigLastX=0,_hrSigLastY=0;
+    function initHrSigCanvas(){
+        _hrSigCanvas=document.getElementById('hrSigCanvas');if(!_hrSigCanvas)return;
+        _hrSigCtx=_hrSigCanvas.getContext('2d');
+        const wrap=_hrSigCanvas.parentElement;const w=wrap?wrap.clientWidth:400;const ratio=window.devicePixelRatio||1;
+        _hrSigCanvas.width=w*ratio;_hrSigCanvas.height=150*ratio;_hrSigCanvas.style.width='100%';_hrSigCanvas.style.height='150px';
+        _hrSigCtx.scale(ratio,ratio);_hrSigCtx.lineCap='round';_hrSigCtx.lineJoin='round';_hrSigCtx.strokeStyle='#0a2e4d';_hrSigCtx.lineWidth=2.5;
+        _hrSigCanvas.onmousedown=function(e){e.preventDefault();_hrSigDrawing=true;const p=getHrSigPos(e);_hrSigLastX=p.x;_hrSigLastY=p.y;};
+        _hrSigCanvas.onmousemove=function(e){if(!_hrSigDrawing||!_hrSigCtx)return;e.preventDefault();const p=getHrSigPos(e);_hrSigCtx.beginPath();_hrSigCtx.moveTo(_hrSigLastX,_hrSigLastY);_hrSigCtx.lineTo(p.x,p.y);_hrSigCtx.stroke();_hrSigLastX=p.x;_hrSigLastY=p.y;};
+        _hrSigCanvas.onmouseup=function(e){if(e)e.preventDefault();_hrSigDrawing=false;};
+        _hrSigCanvas.onmouseleave=function(e){if(e)e.preventDefault();_hrSigDrawing=false;};
+        _hrSigCanvas.ontouchstart=function(e){e.preventDefault();_hrSigDrawing=true;const p=getHrSigPos(e);_hrSigLastX=p.x;_hrSigLastY=p.y;};
+        _hrSigCanvas.ontouchmove=function(e){e.preventDefault();if(!_hrSigDrawing||!_hrSigCtx)return;const p=getHrSigPos(e);_hrSigCtx.beginPath();_hrSigCtx.moveTo(_hrSigLastX,_hrSigLastY);_hrSigCtx.lineTo(p.x,p.y);_hrSigCtx.stroke();_hrSigLastX=p.x;_hrSigLastY=p.y;};
+        _hrSigCanvas.ontouchend=function(e){if(e)e.preventDefault();_hrSigDrawing=false;};
+    }
+    function getHrSigPos(e){const rect=_hrSigCanvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-rect.left,y:t.clientY-rect.top};}
+    function clearHrSig(){if(_hrSigCtx&&_hrSigCanvas){const ratio=window.devicePixelRatio||1;_hrSigCtx.clearRect(0,0,_hrSigCanvas.width/ratio,_hrSigCanvas.height/ratio);}}
+    function hasHrSigDrawn(){if(!_hrSigCanvas||!_hrSigCtx)return false;const data=_hrSigCtx.getImageData(0,0,_hrSigCanvas.width,_hrSigCanvas.height).data;for(let i=3;i<data.length;i+=4){if(data[i]>0)return true;}return false;}
+
+    async function saveHrSignature(){
+        if(!hasHrSigDrawn()){showIntranetToast('Dibuja tu firma antes de guardar','error');return;}
+        const btn=document.getElementById('btnHrSaveSig');btn.disabled=true;btn.textContent='Guardando...';
+        try{
+            const dataUrl=_hrSigCanvas.toDataURL('image/png');const parts=dataUrl.split(',');const byteStr=atob(parts[1]);
+            const ab=new ArrayBuffer(byteStr.length);const ia=new Uint8Array(ab);for(let i=0;i<byteStr.length;i++)ia[i]=byteStr.charCodeAt(i);
+            const blob=new Blob([ab],{type:'image/png'});const fd=new FormData();fd.append('file',blob,'firma_'+Date.now()+'.png');
+            const uploadRes=await fetch('/api/intranet/upload',{method:'POST',body:fd});const uploadJson=JSON.parse(await uploadRes.text());const sigUrl=uploadJson.url||'';
+            await _apiPost('/api/intranet/solicitudes-hr/signature',{email:hrUserEmail,name:hrUserName,roleLabel:'',signatureUrl:sigUrl});
+            hrUserSignature={signatureUrl:sigUrl,name:hrUserName};closeHrSigManager();updateSidebarSig();showIntranetToast('Firma guardada correctamente','success');
+            try{loadSentSolicitudes();}catch(e){}
+        }catch(e){showIntranetToast('Error al guardar firma: '+e.message,'error');}
+        btn.disabled=false;btn.textContent='Guardar Firma';
+    }
+
+    let _hrPendingSigFile=null;
+    function handleHrSigUpload(input){
+        if(input.files&&input.files[0]){_hrPendingSigFile=input.files[0];document.getElementById('hrSigUploadLabel').textContent=input.files[0].name;document.getElementById('btnHrUploadSig').disabled=false;document.getElementById('btnHrUploadSig').style.opacity='1';}
+    }
+
+    async function uploadHrSignature(){
+        if(!_hrPendingSigFile)return;const btn=document.getElementById('btnHrUploadSig');btn.disabled=true;btn.textContent='Subiendo...';
+        try{
+            const fd=new FormData();fd.append('file',_hrPendingSigFile);const uploadRes=await fetch('/api/intranet/upload',{method:'POST',body:fd});const uploadJson=JSON.parse(await uploadRes.text());const sigUrl=uploadJson.url||'';
+            await _apiPost('/api/intranet/solicitudes-hr/signature',{email:hrUserEmail,name:hrUserName,roleLabel:'',signatureUrl:sigUrl});
+            hrUserSignature={signatureUrl:sigUrl,name:hrUserName};closeHrSigManager();updateSidebarSig();showIntranetToast('Firma subida correctamente','success');
+            try{loadSentSolicitudes();}catch(e){}
+        }catch(e){showIntranetToast('Error al subir firma: '+e.message,'error');}
+        btn.disabled=false;btn.textContent='Subir y Guardar';
+    }
+
+    async function deleteHrSignature(){
+        if(!confirm('¿Eliminar tu firma digital?'))return;
+        try{
+            await _apiPost('/api/intranet/solicitudes-hr/signature',{email:hrUserEmail,name:hrUserName,roleLabel:'',signatureUrl:''});
+            hrUserSignature=null;closeHrSigManager();updateSidebarSig();showIntranetToast('Firma eliminada','success');
+        }catch(e){showIntranetToast('Error al eliminar firma','error');}
+    }
+
+    /* ── Init ── */
+    document.addEventListener('DOMContentLoaded',function(){
+        if(!isMsalAuthenticated()){window.location.href='/login';return;}
+        getCurrentUser().then(user=>{
+            currentUserName=user.displayName||user.userPrincipalName||'Empleado';
+            currentUserEmail=user.userPrincipalName||user.mail||'';
+            hrUserName=user.displayName||'';hrUserEmail=user.userPrincipalName||user.mail||'';
+            const ud=document.getElementById('userDisplay');if(ud)ud.textContent=currentUserName;
+            loadHrSignature();
+        }).catch(()=>{});
+        loadStaffDirectory().then(()=>{
+            renderHrSections('');
+            renderSidebarQuicklinks();
+        });
+        document.getElementById('hrSearch')?.addEventListener('input',function(){renderHrSections(this.value.trim());});
+        if(window.location.hash){
+            const id=window.location.hash.substring(1);
+            setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},500);
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Contacto – Sociedad Portuaria Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link data-cc-href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" data-cc-category="personalization" rel="stylesheet" id="cc-font-jakarta">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/inicio.css">
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <style>
+        :root {
+            --primary-blue: var(--navy); --primary-dark: var(--navy); --accent-gold: var(--miel);
+            --accent-cyan: var(--cian); --bg-light: #f5f7fa; --text-light: #ffffff;
+            --text-muted: #94a3b8; --text-dark: #1e293b; --border-color: #e2e8f0;
+            --radius: 8px; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans',sans-serif; }
+        body { background: #fff; color: var(--text-dark); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; color: inherit; } ul { list-style: none; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; width: 100%; }
+
+        #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan)); z-index: 9999; transition: width 0.1s linear; }
+
+        .success-toast { position: fixed; top: 90px; right: 24px; z-index: 99999; display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid #e2e8f0; border-left: 5px solid #22c55e; border-radius: 12px; padding: 16px 20px; box-shadow: 0 12px 40px rgba(2,6,23,0.18); max-width: 380px; opacity: 0; transform: translateX(120%); transition: opacity 0.45s ease, transform 0.45s ease; }
+        .success-toast.show { opacity: 1; transform: translateX(0); }
+        .success-toast-check { flex-shrink: 0; }
+        .checkmark-svg { width: 46px; height: 46px; display: block; }
+        .checkmark-circle { stroke: #22c55e; stroke-width: 2.5; stroke-dasharray: 151; stroke-dashoffset: 151; }
+        .checkmark-check { stroke: #22c55e; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 40; stroke-dashoffset: 40; }
+        .success-toast.animate .checkmark-circle { animation: checkCircle 0.6s cubic-bezier(0.65,0,0.45,1) forwards; }
+        .success-toast.animate .checkmark-check { animation: checkTick 0.35s cubic-bezier(0.65,0,0.45,1) 0.55s forwards; }
+        @keyframes checkCircle { to { stroke-dashoffset: 0; } }
+        @keyframes checkTick { to { stroke-dashoffset: 0; } }
+        .success-toast-text h4 { font-size: 14.5px; font-weight: 800; color: var(--primary-blue); margin: 0 0 3px; }
+        .success-toast-text p { font-size: 12.5px; color: #556b82; margin: 0; line-height: 1.5; }
+        .success-toast-close { background: #f1f5f9; border: none; border-radius: 50%; width: 26px; height: 26px; font-size: 16px; line-height: 1; color: #64748b; cursor: pointer; flex-shrink: 0; }
+        .success-toast-close:hover { background: #e2e8f0; color: #0f172a; }
+        @media (max-width: 560px) { .success-toast { top: 76px; right: 12px; left: 12px; max-width: none; } }
+
+        .field-error input, .field-error select, .field-error textarea { border-color: #ef4444 !important; background: #fef2f2 !important; }
+        .field-error input:focus, .field-error select:focus, .field-error textarea:focus { outline: 2px solid rgba(239,68,68,0.25) !important; border-color: #ef4444 !important; }
+        .field-error-msg { color: #dc2626; font-size: 11.5px; font-weight: 600; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; font-size: 12.5px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.5px; position: relative; overflow: hidden; z-index: 1; border: none; }
+        .btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transform: skewX(-25deg); z-index: -1; }
+        .btn:hover::after { left: 150%; transition: 0.55s ease-in-out; }
+        .btn i { margin-left: 8px; font-size: 11px; transition: var(--transition); }
+        .btn:hover i { transform: translateX(4px); }
+        .btn-orange { background-color: var(--accent-gold); color: #fff; box-shadow: 0 4px 15px rgba(230,171,9,0.25); }
+        .btn-orange:hover { background-color: var(--miel); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(230,171,9,0.4); }
+        .btn-outline-light { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.6); }
+        .btn-outline-light:hover { background: #fff; color: var(--primary-blue); transform: translateY(-2px); }
+
+
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        nav { flex: 1; display: flex; justify-content: center; padding-right: 20px; }
+        .nav-menu { display: flex; gap: 35px; align-items: center; }
+        .nav-menu li a { color: rgba(255,255,255,0.75); font-size: 12.5px; font-weight: 500; text-transform: uppercase; position: relative; padding: 8px 0; letter-spacing: 0.5px; transition: color 0.25s ease; }
+        .nav-menu li a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent-gold); transition: var(--transition); }
+        .nav-menu li.active a, .nav-menu li a:hover { color: #fff; font-weight: 600; }
+        .nav-menu li.active a::after, .nav-menu li a:hover::after { width: 100%; }
+        .nav-menu li a i { margin-left: 4px; font-size: 10px; vertical-align: middle; }
+        .nav-menu li.dropdown { position: relative; }
+        .nav-menu li.dropdown .dropdown-trigger {
+            color: rgba(255,255,255,0.75); font-size: 12.5px; font-weight: 500;
+            text-transform: uppercase; padding: 8px 0; letter-spacing: 0.5px; cursor: default;
+            display: inline-block;
+        }
+        .nav-menu li.dropdown .dropdown-trigger i { margin-left: 4px; font-size: 10px; vertical-align: middle; }
+        .nav-menu li.dropdown:hover .dropdown-trigger,
+        .nav-menu li.dropdown.active .dropdown-trigger { color: #fff; font-weight: 600; }
+        .nav-menu li.dropdown .dropdown-menu {
+            position: absolute; top: 100%; left: 0; padding-top: 4px;
+            background: rgba(10,46,77,0.72); min-width: 210px; border-radius: 10px;
+            padding: 6px 0; opacity: 0 !important; visibility: hidden !important;
+            box-shadow: 0 12px 40px rgba(10,46,77,0.4); border: 1px solid rgba(255,255,255,0.06);
+            z-index: 1000; list-style: none; pointer-events: none;
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+        }
+        .nav-menu li.dropdown .dropdown-menu::before {
+            content: ''; position: absolute; top: -4px; left: 0; right: 0; height: 4px;
+        }
+        .nav-menu li.dropdown:last-child .dropdown-menu { left: auto; right: 0; }
+
+        .nav-menu li.dropdown .dropdown-menu li { display: block; margin: 0; padding: 0; }
+        .nav-menu li.dropdown .dropdown-menu li a {
+            display: block; width: 100%; padding: 10px 22px; margin: 0;
+            font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,0.7);
+            text-transform: none; letter-spacing: 0.3px; text-decoration: none;
+            background: none; border: none; line-height: 1.4;
+            position: static; white-space: nowrap; box-sizing: border-box;
+        }
+        .nav-menu li.dropdown .dropdown-menu li a:hover {
+            color: #fff; background: rgba(255,255,255,0.04); padding-left: 26px;
+        }
+
+        .page-hero {
+            position: relative;
+            height: 540px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+        .page-hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-image: url('/images/contacto.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            will-change: transform;
+        }
+        .page-hero-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(13,42,66,0.75) 0%, rgba(10,46,77,0.7) 40%, rgba(10,30,50,0.85) 100%);
+            z-index: 1;
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(10,46,77,0.2) 0%, rgba(10,46,77,0.4) 60%, rgba(10,46,77,0.92) 100%);
+            z-index: 2;
+        }
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .hero-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(230,171,9,0.12);
+            animation: floatParticle linear infinite;
+        }
+        @keyframes floatParticle {
+            0%,100%{transform:translateY(0) scale(1);opacity:.5}
+            50%{transform:translateY(-28px) scale(1.08);opacity:.2}
+        }
+
+        .page-hero .container {
+            position: relative;
+            z-index: 3;
+            padding-bottom: 52px;
+        }
+        .page-hero-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .page-hero-breadcrumb a {
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            transition: color 0.2s;
+        }
+        .page-hero-breadcrumb a:hover { color: var(--accent-gold); }
+        .page-hero-breadcrumb span { color: rgba(255,255,255,0.35); font-size: 10px; }
+        .page-hero-breadcrumb .current {
+            color: rgba(255,255,255,0.9);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .page-hero-title {
+            font-size: 54px;
+            font-weight: 300;
+            color: #fff;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            animation: fadeInUp 0.7s ease 0.1s both;
+        }
+        .page-hero-title strong { font-weight: 800; color: var(--accent-gold); }
+        .page-hero-sub {
+            color: rgba(255,255,255,0.7);
+            font-size: 15px;
+            margin-top: 12px;
+            max-width: 500px;
+            line-height: 1.55;
+            animation: fadeInUp 0.7s ease 0.25s both;
+        }
+        .page-hero-line {
+            width: 0;
+            height: 3px;
+            margin-top: 16px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan));
+            border-radius: 2px;
+            transition: width 1s ease 0.4s;
+        }
+        .page-hero-line.animate { width: 60px; }
+        @keyframes fadeInUp {
+            from{opacity:0;transform:translateY(20px)}
+            to{opacity:1;transform:none}
+        }
+
+
+
+
+        .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.65s cubic-bezier(0.4,0,0.2,1), transform 0.65s cubic-bezier(0.4,0,0.2,1); }
+        .reveal.visible { opacity: 1; transform: none; }
+        .reveal-left  { opacity: 0; transform: translateX(-44px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        .reveal-right { opacity: 0; transform: translateX( 44px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        .reveal-left.visible, .reveal-right.visible { opacity: 1; transform: none; }
+        .delay-1{transition-delay:.1s} .delay-2{transition-delay:.2s} .delay-3{transition-delay:.3s} .delay-4{transition-delay:.4s} .delay-5{transition-delay:.5s}
+
+        .section-block { padding: 72px 0; }
+        .section-bg-light { background: var(--bg-light); }
+        .section-label { color: var(--primary-blue); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px; }
+        .section-title { font-size: 30px; color: var(--primary-dark); font-weight: 800; line-height: 1.2; }
+        .section-line { width: 50px; height: 3px; background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan)); margin-top: 12px; border-radius: 2px; }
+
+        .cta-band {
+            background: var(--primary-dark);
+            padding: 72px 0; text-align: center; position: relative; overflow: hidden;
+        }
+        .cta-band::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background-image: linear-gradient(rgba(30,152,217,0.04) 1px,transparent 1px),
+            linear-gradient(90deg,rgba(30,152,217,0.04) 1px,transparent 1px);
+            background-size: 40px 40px; animation: gridShift 20s linear infinite;
+        }
+        @keyframes gridShift { from{background-position:0 0} to{background-position:40px 40px} }
+        .cta-band .container { position: relative; z-index: 1; }
+        .cta-band h2 { font-size: 34px; color: #fff; font-weight: 800; margin-bottom: 12px; }
+        .cta-band p { color: rgba(255,255,255,0.7); font-size: 15px; margin-bottom: 36px; }
+        .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+        footer {
+            background: linear-gradient(180deg, var(--primary-dark) 0%, #0a1a2b 100%);
+            padding: 60px 0 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            position: relative;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-gold));
+            opacity: .5;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.8fr 1.2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-logo {
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 18px;
+            position: relative;
+        }
+        .footer-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 15%;
+            width: 70%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        .footer-logo img { height: 34px; object-fit: contain; }
+        .footer-desc { margin-bottom: 20px; line-height: 1.65; font-size: 12.5px; color: rgba(148,163,184,.85); }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a {
+            display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px;
+            border: 1px solid rgba(148,163,184,.2);
+            border-radius: 50%;
+            color: #94a3b8;
+            transition: all .3s ease;
+            font-size: 14px;
+        }
+        .social-icons a:hover {
+            color: #fff;
+            border-color: var(--accent-gold);
+            background: rgba(230,171,9,.12);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(230,171,9,.2);
+        }
+        .footer-title {
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 26px; height: 2.5px;
+            background: var(--accent-gold);
+            border-radius: 2px;
+        }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a {
+            transition: all .25s ease;
+            font-size: 12.5px;
+            color: rgba(148,163,184,.85);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-links a:hover {
+            color: var(--accent-gold);
+            padding-left: 5px;
+        }
+        .footer-contact-info { list-style: none; padding: 0; }
+        .footer-contact-info li {
+            display: flex; gap: 10px;
+            margin-bottom: 14px;
+            align-items: flex-start;
+            font-size: 12.5px;
+            color: rgba(148,163,184,.85);
+        }
+        .footer-contact-info i { margin-top: 3px; font-size: 14px; color: var(--accent-gold); }
+        .certs-container { display: flex; gap: 14px; }
+        .cert-item { text-align: center; flex: 1; }
+        .cert-circle {
+            width: 54px; height: 54px;
+            border: 1.5px solid rgba(148,163,184,.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 10px auto;
+            font-size: 8px;
+            font-weight: 800;
+            color: #fff;
+            transition: all .35s ease;
+            background: rgba(255,255,255,.03);
+        }
+        .cert-item:hover .cert-circle {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 16px rgba(230,171,9,.25);
+            transform: scale(1.08);
+        }
+        .cert-item p { font-size: 9.5px; line-height: 1.3; color: rgba(148,163,184,.75); }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,.05);
+            padding: 18px 0;
+            text-align: center;
+            font-size: 12px;
+        }
+        .footer-bottom-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .footer-bottom-links a {
+            color: rgba(148,163,184,.7);
+            text-decoration: none;
+            transition: all .25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            margin-left: 0;
+        }
+        .footer-bottom-links a:hover { color: #fff; }
+        .footer-bottom-links a i { font-size: 11px; }
+
+        .scroll-hint { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 4; display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.45); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; animation: bounceDown 2s ease infinite; }
+        .scroll-hint i { font-size: 15px; }
+        @keyframes bounceDown { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+        @media (max-width: 1024px) {
+            .contact-layout { grid-template-columns: 1fr; gap: 36px; }
+            .pqrs-layout { grid-template-columns: 1fr; gap: 36px; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        /* ── TABLET ──────────────────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            #main-header nav, #main-header .header-pse-btn { display: none !important; }
+            #main-header .mobile-menu-toggle { display: flex !important; }
+
+            /* Hero */
+            .page-hero {
+                height: auto;
+                min-height: 380px;
+                align-items: flex-end;
+            }
+            .page-hero-bg { background-position: center top; }
+            .page-hero-bg::before {
+                background: linear-gradient(
+                        160deg,
+                        rgba(10,30,50,0.88) 0%,
+                        rgba(10,46,77,0.80) 50%,
+                        rgba(10,30,50,0.92) 100%
+                ) !important;
+            }
+            .page-hero::before {
+                background: linear-gradient(
+                        180deg,
+                        rgba(10,30,50,0.15) 0%,
+                        rgba(10,46,77,0.55) 60%,
+                        rgba(10,30,50,0.95) 100%
+                ) !important;
+            }
+            .page-hero .container { padding-top: 80px; padding-bottom: 40px; }
+            .page-hero-breadcrumb { margin-bottom: 10px; }
+            .page-hero-breadcrumb a,
+            .page-hero-breadcrumb .current { font-size: 11px; }
+            .page-hero-title {
+                font-size: 32px;
+                font-weight: 300;
+                line-height: 1.15;
+                word-break: break-word;
+            }
+            .page-hero-title strong { display: inline; font-weight: 800; }
+            .page-hero-sub {
+                font-size: 13px;
+                max-width: 100%;
+                margin-top: 10px;
+                line-height: 1.55;
+                color: rgba(255,255,255,0.8);
+            }
+            .page-hero-line { margin-top: 14px; }
+            .scroll-hint { display: none; }
+            .hero-particles { display: none; }
+
+
+            /* Secciones generales */
+            .section-block { padding: 44px 0; }
+            .section-title { font-size: 22px; line-height: 1.25; }
+            .section-label { font-size: 11px; }
+            .container { padding: 0 16px; }
+
+            /* Contacto – info + formulario */
+            .contact-layout { grid-template-columns: 1fr; gap: 28px; }
+            .contact-info-cards { gap: 12px; }
+            .cinfo-card { padding: 15px 16px; gap: 14px; }
+            .cinfo-icon { width: 42px; height: 42px; font-size: 16px; border-radius: 10px; }
+            .cinfo-text h4 { font-size: 12px; }
+            .cinfo-text p { font-size: 12.5px; }
+
+            .contact-form-box { padding: 26px 18px; border-radius: 10px; }
+            .form-grid { grid-template-columns: 1fr; gap: 12px; }
+            .form-header { margin-bottom: 18px; }
+            .form-header h3 { font-size: 16px; }
+            .form-group input,
+            .form-group textarea,
+            .form-group select { font-size: 13px; padding: 11px 12px; }
+            .btn-submit { width: 100%; justify-content: center; padding: 13px 24px; font-size: 12.5px; }
+
+            .contact-map-wrap { height: 200px; margin-top: 16px; border-radius: 10px; }
+            .map-overlay-badge { font-size: 10px; padding: 6px 10px; bottom: 10px; left: 10px; }
+
+            /* PQRS */
+            .pqrs-layout { gap: 28px; }
+            .pqrs-info p { font-size: 13px; margin-bottom: 14px; }
+            .pqrs-type-item { padding: 12px 14px; gap: 10px; }
+            .pqrs-type-item i { font-size: 16px; }
+            .pqrs-type-item div h5 { font-size: 12px; }
+            .pqrs-type-item div p { font-size: 11px; }
+            .pqrs-guarantee { flex-direction: row; align-items: flex-start; text-align: left; padding: 16px 18px; gap: 12px; }
+            .pqrs-guarantee i { font-size: 20px; margin-top: 2px; }
+            .pqrs-guarantee p { font-size: 12px; }
+            .pqrs-form-box { padding: 24px 16px; border-radius: 10px; }
+            .pqrs-form-header { margin-bottom: 18px; }
+            .pqrs-form-header h3 { font-size: 15px; }
+            .pqrs-form-grid { grid-template-columns: 1fr; gap: 12px; }
+            .pfield input,
+            .pfield select,
+            .pfield textarea { font-size: 13px; padding: 11px 12px; }
+            .btn-pqrs { width: 100%; justify-content: center; padding: 13px 24px; font-size: 12.5px; }
+
+            /* QR PQRS */
+            #pqrs-qr-section { padding: 18px !important; }
+            #pqrs-qr-section > div { flex-direction: row; align-items: center; gap: 14px; }
+            #pqrs-qr-wrap { padding: 10px !important; border-radius: 10px !important; }
+            #pqrs-qr-img { width: 84px !important; height: 84px !important; }
+
+            /* CTA band */
+            .cta-band { padding: 44px 0; }
+            .cta-band h2 { font-size: 22px; }
+            .cta-band p { font-size: 13px; margin-bottom: 24px; }
+            .cta-buttons { flex-direction: column; gap: 10px; align-items: center; }
+            .cta-buttons .btn { width: 100%; max-width: 340px; justify-content: center; padding: 13px 20px; font-size: 12.5px; }
+
+            /* Footer */
+            footer { padding: 40px 0 0; }
+            .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+            .footer-logo { justify-content: center; }
+            .social-icons { justify-content: center; }
+            .footer-contact-info li { justify-content: center; }
+            .certs-container { justify-content: center; flex-wrap: wrap; }
+            .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+            .footer-bottom-links { justify-content: center; }
+
+            /* Scroll margin para sticky nav */
+            #contactenos { scroll-margin-top: 54px; }
+            #lineas-de-atencion { scroll-margin-top: 54px; }
+            #pqrs { scroll-margin-top: 54px; }
+        }
+
+        /* ── MÓVIL PEQUEÑO ───────────────────────────────────────────────── */
+        @media (max-width: 480px) {
+            .page-hero { min-height: 340px; }
+            .page-hero .container { padding-top: 72px; padding-bottom: 32px; }
+            .page-hero-title { font-size: 26px; }
+            .page-hero-sub { font-size: 12.5px; line-height: 1.5; }
+
+            .container { padding: 0 14px; }
+            .section-block { padding: 36px 0; }
+            .section-title { font-size: 20px; }
+
+
+            .contact-form-box { padding: 20px 14px; }
+            .pqrs-form-box { padding: 20px 14px; }
+            .contact-map-wrap { height: 170px; }
+
+            .pqrs-guarantee { flex-direction: column; text-align: center; align-items: center; }
+            .pqrs-layout { gap: 22px; }
+            .pqrs-type-item { padding: 10px 12px; }
+
+            #pqrs-qr-section > div { flex-direction: column; align-items: center; text-align: center; }
+
+            .cta-band h2 { font-size: 19px; }
+        }
+    </style>
+    <style>
+        /* =====================================================================
+           CONTACTO REDISEÑADO — secciones ct-*  (sin olas entre secciones)
+           ===================================================================== */
+        .ct-section { position: relative; overflow: hidden; scroll-margin-top: 110px; }
+        .ct-contact { padding: clamp(48px, 5vw, 80px) 0 clamp(40px, 4vw, 64px); background: linear-gradient(180deg, #f7fbfe 0%, #eaf5fc 100%); }
+        .ct-pqrs { padding: clamp(40px, 4vw, 64px) 0; background: linear-gradient(180deg, #eaf5fc 0%, #e6f3fb 100%); }
+        .ct-seg { padding: clamp(40px, 4vw, 64px) 0 clamp(56px, 6vw, 96px); background: linear-gradient(180deg, #e6f3fb 0%, #f4faff 100%); }
+        .ct-contact::before, .ct-pqrs::before, .ct-seg::before {
+            content: ''; position: absolute; top: 0; right: 0; width: 46%; height: 62%; pointer-events: none;
+            background: url('/images/Contacto.png') right top / cover no-repeat; opacity: .08;
+            -webkit-mask-image: linear-gradient(270deg, #000 0%, transparent 85%); mask-image: linear-gradient(270deg, #000 0%, transparent 85%);
+        }
+        .ct-contact .container, .ct-pqrs .container, .ct-seg .container { position: relative; z-index: 1; }
+
+        .ct-right { position: relative; padding-top: 84px; }
+        .ct-slogan { position: absolute; top: 8px; right: 6px; z-index: 2; text-align: right; transform: rotate(-4deg); transform-origin: right bottom; pointer-events: none; }
+        .ct-slogan span { display: block; font-family: 'Segoe Script','Brush Script MT','Plus Jakarta Sans',cursive; font-style: italic; font-weight: 700; font-size: clamp(15px, 1.5vw, 20px); line-height: 1.3; color: #1e7fc4; white-space: nowrap; }
+        .ct-slogan svg { display: block; width: 100%; height: 14px; margin-top: 4px; }
+        @media (max-width: 1024px) { .ct-right { padding-top: 0; } .ct-slogan { display: none; } }
+
+        /* Ilustración portuaria de fondo (como el boceto) + gaviotas */
+        .ct-contact::before { width: 62%; height: 58%; opacity: .26; filter: saturate(.55) brightness(1.3);
+            -webkit-mask-image: linear-gradient(270deg, #000 25%, transparent 92%), linear-gradient(0deg, transparent 0%, #000 45%);
+            -webkit-mask-composite: source-in; mask-image: linear-gradient(270deg, #000 25%, transparent 92%), linear-gradient(0deg, transparent 0%, #000 45%); mask-composite: intersect; }
+        .ct-contact::after { content: ''; position: absolute; top: 34px; right: 34%; width: 110px; height: 46px; pointer-events: none; opacity: .55;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110 46' fill='none' stroke='%231e98d9' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M4 20 Q16 6 28 18 Q40 4 52 20'/%3E%3Cpath d='M64 36 Q73 26 82 34 Q91 24 100 36'/%3E%3C/svg%3E") no-repeat center / contain; }
+        @media (max-width: 1024px) { .ct-contact::after { display: none; } }
+
+        /* Ola decorativa en la esquina del formulario */
+        .ct-form-dark > .ct-form-wave { position: absolute; right: 0; bottom: 0; width: 62%; height: 96px; z-index: 0; pointer-events: none; }
+        .ct-form-wave svg { display: block; width: 100%; height: 100%; }
+
+        .ct-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: #1671a1; margin-bottom: 10px; }
+        .ct-eyebrow::before { content: ''; width: 28px; height: 4px; border-radius: 2px; background: #f4b81a; }
+        .ct-eyebrow.light { color: #fff; font-size: 11px; }
+        .ct-title { font-size: clamp(30px, 3.4vw, 44px); font-weight: 800; color: #0a2e4d; line-height: 1.12; letter-spacing: -.5px; margin: 0 0 14px; }
+        .ct-title span, .ct-title strong { color: #1e98d9 !important; }
+        .ct-title.gold span, .ct-title.gold strong { color: #f4b81a !important; }
+        .ct-lead { font-size: 14.5px; line-height: 1.7; color: #4a6078; max-width: 600px; margin: 0 0 26px; }
+        .ct-head { margin-bottom: 4px; }
+        .ct-chev { color: #1e98d9; font-size: 14px; flex-shrink: 0; transition: transform .3s ease; }
+
+        /* ---- contacto: layout ---- */
+        .ct-contact-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
+        .ct-info-list { display: flex; flex-direction: column; gap: 14px; }
+        .ct-info { display: flex; align-items: center; gap: 18px; background: rgba(255,255,255,.92); border-radius: 12px; border-left: 4px solid #f4c542; padding: 16px 22px 16px 18px; box-shadow: 0 6px 18px rgba(10,46,77,.06); transition: transform .3s ease, box-shadow .3s ease; color: inherit; }
+        .ct-info:hover { transform: translateX(5px); box-shadow: 0 10px 26px rgba(10,46,77,.11); }
+        .ct-info:hover .ct-chev { transform: translateX(4px); }
+        .ct-info-ico { width: 50px; height: 50px; border-radius: 13px; background: linear-gradient(135deg, #1671a1 0%, #0a2e4d 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 21px; flex-shrink: 0; box-shadow: 0 6px 14px rgba(10,46,77,.22); }
+        .ct-info-txt { flex: 1; min-width: 0; }
+        .ct-info-txt h4 { font-size: 11.5px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: #1671a1; margin: 0 0 4px; }
+        .ct-info-txt p { font-size: 14px; line-height: 1.5; color: #0a2e4d; margin: 0; }
+
+        .ct-map { margin-top: 20px; background: rgba(255,255,255,.92); border-radius: 14px; padding: 6px 6px 12px; box-shadow: 0 6px 18px rgba(10,46,77,.06); }
+        .ct-map-frame { position: relative; height: 230px; border-radius: 10px; overflow: hidden; }
+        .ct-map-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+        .ct-map-btn { position: absolute; top: 14px; left: 14px; background: #fff; color: #1671a1; font-size: 12.5px; font-weight: 700; padding: 9px 16px; border-radius: 999px; box-shadow: 0 4px 12px rgba(0,0,0,.18); display: inline-flex; align-items: center; gap: 8px; transition: transform .25s ease; }
+        .ct-map-btn:hover { transform: translateY(-2px); }
+        .ct-map-badge { position: absolute; left: 14px; bottom: 14px; background: #0a2e4d; color: #fff; font-size: 12px; font-weight: 700; padding: 9px 14px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,.25); }
+        .ct-map-badge i { color: #f4c542; }
+        .ct-map-foot { display: flex; align-items: center; gap: 8px; padding: 12px 10px 0; font-size: 12.5px; font-weight: 600; color: #0a2e4d; }
+        .ct-map-foot i { color: #1e98d9; }
+
+        /* ---- formulario oscuro ---- */
+        .ct-form-dark { position: relative; overflow: hidden; border-radius: 20px; padding: clamp(26px, 3vw, 38px); color: #fff; background: linear-gradient(160deg, #0b3f6b 0%, #0a2e4d 55%, #082240 100%); box-shadow: 0 24px 54px rgba(10,46,77,.28); }
+        .ct-form-dark::before { content: ''; position: absolute; right: -90px; top: -90px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(30,152,217,.30) 0%, transparent 70%); pointer-events: none; }
+        .ct-form-dark > * { position: relative; z-index: 1; }
+        .ct-form-dark h3 { font-size: clamp(26px, 2.6vw, 34px); font-weight: 800; line-height: 1.12; margin: 0 0 12px; color: #fff; letter-spacing: -.3px; }
+        .ct-form-dark h3 span { color: #1e98d9; }
+        .ct-form-lead { font-size: 13.5px; line-height: 1.6; color: rgba(255,255,255,.82); margin: 0 0 22px; max-width: 460px; }
+
+        .ct-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 18px; }
+        .ct-field { display: flex; flex-direction: column; min-width: 0; }
+        .ct-field.full { grid-column: 1 / -1; }
+        .ct-field label { display: flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 7px; }
+        .ct-field .req { color: #f4c542; }
+        .ct-field input, .ct-field select, .ct-field textarea { width: 100%; font: inherit; font-size: 13.5px; border-radius: 10px; padding: 13px 16px; outline: none; transition: border-color .25s ease, box-shadow .25s ease, background .25s ease; }
+        .ct-field textarea { resize: vertical; min-height: 96px; }
+        .ct-field select { appearance: none; -webkit-appearance: none; padding-right: 42px; background-repeat: no-repeat; background-position: right 16px center; background-size: 14px; }
+
+        .ct-form-dark .ct-field label { color: #fff; }
+        .ct-form-dark .ct-field label i { color: #1e98d9; font-size: 15px; width: 18px; text-align: center; }
+        .ct-form-dark .ct-field input, .ct-form-dark .ct-field select, .ct-form-dark .ct-field textarea { background-color: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.22); color: #fff; }
+        .ct-form-dark .ct-field input::placeholder, .ct-form-dark .ct-field textarea::placeholder { color: rgba(255,255,255,.6); }
+        .ct-form-dark .ct-field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M3 6l5 5 5-5'/%3E%3C/svg%3E"); }
+        .ct-form-dark .ct-field select option { color: #0a2e4d; background: #fff; }
+        .ct-form-dark .ct-field input:focus, .ct-form-dark .ct-field select:focus, .ct-form-dark .ct-field textarea:focus { border-color: #1e98d9; background-color: rgba(255,255,255,.11); box-shadow: 0 0 0 3px rgba(30,152,217,.25); }
+        .ct-form-dark .field-error input, .ct-form-dark .field-error select, .ct-form-dark .field-error textarea { background: rgba(239,68,68,.14) !important; color: #fff !important; border-color: #fca5a5 !important; }
+        .ct-form-dark .field-error-msg { color: #fecaca; }
+        .ct-note { font-size: 11.5px; color: rgba(255,255,255,.8); margin: 12px 0 18px; }
+        .ct-note span { color: #f4c542; font-weight: 800; }
+        .ct-note.light { color: #4a6078; margin-top: 14px; }
+        .ct-note.light span { color: #e6ab09; }
+
+        .ct-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: 0; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; padding: 14px 26px; border-radius: 10px; transition: transform .3s ease, box-shadow .3s ease, background .3s ease; }
+        .ct-btn:hover { transform: translateY(-2px); }
+        .ct-btn:disabled { opacity: .7; cursor: wait; transform: none; }
+        .ct-btn-gold { background: #f4b81a; color: #0a2e4d; box-shadow: 0 8px 22px rgba(244,184,26,.35); }
+        .ct-btn-gold:hover { background: #f7c443; box-shadow: 0 12px 28px rgba(244,184,26,.45); }
+        .ct-btn-navy { background: #0a2e4d; color: #fff; box-shadow: 0 8px 20px rgba(10,46,77,.22); }
+        .ct-btn-navy:hover { background: #1671a1; }
+
+        .ct-alert { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 14px 16px; border-radius: 10px; font-size: 13px; line-height: 1.55; margin-bottom: 20px; }
+
+        /* ---- franja de beneficios ---- */
+        .ct-features { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: clamp(34px, 4vw, 54px); }
+        .ct-feature { display: flex; align-items: center; gap: 16px; padding: 6px 22px; }
+        .ct-feature + .ct-feature { border-left: 1px solid rgba(10,46,77,.12); }
+        .ct-feature-ico { width: 58px; height: 58px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 6px rgba(255,255,255,.55), 0 6px 16px rgba(30,152,217,.18); color: #1671a1; font-size: 23px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .ct-feature h5 { font-size: 13px; font-weight: 800; color: #1671a1; margin: 0 0 5px; }
+        .ct-feature p { font-size: 12px; line-height: 1.6; color: #5a6f86; margin: 0; }
+
+        /* ---- PQRS ---- */
+        .ct-pqrs-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
+        .ct-types { display: flex; flex-direction: column; gap: 12px; }
+        .ct-type { display: flex; align-items: center; gap: 16px; background: rgba(255,255,255,.95); border-radius: 12px; border-left: 4px solid #f4c542; padding: 14px 20px 14px 14px; box-shadow: 0 6px 18px rgba(10,46,77,.06); transition: transform .3s ease, box-shadow .3s ease; }
+        .ct-type:hover { transform: translateX(5px); box-shadow: 0 10px 26px rgba(10,46,77,.11); }
+        .ct-type:hover .ct-chev { transform: translateX(4px); }
+        .ct-type > div:nth-child(2) { flex: 1; min-width: 0; }
+        .ct-type-ico { width: 48px; height: 48px; border-radius: 50%; background: #dff0fb; color: #1671a1; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .ct-type h5 { font-size: 15px; font-weight: 800; color: #0a2e4d; margin: 0 0 3px; }
+        .ct-type p { font-size: 12.5px; line-height: 1.5; color: #5a6f86; margin: 0; }
+
+        .ct-info-navy { display: flex; align-items: center; gap: 16px; margin-top: 16px; background: linear-gradient(135deg, #0b3f6b 0%, #0a2e4d 100%); color: #fff; border-radius: 12px; padding: 18px 22px; box-shadow: 0 10px 26px rgba(10,46,77,.2); }
+        .ct-info-navy > i { width: 40px; height: 40px; border-radius: 50%; background: #f4b81a; color: #0a2e4d; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .ct-info-navy p { font-size: 13px; line-height: 1.6; margin: 0; color: rgba(255,255,255,.95); }
+        .ct-info-navy strong { color: #fff; font-weight: 800; }
+        .ct-pqrs .ct-info-navy strong { color: #f4c542; }
+        .ct-info-navy.wide { margin-top: 0; padding: 22px 26px; }
+        .ct-info-navy.wide strong { color: #fff; }
+        .ct-vbar { width: 2px; align-self: stretch; background: #f4b81a; border-radius: 2px; flex-shrink: 0; }
+
+        .ct-qr { display: flex; align-items: center; gap: 20px; margin-top: 16px; padding: 18px 22px; background: rgba(255,255,255,.95); border-radius: 12px; box-shadow: 0 6px 18px rgba(10,46,77,.06); }
+        .ct-qr-img { background: #fff; padding: 8px; border-radius: 10px; box-shadow: 0 2px 10px rgba(10,46,77,.10); flex-shrink: 0; }
+        .ct-qr-img img { width: 104px; height: 104px; display: block; }
+        .ct-qr-title { font-size: 15px; font-weight: 800; color: #0a2e4d; margin-bottom: 6px; display: flex; align-items: center; gap: 9px; }
+        .ct-qr-title i { color: #f4b81a; }
+        .ct-qr p { font-size: 12.5px; line-height: 1.6; color: #4a6078; margin: 0; }
+
+        .ct-card { background: rgba(255,255,255,.96); border: 1px solid #cfe3f1; border-radius: 16px; padding: clamp(22px, 2.6vw, 34px); box-shadow: 0 14px 40px rgba(10,46,77,.08); }
+        .ct-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+        .ct-card-head > i { font-size: 30px; color: #1671a1; }
+        .ct-card-head h3 { font-size: clamp(18px, 1.8vw, 22px); font-weight: 800; letter-spacing: .3px; text-transform: uppercase; color: #0a2e4d; margin: 0; position: relative; padding-bottom: 8px; }
+        .ct-card-head h3::after { content: ''; position: absolute; left: 0; bottom: 0; width: 30px; height: 3px; border-radius: 2px; background: #f4b81a; }
+        .ct-card-head.small > i { font-size: 20px; }
+        .ct-card-head.small h3 { font-size: 15px; }
+        .ct-card-head.small h3::after { display: none; }
+        .ct-card-head.small h3 { padding-bottom: 0; }
+
+        .ct-card .ct-field label { color: #0a2e4d; font-size: 10.5px; }
+        .ct-card .ct-field input, .ct-card .ct-field select, .ct-card .ct-field textarea { background-color: #fff; border: 1px solid #cfe3f1; color: #0a2e4d; padding: 11px 14px; font-size: 13px; border-radius: 8px; }
+        .ct-card .ct-field input::placeholder, .ct-card .ct-field textarea::placeholder { color: #8da2b8; }
+        .ct-card .ct-field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%230a2e4d' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M3 6l5 5 5-5'/%3E%3C/svg%3E"); }
+        .ct-card .ct-field input:focus, .ct-card .ct-field select:focus, .ct-card .ct-field textarea:focus { border-color: #1e98d9; box-shadow: 0 0 0 3px rgba(30,152,217,.18); }
+        .ct-card .ct-field input[type="file"] { padding: 8px 10px; font-size: 12.5px; color: #5a6f86; }
+        .ct-card .ct-field input[type="file"]::file-selector-button { margin-right: 12px; padding: 6px 14px; border: 1px solid #0a2e4d; border-radius: 6px; background: #fff; color: #0a2e4d; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .25s ease, color .25s ease; }
+        .ct-card .ct-field input[type="file"]::file-selector-button:hover { background: #0a2e4d; color: #fff; }
+        .ct-card .ct-btn { margin-top: 4px; }
+        .ct-card .ct-grid + .ct-btn { margin-top: 18px; }
+        .ct-result { padding: clamp(20px, 2.4vw, 30px); }
+
+        .ct-seg-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 3.5vw, 44px); align-items: start; margin-top: 8px; }
+
+        /* ---- responsive ---- */
+        @media (max-width: 1024px) {
+            .ct-contact-layout, .ct-pqrs-layout, .ct-seg-layout { grid-template-columns: 1fr; }
+            .ct-features { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 22px; }
+            .ct-feature:nth-child(3) { border-left: 0; }
+        }
+        @media (max-width: 640px) {
+            .ct-grid { grid-template-columns: 1fr; }
+            .ct-features { grid-template-columns: 1fr; }
+            .ct-feature + .ct-feature { border-left: 0; }
+            .ct-qr { flex-direction: column; align-items: flex-start; }
+            .ct-btn { width: 100%; }
+            .ct-info { flex-wrap: wrap; }
+        }
+
+        /* ===== CTA con la misma ola que Inicio ===== */
+        .cta-v3 { position: relative; overflow: hidden; text-align: center; color: #fff; background: #0b3851; padding: clamp(120px, 13vw, 180px) 0 clamp(80px, 10vw, 130px); border-bottom: 3px solid transparent; border-image: linear-gradient(90deg, #e6ab09, #1e98d9, #e6ab09) 1; }
+        .cta-v3 .cta-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 1; }
+        .cta-v3 .cta-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(135deg, rgba(11,56,81,.90) 0%, rgba(16,82,116,.76) 55%, rgba(22,113,161,.60) 100%); }
+        .cta-v3 .cta-wave { position: absolute; left: 0; right: 0; top: -1px; width: 100%; height: clamp(54px, 6.5vw, 96px); z-index: 2; pointer-events: none; }
+        .cta-v3 .cta-wave svg { display: block; width: 100%; height: 100%; }
+        .cta-v3 .container { position: relative; z-index: 3; }
+        .cta-v3 h2 { text-wrap: balance; color: #fff; font-size: clamp(28px, 3.6vw, 46px); font-weight: 800; letter-spacing: -.5px; margin: 0 0 14px; }
+        .cta-v3 h2::after { content: ''; display: block; width: 56px; height: 3px; border-radius: 2px; margin: 18px auto 0; background: linear-gradient(90deg, #e6ab09 0%, #f4c542 40%, #1e98d9 100%); }
+        .cta-v3 p { color: #cfe9f7; font-size: clamp(15px, 1.4vw, 19px); line-height: 1.6; margin: 0 auto 34px; max-width: 760px; text-wrap: balance; }
+        .cta-v3 .cta-buttons { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .cta-v3 .btn { border-radius: 999px; }
+        .cta-v3 .btn-outline-light { color: #fff; border: 1.5px solid rgba(255,255,255,.6); background: rgba(255,255,255,.08); }
+        .cta-v3 .btn-outline-light:hover { background: #fff; color: #0b3851; border-color: #fff; }
+
+        /* ===== FOOTER legible, igual que Inicio ===== */
+        footer.site-footer { background: linear-gradient(180deg, #105274 0%, #0b3851 100%); padding: clamp(48px, 6vw, 80px) 0 0; font-size: 14px; color: rgba(255,255,255,.85); }
+        footer.site-footer::before { display: none; }
+        footer.site-footer .footer-grid { grid-template-columns: 1.5fr 1fr 1.2fr 1fr; gap: clamp(28px, 4vw, 56px); }
+        footer.site-footer .footer-logo { display: inline-block; background: #fff; border-radius: 14px; padding: 12px 18px; margin-bottom: 18px; }
+        footer.site-footer .footer-logo::after { display: none; }
+        footer.site-footer .footer-logo img { height: 44px; width: auto; display: block; }
+        footer.site-footer .footer-desc { color: #cfe9f7; font-size: 14px; line-height: 1.7; max-width: 380px; }
+        footer.site-footer .social-icons a { color: #fff; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.35); }
+        footer.site-footer .social-icons a:hover { background: #e6ab09; border-color: #e6ab09; color: #0a2e4d; }
+        footer.site-footer .footer-title { color: #fff; }
+        footer.site-footer .footer-links a { color: rgba(255,255,255,.85); font-size: 14px; }
+        footer.site-footer .footer-links a:hover { color: #e6ab09; }
+        footer.site-footer .footer-contact-info li, footer.site-footer .footer-contact-info li span, footer.site-footer .footer-contact-info li a { color: rgba(255,255,255,.88) !important; font-size: 14px; }
+        footer.site-footer .footer-contact-info li a:hover { color: #e6ab09 !important; }
+        footer.site-footer .footer-contact-info i { color: #e6ab09; }
+        footer.site-footer .certs-container { gap: 22px; }
+        footer.site-footer .cert-circle { width: 56px; height: 56px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.4); background: rgba(255,255,255,.08); color: #f4c542; font-size: 22px; }
+        footer.site-footer .cert-circle i { font-size: 22px; }
+        footer.site-footer .cert-item p { color: rgba(255,255,255,.85); font-size: 11px; line-height: 1.35; }
+        footer.site-footer .footer-bottom { border-top: 1px solid rgba(255,255,255,.14); }
+        footer.site-footer .footer-bottom span { color: rgba(255,255,255,.75); font-size: 13px; }
+        footer.site-footer .footer-bottom-links a { color: rgba(255,255,255,.82); font-size: 13px; }
+        footer.site-footer .footer-bottom-links a:hover { color: #e6ab09; }
+        @media (max-width: 1024px) { footer.site-footer .footer-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 768px)  { footer.site-footer .footer-grid { grid-template-columns: 1fr; } }
+    </style>
+    <script src="/js/inicio.js"></script>
+    <script src="/js/panel-nav.js"></script>
+    <link rel="stylesheet" href="/css/chatbot.css">
+    <link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<header id="main-header">
+    <div class="container header-content">
+        <a href="/inicio" class="logo-box">
+            <img src="/images/Logo.png"
+                 alt="Mardique Logo"
+                 onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:800;font-size:18px;letter-spacing:-0.5px;\'>SP <span style=\'color:var(--miel);\'>MARDIQUE</span></span>'">
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/inicio">INICIO</a></li>
+                <li><a href="/empresa">EMPRESA</a></li>
+                <li><a href="/servicios">SERVICIOS</a></li>
+                <li class="dropdown">
+                    <span class="dropdown-trigger">SERVICIO AL CLIENTE <i class="fas fa-chevron-down"></i></span>
+                    <ul class="dropdown-menu">
+                        <li><a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a></li>
+                        <li><a href="/procedimientos">PROCEDIMIENTOS</a></li>
+                        <li><a href="/tarifas">TARIFAS</a></li>
+                    </ul>
+                </li>
+                <li class="active"><a href="/contacto">CONTACTO</a></li>
+                <li><a href="/galeria">GALERÍA</a></li>
+                <li><a href="/login">ACCESO</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="header-pse-btn"><img src="/images/pse.png" alt="PSE"></a>
+        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+<section class="page-hero">
+    <div class="page-hero-bg" style="background-image: url('/images/Contacto.png');" th:style="|background-image: url('${heroImage}');|"></div>
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="container">
+        <div class="page-hero-breadcrumb">
+            <a href="/inicio">Inicio</a>
+            <span><i class="fa-solid fa-chevron-right"></i></span>
+            <span class="current">Contacto</span>
+        </div>
+        <h1 class="page-hero-title" th:utext="${pageContents['hero-title']} ?: 'Canales de &lt;strong&gt;Comunicaci&oacute;n&lt;/strong&gt;'">Canales de <strong>Comunicación</strong></h1>
+        <p class="page-hero-sub" th:utext="${pageContents['hero-sub']} ?: 'Estamos listos para atenderle. Cont&aacute;ctenos a trav&eacute;s de cualquiera de nuestros canales y un representante le responder&aacute; a la brevedad.'">Estamos listos para atenderle. Contáctenos a través de cualquiera de nuestros canales y un representante le responderá a la brevedad.</p>
+        <div class="page-hero-line" id="heroLine"></div>
+    </div>
+    <div class="scroll-hint">
+        <i class="fa-solid fa-chevron-down"></i>
+        <span>Scroll</span>
+    </div>
+</section>
+
+<section class="ct-section ct-contact" id="contactenos">
+    <div class="container">
+        <div class="ct-contact-layout">
+
+            <div class="ct-left">
+                <div class="reveal ct-head">
+                    <div class="ct-eyebrow">Comuníquese con nosotros</div>
+                    <h2 class="ct-title" th:utext="${pageContents['section-title']} ?: 'Estamos aqu&iacute; para &lt;span&gt;ayudarle&lt;/span&gt;'">Estamos aquí para <span>ayudarle</span></h2>
+                    <p class="ct-lead" th:utext="${pageContents['section-text']} ?: 'En Sociedad Portuaria Mardique nos comprometemos a dar respuesta oportuna a todas sus solicitudes. Nuestro equipo se encuentra disponible para orientarle en sus operaciones portuarias, comerciales y log&iacute;sticas.'">
+                        En Sociedad Portuaria Mardique nos comprometemos a dar respuesta oportuna a todas sus solicitudes. Nuestro equipo se encuentra disponible para orientarle en sus operaciones portuarias, comerciales y logísticas.
+                    </p>
+                </div>
+
+                <div class="ct-info-list">
+                    <div class="ct-info reveal delay-1">
+                        <div class="ct-info-ico"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="ct-info-txt">
+                            <h4>Dirección</h4>
+                            <p>Carretera Antigua Vía Barú, Cl 7 Puerto 2,<br>Corregimiento Santa Ana – Cartagena – Colombia.</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right ct-chev"></i>
+                    </div>
+                    <a class="ct-info reveal delay-2" href="mailto:info@spmardique.com">
+                        <div class="ct-info-ico"><i class="fa-solid fa-envelope"></i></div>
+                        <div class="ct-info-txt">
+                            <h4>Correo General</h4>
+                            <p>info@spmardique.com</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right ct-chev"></i>
+                    </a>
+                    <a class="ct-info reveal delay-3" href="https://www.youtube.com/channel/UCaqN40lCIj_nm53aHPJEicQ" target="_blank" rel="noopener">
+                        <div class="ct-info-ico"><i class="fa-brands fa-youtube"></i></div>
+                        <div class="ct-info-txt">
+                            <h4>Canal YouTube</h4>
+                            <p>Sociedad Portuaria Mardique S.A.</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right ct-chev"></i>
+                    </a>
+                    <a class="ct-info reveal delay-4" href="https://www.bureauveritascertification.com" target="_blank" rel="noopener">
+                        <div class="ct-info-ico"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="ct-info-txt">
+                            <h4>Certificaciones</h4>
+                            <p>ISO 9001:2015 &nbsp;·&nbsp; ISO 45001:2018 — Bureau Veritas</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right ct-chev"></i>
+                    </a>
+                </div>
+
+                <div class="ct-map reveal">
+                    <div class="ct-map-frame">
+                        <div class="cc-map-placeholder"
+                             data-cc-category="external"
+                             data-cc-src="https://maps.google.com/maps?q=Sociedad+Portuaria+Mardique+Cartagena+Colombia&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=&amp;output=embed"
+                             style="width:100%;height:100%;min-height:230px;">
+                            <div class="cc-placeholder-inner">
+                                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                                <p>El mapa de Google Maps requiere su autorización para cargarse. Puede activarlo en sus preferencias de cookies.</p>
+                                <button type="button" class="cc-btn" data-cc-action="load-external">
+                                    <i class="fas fa-check" aria-hidden="true"></i> Aceptar y cargar mapa
+                                </button>
+                            </div>
+                        </div>
+                        <a class="ct-map-btn" href="https://maps.google.com/?q=Sociedad+Portuaria+Mardique+Cartagena+Colombia" target="_blank" rel="noopener">Abrir en Maps <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <div class="ct-map-badge"><i class="fa-solid fa-anchor"></i> Sociedad Portuaria Mardique S.A.</div>
+                    </div>
+                    <div class="ct-map-foot"><i class="fa-solid fa-location-dot"></i> Cartagena, Colombia</div>
+                </div>
+            </div>
+
+            <div class="reveal-right ct-right">
+                <div class="ct-slogan" aria-hidden="true">
+                    <span>Tu operación,<br>nuestro compromiso</span>
+                    <svg viewBox="0 0 220 24" preserveAspectRatio="none"><path d="M2,20 C60,16 150,8 218,4" fill="none" stroke="#f4b81a" stroke-width="3" stroke-linecap="round"/></svg>
+                </div>
+                <div class="ct-form-dark">
+                    <div class="ct-form-wave" aria-hidden="true">
+                        <svg viewBox="0 0 400 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0,100 C130,92 250,62 400,8 L400,100 Z" fill="#1e98d9" opacity=".55"/>
+                            <path d="M110,100 C230,86 320,52 400,20 L400,34 C330,64 240,98 170,100 Z" fill="#f4b81a"/>
+                            <path d="M0,100 C150,98 290,72 400,40 L400,100 Z" fill="#0b5a99" opacity=".85"/>
+                        </svg>
+                    </div>
+                    <div class="ct-eyebrow gold-line light">Envíenos un mensaje</div>
+                    <h3>Estamos listos<br>para <span>atenderle</span></h3>
+                    <p class="ct-form-lead">Complete el formulario y nuestro equipo se pondrá en contacto con usted a la brevedad posible.</p>
+                    <div th:if="${mensajeError}" class="ct-alert"><i class="fa-solid fa-circle-exclamation"></i> <span th:text="${mensajeError}">Error</span></div>
+                    <form action="/contacto/message" method="post" novalidate>
+                        <div class="ct-grid">
+                            <div class="field ct-field full">
+                                <label><i class="fa-solid fa-user"></i> Nombre y Apellidos <span class="req">*</span></label>
+                                <input type="text" name="nombre" required placeholder="Su nombre completo">
+                            </div>
+                            <div class="field ct-field">
+                                <label><i class="fa-solid fa-envelope"></i> Correo Electrónico <span class="req">*</span></label>
+                                <input type="email" name="email" required placeholder="correo@ejemplo.com">
+                            </div>
+                            <div class="field ct-field">
+                                <label><i class="fa-solid fa-phone"></i> Celular <span class="req">*</span></label>
+                                <input type="tel" name="telefono" required placeholder="+57 300 000 0000" oninput="formatPhone(this)">
+                            </div>
+                            <div class="field ct-field full">
+                                <label><i class="fa-solid fa-comment-dots"></i> Asunto</label>
+                                <select name="asunto">
+                                    <option value="" disabled selected>Seleccione un asunto</option>
+                                    <option>Información de Servicios Portuarios</option>
+                                    <option>Cotización de Servicios</option>
+                                    <option>Trámites Aduaneros</option>
+                                    <option>Zona Franca</option>
+                                    <option>Talento Humano</option>
+                                    <option>Otro</option>
+                                </select>
+                            </div>
+                            <div class="field ct-field full">
+                                <label><i class="fa-solid fa-message"></i> Mensaje <span class="req">*</span></label>
+                                <textarea name="mensaje" rows="4" required placeholder="Escriba su consulta o mensaje aquí..."></textarea>
+                            </div>
+                        </div>
+                        <p class="ct-note">Los campos marcados con <span>*</span> son obligatorios.</p>
+                        <div class="pc-consent pc-consent--dark" id="pcConsentContactoWrap">
+                            <div class="pc-consent-row">
+                                <input type="checkbox"
+                                       id="privacyConsent-contacto"
+                                       name="privacyConsent"
+                                       value="true"
+                                       required
+                                       aria-describedby="privacyConsentErr-contacto">
+                                <label for="privacyConsent-contacto">
+                                    Conozco y acepto la
+                                    <a href="/privacidad" target="_blank" rel="noopener noreferrer">Política de privacidad</a>
+                                    &nbsp;y el&nbsp;
+                                    <a href="/privacidad#tratamiento" target="_blank" rel="noopener noreferrer">Tratamiento de Datos Personales</a>.
+                                </label>
+                            </div>
+                            <div class="pc-consent-error" id="privacyConsentErr-contacto" role="alert" aria-live="polite"></div>
+                        </div>
+                        <button type="submit" class="ct-btn ct-btn-gold">
+                            <i class="fa-solid fa-paper-plane"></i> Enviar Mensaje <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ct-features">
+            <div class="ct-feature reveal delay-1">
+                <div class="ct-feature-ico"><i class="fa-solid fa-headset"></i></div>
+                <div><h5>Atención personalizada</h5><p>Nuestro equipo está listo para brindarle el mejor servicio.</p></div>
+            </div>
+            <div class="ct-feature reveal delay-2">
+                <div class="ct-feature-ico"><i class="fa-regular fa-clock"></i></div>
+                <div><h5>Respuesta oportuna</h5><p>Nos comprometemos a atender su solicitud en el menor tiempo posible.</p></div>
+            </div>
+            <div class="ct-feature reveal delay-3">
+                <div class="ct-feature-ico"><i class="fa-solid fa-shield-halved"></i></div>
+                <div><h5>Seguridad y confianza</h5><p>Trabajamos bajo los más altos estándares de calidad y seguridad.</p></div>
+            </div>
+            <div class="ct-feature reveal delay-4">
+                <div class="ct-feature-ico"><i class="fa-solid fa-ship"></i></div>
+                <div><h5>Conectados con el país</h5><p>Impulsamos el desarrollo logístico de Colombia y la región.</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ct-section ct-pqrs" id="pqrs">
+    <div class="container">
+        <div class="ct-pqrs-layout">
+
+            <div class="ct-pqrs-left">
+                <div class="reveal ct-head">
+                    <div class="ct-eyebrow">Canal formal</div>
+                    <h2 class="ct-title gold">Quejas, Peticiones<br>y <span>Reclamos</span></h2>
+                    <p class="ct-lead">Si no encontró respuesta a su inquietud, o tiene alguna queja o reclamo, puede diligenciar el formulario. Atendemos todas las solicitudes con un plazo máximo de respuesta establecido por ley.</p>
+                </div>
+
+                <div class="ct-types">
+                    <div class="ct-type reveal delay-1">
+                        <div class="ct-type-ico"><i class="fa-solid fa-file-pen"></i></div>
+                        <div><h5>Petición</h5><p>Solicitud de información, documentación o servicios específicos.</p></div>
+                        <i class="fa-solid fa-chevron-right ct-chev"></i>
+                    </div>
+                    <div class="ct-type reveal delay-2">
+                        <div class="ct-type-ico"><i class="fa-solid fa-bullhorn"></i></div>
+                        <div><h5>Queja</h5><p>Manifestación de inconformidad sobre la prestación del servicio.</p></div>
+                        <i class="fa-solid fa-chevron-right ct-chev"></i>
+                    </div>
+                    <div class="ct-type reveal delay-3">
+                        <div class="ct-type-ico"><i class="fa-solid fa-rotate-left"></i></div>
+                        <div><h5>Reclamo</h5><p>Exigencia de cumplimiento de derechos adquiridos en un proceso.</p></div>
+                        <i class="fa-solid fa-chevron-right ct-chev"></i>
+                    </div>
+                    <div class="ct-type reveal delay-4">
+                        <div class="ct-type-ico"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div><h5>Solicitud</h5><p>Requerimiento particular que no encuadra en las categorías anteriores.</p></div>
+                        <i class="fa-solid fa-chevron-right ct-chev"></i>
+                    </div>
+                </div>
+
+                <div class="ct-info-navy reveal">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <p>Todas las PQRS recibidas son <strong>procesadas en un plazo no mayor a 15 días hábiles</strong> y recibirá confirmación de radicado en su correo de contacto.</p>
+                </div>
+
+                <div class="ct-qr reveal" id="pqrs-qr-section">
+                    <div class="ct-qr-img" id="pqrs-qr-wrap">
+                        <img id="pqrs-qr-img" src="" alt="QR Buzón PQRS">
+                    </div>
+                    <div>
+                        <div class="ct-qr-title"><i class="fa-solid fa-envelope-open-text"></i> Buzón de PQRS</div>
+                        <p>Escanee el código QR para acceder directamente al formulario de PQRS. Ideal para el buzón físico de la empresa.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal-right">
+                <div class="ct-card" id="pqrs-form-area">
+                    <div class="ct-card-head">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <h3>Formulario PQRS</h3>
+                    </div>
+                    <div th:if="${pqrsError}" class="ct-alert"><i class="fa-solid fa-circle-exclamation"></i> <span th:text="${pqrsError}">Error</span></div>
+                    <form action="/contacto/pqrs" method="post" enctype="multipart/form-data" novalidate>
+                        <div class="ct-grid light">
+                            <div class="field ct-field">
+                                <label>Tipo de Documento <span class="req">*</span></label>
+                                <select name="tipoDocumento" required>
+                                    <option value="" disabled selected>Seleccione</option>
+                                    <option value="NIT">NIT</option>
+                                    <option value="CC">CC – Cédula de Ciudadanía</option>
+                                    <option value="CE">CE – Cédula de Extranjería</option>
+                                    <option value="PA">PA – Pasaporte</option>
+                                    <option value="DE">DE – Documento Extranjero</option>
+                                </select>
+                            </div>
+                            <div class="field ct-field">
+                                <label>Número de Documento <span class="req">*</span></label>
+                                <input type="text" name="numeroDocumento" placeholder="Ej. 123456789" required>
+                            </div>
+                            <div class="field ct-field full">
+                                <label>Nombre o Razón Social <span class="req">*</span></label>
+                                <input type="text" name="nombreCompleto" placeholder="Nombre completo o empresa" required>
+                            </div>
+                            <div class="field ct-field">
+                                <label>Correo de Contacto <span class="req">*</span></label>
+                                <input type="email" name="email" placeholder="correo@ejemplo.com" required>
+                            </div>
+                            <div class="field ct-field">
+                                <label>Teléfono de Contacto <span class="req">*</span></label>
+                                <input type="tel" name="telefono" placeholder="+57 300 000 0000" oninput="formatPhone(this)" required>
+                            </div>
+                            <div class="field ct-field">
+                                <label>Tipo de Petición <span class="req">*</span></label>
+                                <select name="tipoPeticion" required>
+                                    <option value="" disabled selected>Seleccione</option>
+                                    <option>Petición</option>
+                                    <option>Queja</option>
+                                    <option>Reclamo</option>
+                                    <option>Solicitud</option>
+                                </select>
+                            </div>
+                            <div class="field ct-field">
+                                <label>Departamento <span class="req">*</span></label>
+                                <select name="departamento" required>
+                                    <option value="" disabled selected>Seleccione</option>
+                                    <option>Comercial</option>
+                                    <option>Protección</option>
+                                    <option>Operaciones</option>
+                                    <option>RRHH</option>
+                                    <option>Compras</option>
+                                    <option>Servicios Generales</option>
+                                    <option>Facturación</option>
+                                    <option>IT</option>
+                                    <option>Jurídica</option>
+                                    <option>Gestión Aduanera</option>
+                                </select>
+                            </div>
+                            <div class="field ct-field full">
+                                <label>Descripción <span class="req">*</span></label>
+                                <textarea name="descripcion" rows="4" placeholder="Describa detalladamente su solicitud, queja o reclamo..." required></textarea>
+                            </div>
+                            <div class="field ct-field full">
+                                <label>Archivos adjuntos (opcional)</label>
+                                <input type="file" name="adjuntos" multiple accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xls,.xlsx,.txt">
+                            </div>
+                        </div>
+                        <p class="ct-note light">Los campos marcados con <span>*</span> son obligatorios. Recibirá confirmación de radicado en su correo.</p>
+                        <div class="pc-consent" id="pcConsentPqrsWrap">
+                            <div class="pc-consent-row">
+                                <input type="checkbox"
+                                       id="privacyConsent-pqrs"
+                                       name="privacyConsent"
+                                       value="true"
+                                       required
+                                       aria-describedby="privacyConsentErr-pqrs">
+                                <label for="privacyConsent-pqrs">
+                                    Conozco y acepto la
+                                    <a href="/privacidad" target="_blank" rel="noopener noreferrer">Política de privacidad</a>
+                                    &nbsp;y el&nbsp;
+                                    <a href="/privacidad#tratamiento" target="_blank" rel="noopener noreferrer">Tratamiento de Datos Personales</a>.
+                                </label>
+                            </div>
+                            <div class="pc-consent-error" id="privacyConsentErr-pqrs" role="alert" aria-live="polite"></div>
+                        </div>
+                        <button type="submit" class="ct-btn ct-btn-navy">
+                            Radicar PQRS <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="ct-section ct-seg" id="seguimiento">
+    <div class="container">
+        <div class="reveal ct-head">
+            <div class="ct-eyebrow">Seguimiento</div>
+            <h2 class="ct-title gold">Consulte su <span>PQRS</span></h2>
+            <p class="ct-lead">Ingrese el radicado que recibió al radicar su solicitud y el número de documento con el que la registró para conocer el estado actual y la respuesta de nuestro equipo.</p>
+        </div>
+
+        <div th:if="${segError}" class="ct-alert"><i class="fa-solid fa-circle-exclamation"></i> <span th:text="${segError}">Error</span></div>
+
+        <div class="ct-seg-layout">
+            <div class="reveal-left">
+                <div class="ct-card">
+                    <div class="ct-card-head small">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <h3>Buscar por radicado</h3>
+                    </div>
+                    <form action="/contacto/pqrs/seguimiento" method="post" novalidate>
+                        <div class="ct-grid light">
+                            <div class="field ct-field">
+                                <label>Número de Radicado <span class="req">*</span></label>
+                                <input type="text" name="radicado" placeholder="Ej. PQRS-2026-0001" required th:value="${radicado}">
+                            </div>
+                            <div class="field ct-field">
+                                <label>Número de Documento <span class="req">*</span></label>
+                                <input type="text" name="numeroDocumento" placeholder="Número de documento con el que radicó" required th:value="${documento}">
+                            </div>
+                        </div>
+                        <button type="submit" class="ct-btn ct-btn-navy">
+                            Consultar estado <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="reveal-right" th:if="${ticketConsulta != null}">
+                <div class="ct-card ct-result">
+                    <div class="ct-card-head">
+                        <h3 style="font-size:15px;display:flex;align-items:center;gap:10px;">
+                            <i class="fa-solid fa-hashtag" style="color:var(--accent-cyan);"></i>
+                            <span th:text="${ticketConsulta.radicado}">PQRS-2026-0001</span>
+                        </h3>
+                    </div>
+
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+                        <span style="display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:50px;font-size:12px;font-weight:700;
+                                     background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;"
+                              th:text="${pqrsService.labelEstado(ticketConsulta.status)}">Estado</span>
+                        <span style="display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:50px;font-size:12px;font-weight:700;
+                                     background:#e0f2fe;color:#0284c7;"
+                              th:text="${ticketConsulta.tipoPeticion}">Petición</span>
+                        <span style="display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:50px;font-size:12px;font-weight:700;
+                                     background:#f0fdf4;color:#059669;border:1px solid #a7f3d0;"
+                              th:text="${pqrsService.slaBadgeText(ticketConsulta)}">Vence en 5 día(s)</span>
+                    </div>
+
+                    <div style="background:#fff;border:1px solid var(--border-color);border-radius:8px;padding:16px 18px;margin-bottom:18px;">
+                        <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;">Fecha de radicación</div>
+                        <div style="font-size:13.5px;font-weight:600;color:var(--text-dark);"
+                             th:text="${ticketConsulta.createdAt != null ? #temporals.format(ticketConsulta.createdAt, 'dd/MM/yyyy HH:mm') : '-'}">01/01/2026</div>
+                    </div>
+
+                    <div th:if="${ticketConsulta.respuesta != null && !ticketConsulta.respuesta.isEmpty()}"
+                         style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:16px 18px;margin-bottom:18px;">
+                        <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#059669;margin-bottom:8px;display:flex;align-items:center;gap:7px;">
+                            <i class="fa-solid fa-check-circle"></i> Respuesta de nuestra empresa
+                        </div>
+                        <div style="font-size:13.5px;color:#166534;line-height:1.65;white-space:pre-wrap;" th:text="${ticketConsulta.respuesta}">Respuesta</div>
+                    </div>
+
+                    <div th:if="${adjuntosConsulta != null && !adjuntosConsulta.isEmpty()}"
+                         style="background:#fff;border:1px solid var(--border-color);border-radius:8px;padding:16px 18px;margin-bottom:18px;">
+                        <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:7px;">
+                            <i class="fa-solid fa-camera"></i> Evidencia de la gestión
+                        </div>
+                        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                            <div th:each="adj : ${adjuntosConsulta}" style="position:relative;">
+                                <div th:if="${adj.nombreArchivo != null && (adj.nombreArchivo.endsWith('.jpg') || adj.nombreArchivo.endsWith('.jpeg') || adj.nombreArchivo.endsWith('.png') || adj.nombreArchivo.endsWith('.gif') || adj.nombreArchivo.endsWith('.webp'))}">
+                                    <a th:href="${adj.url}" target="_blank" style="display:block;text-decoration:none;">
+                                        <img th:src="${adj.url}" alt="" style="width:140px;height:105px;object-fit:cover;border-radius:8px;border:1.5px solid #e2e8f0;transition:transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                    </a>
+                                    <div style="font-size:10px;color:#94a3b8;text-align:center;margin-top:4px;" th:text="${adj.nombreArchivo}">foto.jpg</div>
+                                </div>
+                                <div th:unless="${adj.nombreArchivo != null && (adj.nombreArchivo.endsWith('.jpg') || adj.nombreArchivo.endsWith('.jpeg') || adj.nombreArchivo.endsWith('.png') || adj.nombreArchivo.endsWith('.gif') || adj.nombreArchivo.endsWith('.webp'))}">
+                                    <a th:href="${adj.url}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;font-size:12px;color:var(--text-dark);">
+                                        <i class="fa-solid fa-file" style="color:var(--accent-gold);"></i> <span th:text="${adj.nombreArchivo}">archivo</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${ticketConsulta.respuesta == null || ticketConsulta.respuesta.isEmpty()}"
+                         style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:16px 18px;margin-bottom:18px;">
+                        <div style="font-size:12.5px;color:#92400e;line-height:1.55;display:flex;gap:10px;align-items:flex-start;">
+                            <i class="fa-solid fa-clock" style="margin-top:2px;"></i>
+                            <span>Su solicitud se encuentra en proceso de gestión. Será respondida dentro del plazo legal establecido y podrá consultarla nuevamente con este radicado.</span>
+                        </div>
+                    </div>
+
+                    <div style="background:#fff;border:1px solid var(--border-color);border-radius:8px;padding:16px 18px;">
+                        <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:12px;">
+                            <i class="fa-solid fa-history"></i> Historial de la solicitud
+                        </div>
+                        <div th:if="${!#lists.isEmpty(historialConsulta)}" style="display:flex;flex-direction:column;gap:10px;">
+                            <div th:each="h : ${historialConsulta}" style="display:flex;gap:12px;align-items:flex-start;">
+                                <i class="fa-solid fa-circle-check" style="color:var(--accent-cyan);margin-top:3px;font-size:14px;"></i>
+                                <div>
+                                    <div style="font-size:12px;font-weight:700;color:var(--text-dark);"
+                                         th:text="${h.accion == 'RADICADO' ? 'Radicación recibida' : (h.accion == 'ESTADO' ? 'Actualización de estado' : (h.accion == 'RESPUESTA' ? 'Respuesta enviada' : h.accion))}">Acción</div>
+                                    <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5;" th:text="${h.descripcion}">Detalle</div>
+                                    <div style="font-size:11px;color:#94a3b8;margin-top:3px;" th:text="${#temporals.format(h.fecha, 'dd/MM/yyyy HH:mm')}">fecha</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${#lists.isEmpty(historialConsulta)}" style="font-size:12.5px;color:var(--text-muted);">Sin eventos registrados.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal-right" th:if="${ticketConsulta == null}">
+                <div class="ct-info-navy wide">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span class="ct-vbar"></span>
+                    <p>Al radicar su solicitud recibirá un <strong>número de radicado</strong> (ej. PQRS-2026-0001). Guárdelo junto con el número de documento: con ambos podrá consultar aquí el estado y la respuesta de su PQRS.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA: misma ola que Inicio (azul + línea dorada) -->
+<section class="cta-v3">
+    <img th:src="@{${ctaImage}}" src="/images/Operar.png" alt="" class="cta-bg-img">
+    <div class="cta-overlay"></div>
+    <div class="cta-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48 L1440,62 C1200,32 960,42 720,66 C480,90 240,84 0,48 Z" fill="#1e98d9"/>
+            <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48 L1440,0 L0,0 Z" fill="#f4faff"/>
+            <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48" fill="none" stroke="#e6ab09" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        </svg>
+    </div>
+    <div class="container">
+        <h2 class="reveal">¿Listo para operar con nosotros?</h2>
+        <p class="reveal delay-1">Únase a los clientes que confían en Mardique para sus operaciones portuarias y logísticas en el Caribe colombiano.</p>
+        <div class="cta-buttons reveal delay-2">
+            <a href="/servicios" class="btn btn-orange">Ver nuestros servicios <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf" target="_blank" rel="noopener" class="btn btn-outline-light">Reglamento de Operaciones <i class="fa-solid fa-file-pdf"></i></a>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-logo">
+                    <img src="/images/Logo.png" alt="Mardique"
+                         onerror="this.parentElement.innerHTML='<span style=\'color:var(--navy);font-weight:800;font-size:15px;\'>SP MARDIQUE</span>'">
+                </div>
+                <p class="footer-desc">Puerto privado multipropósito en el Caribe colombiano. Comprometidos con la excelencia operativa y la satisfacción de nuestros clientes.</p>
+                <div class="social-icons">
+                    <a href="https://www.youtube.com/channel/UCaqN40lCIj_nm53aHPJEicQ" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="mailto:info@spmardique.com" title="Correo"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="footer-title">Navegación</h4>
+                <ul class="footer-links">
+                    <li><a href="/inicio">Inicio</a></li>
+                    <li><a href="/empresa">Empresa</a></li>
+                    <li><a href="/servicios">Servicios</a></li>
+                    <li><a href="/tramites-en-linea">Trámites en Línea</a></li>
+                    <li><a href="#">Tarifas</a></li>
+                    <li><a href="/galeria">Galería</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Contacto</h4>
+                <ul class="footer-contact-info">
+                    <li><i class="fas fa-map-marker-alt"></i><span>Carretera Antigua Vía Barú, Cl 7 Puerto 2, Corregimiento Santa Ana – Cartagena, Colombia.</span></li>
+                    <li><i class="fas fa-envelope"></i><a href="mailto:info@spmardique.com" style="color:var(--text-muted)">info@spmardique.com</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Certificaciones</h4>
+                <div class="certs-container">
+                    <div class="cert-item">
+                        <div class="cert-circle"><i class="fas fa-certificate"></i></div>
+                        <p>ISO<br>9001:2015</p>
+                    </div>
+                    <div class="cert-item">
+                        <div class="cert-circle"><i class="fas fa-hard-hat"></i></div>
+                        <p>ISO<br>45001:2018</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 Sociedad Portuaria Mardique S.A. Todos los derechos reservados.</span>
+            <div class="footer-bottom-links">
+                <a href="https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf" target="_blank"><i class="fas fa-file-pdf"></i> Reglamento Operativo</a>
+                <a href="/privacidad"><i class="fas fa-shield-alt"></i> Políticas de Privacidad</a>
+                <a href="#"><i class="fas fa-shield-halved"></i> Políticas de Seguridad</a>
+                <a href="#" data-cc-action="open-modal"><i class="fas fa-cookie-bite"></i> Preferencias de cookies</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div class="success-toast" id="successToast"
+     th:classappend="${pqrsSuccess != null or mensajeSuccess != null} ? 'show' : ''"
+     th:attr="data-tipo=${pqrsSuccess != null ? 'pqrs' : 'mensaje'}">
+    <div class="success-toast-check">
+        <svg viewBox="0 0 52 52" class="checkmark-svg">
+            <circle cx="26" cy="26" r="24" fill="none" class="checkmark-circle"/>
+            <path fill="none" class="checkmark-check" d="M14 27l8 8 16-16"/>
+        </svg>
+    </div>
+    <div class="success-toast-text">
+        <h4 th:text="${pqrsSuccess != null ? 'PQRS radicada con éxito' : 'Mensaje enviado con éxito'}">Enviado</h4>
+        <p th:text="${pqrsSuccess != null ? 'Su solicitud fue radicada correctamente y recibirá respuesta en los próximos días hábiles.' : 'Hemos recibido su mensaje. Nuestro equipo se pondrá en contacto con usted.'}">Gracias</p>
+    </div>
+    <button type="button" class="success-toast-close" id="successToastClose" aria-label="Cerrar">&times;</button>
+</div>
+
+<script>
+
+    function formatPhone(input) {
+        var d = input.value.replace(/[^\d]/g, '');
+        if (d.length === 0) { input.value = ''; return; }
+        var p = d.startsWith('57') ? '' : '57';
+        var r = p + d;
+        var f = '+' + r.substring(0, 2);
+        if (r.length > 2) f += ' ' + r.substring(2, 5);
+        if (r.length > 5) f += ' ' + r.substring(5, 8);
+        if (r.length > 8) f += ' ' + r.substring(8, 12);
+        input.value = f;
+    }
+
+    (function() {
+        function getLabel(input) {
+            var wrap = input.closest('.pfield, .form-group, .field');
+            if (wrap) {
+                var lbl = wrap.querySelector('label');
+                if (lbl) return lbl.textContent.replace('*', '').trim();
+            }
+            return input.name;
+        }
+
+        function showError(input, msg) {
+            var wrap = input.closest('.pfield, .form-group, .field') || input.parentNode;
+            wrap.classList.add('field-error');
+            var err = wrap.querySelector('.field-error-msg');
+            if (!err) {
+                err = document.createElement('div');
+                err.className = 'field-error-msg';
+                wrap.appendChild(err);
+            }
+            err.textContent = msg;
+        }
+
+        function clearError(input) {
+            var wrap = input.closest('.pfield, .form-group, .field');
+            if (wrap) {
+                wrap.classList.remove('field-error');
+                var err = wrap.querySelector('.field-error-msg');
+                if (err) err.remove();
+            }
+        }
+
+        function validarCampo(input) {
+            var val = (input.value || '').trim();
+            var label = getLabel(input);
+            var msg = null;
+            if (input.hasAttribute('required') && val === '') {
+                msg = 'El campo ' + label + ' es obligatorio.';
+            } else if (val !== '') {
+                if (input.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+                    msg = 'Ingrese una dirección de correo electrónico válida.';
+                } else if (input.name === 'telefono') {
+                    var digits = val.replace(/\D/g, '');
+                    if (digits.length < 10 || digits.length > 13) {
+                        msg = 'Ingrese un número de teléfono válido (mínimo 10 dígitos).';
+                    }
+                } else if (input.name === 'numeroDocumento') {
+                    if (val.length < 4) {
+                        msg = 'Ingrese un número de documento válido.';
+                    }
+                } else if (input.name === 'radicado') {
+                    if (!/^PQRS-\d{4}-\d+$/i.test(val)) {
+                        msg = 'El radicado debe tener el formato PQRS-2026-0001.';
+                    }
+                } else if (input.name === 'descripcion') {
+                    if (val.length < 10) {
+                        msg = 'La descripción debe tener al menos 10 caracteres.';
+                    }
+                } else if (input.name === 'mensaje') {
+                    if (val.length < 10) {
+                        msg = 'El mensaje debe tener al menos 10 caracteres.';
+                    }
+                } else if (input.tagName === 'SELECT' && (input.value === '' || input.value === null)) {
+                    msg = 'Seleccione una opción para ' + label + '.';
+                }
+            } else if (input.tagName === 'SELECT' && input.hasAttribute('required')) {
+                msg = 'Seleccione una opción para ' + label + '.';
+            }
+            if (msg) { showError(input, msg); return false; }
+            clearError(input);
+            return true;
+        }
+
+        document.querySelectorAll('form[action="/contacto/message"], form[action="/contacto/pqrs"], form[action="/contacto/pqrs/seguimiento"]').forEach(function(f) {
+            f.addEventListener('submit', function(e) {
+                var firstError = null;
+                f.querySelectorAll('input, textarea, select').forEach(function(input) {
+                    if (input.type === 'hidden' || input.type === 'file' || input.type === 'submit' || input.type === 'checkbox') return;
+                    if (!validarCampo(input) && !firstError) firstError = input;
+                });
+                /* Validar checkbox de consentimiento de datos personales */
+                var consentChk = f.querySelector('input[name="privacyConsent"]');
+                if (consentChk) {
+                    var wrap = consentChk.closest('.pc-consent');
+                    var errEl = consentChk.parentElement && consentChk.parentElement.parentElement
+                        ? consentChk.parentElement.parentElement.querySelector('.pc-consent-error') : null;
+                    if (!consentChk.checked) {
+                        if (wrap) wrap.classList.add('pc-consent--has-error');
+                        if (errEl) errEl.textContent = 'Debe aceptar la Política de privacidad y el Tratamiento de Datos Personales para continuar.';
+                        if (!firstError) firstError = consentChk;
+                    } else {
+                        if (wrap) wrap.classList.remove('pc-consent--has-error');
+                        if (errEl) errEl.textContent = '';
+                    }
+                }
+                if (firstError) {
+                    e.preventDefault();
+                    firstError.focus();
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+                var btn = f.querySelector('button[type="submit"]');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.dataset.original = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...';
+                }
+            });
+            f.addEventListener('input', function(e) {
+                if (e.target && e.target.closest) clearError(e.target);
+            });
+            f.addEventListener('change', function(e) {
+                if (e.target && e.target.name === 'privacyConsent') {
+                    var wrap = e.target.closest('.pc-consent');
+                    if (wrap && e.target.checked) {
+                        wrap.classList.remove('pc-consent--has-error');
+                        var errEl = wrap.querySelector('.pc-consent-error');
+                        if (errEl) errEl.textContent = '';
+                    }
+                }
+            });
+        });
+    })();
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        document.querySelectorAll('.nav-menu li.dropdown .dropdown-menu').forEach(function(m) {
+            m.style.setProperty('opacity', '0', 'important');
+            m.style.setProperty('visibility', 'hidden', 'important');
+        });
+        document.querySelectorAll('.nav-menu li.dropdown').forEach(function(li) {
+            var menu = li.querySelector('.dropdown-menu');
+            if (!menu) return;
+            var timer;
+            li.addEventListener('mouseenter', function() {
+                clearTimeout(timer);
+                menu.style.setProperty('opacity', '1', 'important');
+                menu.style.setProperty('visibility', 'visible', 'important');
+                menu.style.pointerEvents = 'auto';
+            });
+            li.addEventListener('mouseleave', function() {
+                timer = setTimeout(function() {
+                    menu.style.setProperty('opacity', '0', 'important');
+                    menu.style.setProperty('visibility', 'hidden', 'important');
+                    menu.style.pointerEvents = '';
+                }, 150);
+            });
+            menu.addEventListener('mouseenter', function() {
+                clearTimeout(timer);
+                menu.style.setProperty('opacity', '1', 'important');
+                menu.style.setProperty('visibility', 'visible', 'important');
+                menu.style.pointerEvents = 'auto';
+            });
+            menu.addEventListener('mouseleave', function() {
+                menu.style.setProperty('opacity', '0', 'important');
+                menu.style.setProperty('visibility', 'hidden', 'important');
+                menu.style.pointerEvents = '';
+            });
+        });
+
+
+        window.addEventListener('scroll', () => {
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('scroll-progress').style.width = scrolled + '%';
+        });
+
+        const header = document.getElementById('main-header');
+
+        function syncNav() {
+            const isScrolled = window.scrollY > 60;
+            header.classList.toggle('scrolled', isScrolled);
+        }
+
+        syncNav();
+        window.addEventListener('scroll', syncNav, { passive: true });
+
+        setTimeout(() => document.getElementById('heroLine').classList.add('animate'), 300);
+
+        (function() {
+            const container = document.getElementById('heroParticles');
+            for (let i = 0; i < 14; i++) {
+                const p = document.createElement('div');
+                p.className = 'hero-particle';
+                const size = Math.random() * 80 + 20;
+                p.style.cssText = `
+                width:${size}px; height:${size}px;
+                left:${Math.random()*100}%; top:${Math.random()*100}%;
+                animation-duration:${Math.random()*10+8}s;
+                animation-delay:${Math.random()*-12}s;
+                opacity:${Math.random()*0.5};
+            `;
+                container.appendChild(p);
+            }
+        })();
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revealObserver.observe(el));
+
+
+
+        window.addEventListener('scroll', () => {
+            const bg = document.querySelector('.page-hero-bg');
+            if (bg) bg.style.transform = `translateY(${window.scrollY * 0.25}px)`;
+        });
+
+        var successToast = document.getElementById('successToast');
+        if (successToast && successToast.classList.contains('show')) {
+            setTimeout(function() { successToast.classList.add('animate'); }, 50);
+            var toastTimer = setTimeout(function() { successToast.classList.remove('show'); }, 6000);
+            document.getElementById('successToastClose').addEventListener('click', function() {
+                clearTimeout(toastTimer);
+                successToast.classList.remove('show');
+            });
+            successToast.addEventListener('click', function(e) {
+                if (e.target === successToast) {
+                    clearTimeout(toastTimer);
+                    successToast.classList.remove('show');
+                }
+            });
+        }
+
+    });
+</script>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<nav class="mobile-nav-drawer" id="mobileDrawer" aria-label="Menú móvil">
+    <div class="drawer-header">
+        <img src="/images/Logo.png" alt="Mardique">
+        <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&times;</button>
+    </div>
+    <div class="drawer-nav">
+        <a href="/inicio">INICIO</a>
+        <a href="/empresa">EMPRESA</a>
+        <a href="/servicios">SERVICIOS</a>
+        <div class="drawer-divider"></div>
+        <button class="drawer-item" id="drawerServCliente">
+            SERVICIO AL CLIENTE <i class="fas fa-chevron-down drawer-chevron"></i>
+        </button>
+        <div class="drawer-submenu" id="subServCliente">
+            <a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a>
+            <a href="/procedimientos">PROCEDIMIENTOS</a>
+            <a href="/tarifas">TARIFAS</a>
+        </div>
+        <a href="/contacto" class="active">CONTACTO</a>
+        <a href="/galeria">GALERÍA</a>
+        <div class="drawer-divider"></div>
+        <a href="/login">ACCESO</a>
+        <button type="button" class="drawer-contact-btn" onclick="openServiceForm('Contáctenos', 'Otro', 'Solicitud General', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted a la brevedad posible.')" style="border:none;cursor:pointer;"><i class="fas fa-phone-alt"></i> CONTÁCTANOS</button>
+    </div>
+</nav>
+
+<div th:replace="~{Inicio :: contactModal}"></div>
+<script src="/js/chatbot.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        var url=window.location.origin+'/contacto#pqrs';
+        var qr=document.getElementById('pqrs-qr-img');
+        if(qr) qr.src='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent(url)+'&margin=8&color=0a2e4d&bgcolor=ffffff';
+
+        if(window.location.hash==='#pqrs'){
+            setTimeout(function(){
+                var pqrsEl=document.getElementById('pqrs');
+                if(pqrsEl){
+                    var pqrsY=pqrsEl.getBoundingClientRect().top+window.pageYOffset;
+                    window.scrollTo({top:pqrsY,behavior:'smooth'});
+                }
+            },400);
+        }
+    });
+</script>
+<div th:replace="~{fragments/cookie-consent :: cookieBanner}"></div>
+</body>
+</html>

@@ -1,0 +1,359 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-09-03T15:25:00Z",
+  "description": "Índice de triggers para activación automática de skills",
+  
+  "skills": [
+    {
+      "id": "memory-optimization",
+      "name": "Memory Optimization",
+      "file": "ai-skills/memory-optimization.md",
+      "priority": 1,
+      "alwaysActive": false,
+      "triggers": {
+        "keywords": [
+          "continuar",
+          "última sesión",
+          "contexto",
+          "anterior",
+          "siguiente",
+          "retomar",
+          "seguir"
+        ],
+        "conditions": [
+          {
+            "type": "sessionDuration",
+            "operator": ">",
+            "value": 1800,
+            "unit": "seconds",
+            "description": "Sesión activa > 30 minutos"
+          },
+          {
+            "type": "contextSize",
+            "operator": ">",
+            "value": 50,
+            "unit": "KB",
+            "description": "Contexto cargado > 50KB"
+          },
+          {
+            "type": "fileExists",
+            "path": ".project-memory/distilled-notes.md",
+            "description": "Notas de sesión anterior detectadas"
+          }
+        ]
+      },
+      "actions": [
+        "Cargar .project-memory/distilled-notes.md",
+        "Leer .project-memory/quick-reference.md",
+        "Restaurar caché de archivos frecuentes",
+        "Mostrar resumen de cambios anteriores"
+      ]
+    },
+    
+    {
+      "id": "chunk-reading",
+      "name": "Chunk Reading",
+      "file": "ai-skills/chunk-reading.md",
+      "priority": 2,
+      "alwaysActive": false,
+      "triggers": {
+        "keywords": [
+          "método",
+          "clase",
+          "función",
+          "líneas",
+          "modificar",
+          "editar",
+          "refactorizar",
+          "optimizar"
+        ],
+        "patterns": [
+          "*.java",
+          "*.html",
+          "*.css",
+          "*.ts",
+          "*.js"
+        ],
+        "conditions": [
+          {
+            "type": "fileSizeLines",
+            "operator": ">",
+            "value": 500,
+            "description": "Archivo > 500 líneas"
+          },
+          {
+            "type": "specificLineRange",
+            "description": "Usuario especifica rango de líneas (ej: líneas 86-150)"
+          },
+          {
+            "type": "sectionMention",
+            "description": "Mención específica de método, clase o sección"
+          }
+        ]
+      },
+      "actions": [
+        "Identificar líneas exactas a leer",
+        "Leer contexto adicional (±20 líneas)",
+        "Modificar SOLO el chunk necesario",
+        "Preservar resto del archivo sin cambios",
+        "Validar que modificaciones no rompan dependencias"
+      ]
+    },
+    
+    {
+      "id": "code-distillation",
+      "name": "Code Distillation",
+      "file": "ai-skills/code-distillation.md",
+      "priority": 3,
+      "alwaysActive": false,
+      "triggers": {
+        "keywords": [
+          "listo",
+          "terminé",
+          "completado",
+          "finalizado",
+          "hecho",
+          "guardado"
+        ],
+        "conditions": [
+          {
+            "type": "filesModified",
+            "operator": ">",
+            "value": 3,
+            "description": "Múltiples archivos modificados (> 3)"
+          },
+          {
+            "type": "taskCompleted",
+            "description": "Tarea mayor completada (refactoring, feature, bug)"
+          },
+          {
+            "type": "sessionEndpoint",
+            "description": "Usuario a punto de cerrar sesión"
+          },
+          {
+            "type": "refactoringDetected",
+            "description": "Cambios arquitectónicos o de patrón detectados"
+          }
+        ]
+      },
+      "actions": [
+        "Generar resumen de cambios realizados",
+        "Listar archivos modificados con líneas",
+        "Documentar decisiones arquitectónicas",
+        "Guardar deuda técnica pendiente",
+        "Actualizar .project-memory/distilled-notes.md",
+        "Crear timestamp y versión de snapshot"
+      ]
+    },
+    
+    {
+      "id": "professional-development",
+      "name": "Professional Development",
+      "file": "ai-skills/professional-development.md",
+      "priority": 0,
+      "alwaysActive": true,
+      "triggers": {
+        "keywords": [],
+        "conditions": [
+          {
+            "type": "codeWritten",
+            "description": "SIEMPRE - Cualquier código Java, HTML, CSS"
+          },
+          {
+            "type": "designRequested",
+            "description": "SIEMPRE - UI/UX, componentes, styling"
+          }
+        ]
+      },
+      "standards": {
+        "java": [
+          "Clean Code principles",
+          "SOLID principles",
+          "Design Patterns (Strategy, Factory, Repository, Service)",
+          "Métodos < 30 líneas",
+          "Nombres descriptivos",
+          "Sin comentarios obvios",
+          "Manejo de excepciones específicas"
+        ],
+        "html": [
+          "Semántica correcta (nav, main, section, article)",
+          "Accesibilidad WCAG 2.1 AA",
+          "Mobile-first responsive",
+          "Validación HTML5"
+        ],
+        "css": [
+          "Variables CSS (--color-, --spacing-)",
+          "Mobile-first media queries",
+          "Componentes reutilizables",
+          "BEM naming o similar",
+          "Sin duplicación"
+        ],
+        "design": [
+          "Paleta 3-5 colores primarios",
+          "Tipografía 2 familias máximo",
+          "Espaciado grid 8px",
+          "Corporativo y moderno",
+          "Contraste WCAG AAA"
+        ]
+      },
+      "actions": [
+        "Aplicar estándares de código senior-level",
+        "Optimizar sin sobreingenería",
+        "Diseño profesional (no 'tipo IA')",
+        "Código limpio y funcional",
+        "Accesibilidad desde el inicio"
+      ]
+    },
+    
+    {
+      "id": "skills-index",
+      "name": "Skills Index",
+      "file": "ai-skills/skills-index.md",
+      "priority": 4,
+      "alwaysActive": false,
+      "triggers": {
+        "keywords": [
+          "ayuda",
+          "help",
+          "guía",
+          "qué skills",
+          "cómo usar",
+          "instrucciones",
+          "documentación",
+          "¿qué puedes hacer?"
+        ],
+        "conditions": [
+          {
+            "type": "firstSession",
+            "description": "Primera sesión del usuario"
+          },
+          {
+            "type": "helpRequested",
+            "description": "Usuario solicita ayuda o guía"
+          }
+        ]
+      },
+      "actions": [
+        "Mostrar índice completo de skills",
+        "Explicar cuándo se activa cada skill",
+        "Mostrar ejemplos de uso",
+        "Proporcionar workflow típico"
+      ]
+    }
+  ],
+
+  "activationLogic": {
+    "description": "Lógica de activación automática en orden de prioridad",
+    "sequence": [
+      {
+        "step": 1,
+        "action": "Cargar AGENTS.md",
+        "duration": "10 segundos",
+        "required": true
+      },
+      {
+        "step": 2,
+        "action": "Cargar este archivo (triggers.json)",
+        "duration": "5 segundos",
+        "required": true
+      },
+      {
+        "step": 3,
+        "action": "Analizar petición del usuario",
+        "duration": "10 segundos",
+        "required": true
+      },
+      {
+        "step": 4,
+        "action": "Buscar coincidencias de triggers",
+        "duration": "5 segundos",
+        "required": true
+      },
+      {
+        "step": 5,
+        "action": "Activar skills por prioridad",
+        "duration": "instantáneo",
+        "required": true
+      },
+      {
+        "step": 6,
+        "action": "Ejecutar tarea usando skills",
+        "duration": "variable",
+        "required": true
+      },
+      {
+        "step": 7,
+        "action": "Distillation si tarea completada",
+        "duration": "2 minutos",
+        "required": false
+      }
+    ],
+    "totalOverhead": "30 segundos"
+  },
+
+  "contextDetection": {
+    "fileSize": {
+      "small": "< 200 líneas",
+      "medium": "200-500 líneas",
+      "large": "500-1500 líneas",
+      "veryLarge": "> 1500 líneas"
+    },
+    "fileTypes": {
+      "java": "Backend, Spring Boot",
+      "html": "Templates Thymeleaf",
+      "css": "Estilos, componentes",
+      "javascript": "Frontend scripts",
+      "sql": "Queries, migrations"
+    }
+  },
+
+  "fallbackTriggers": {
+    "description": "Si triggers.json no se carga, aplicar estos por defecto",
+    "rules": [
+      {
+        "rule": "Archivo > 500 líneas",
+        "activate": "chunk-reading"
+      },
+      {
+        "rule": "Sesión > 30 minutos",
+        "activate": "memory-optimization"
+      },
+      {
+        "rule": "Múltiples archivos modificados",
+        "activate": "code-distillation"
+      },
+      {
+        "rule": "Cualquier código escrito",
+        "activate": "professional-development"
+      },
+      {
+        "rule": "Usuario pide ayuda",
+        "activate": "skills-index"
+      }
+    ]
+  },
+
+  "performanceMetrics": {
+    "expectation": "Activación de skills < 1 segundo",
+    "monitoring": [
+      "Tiempo de carga de AGENTS.md",
+      "Tiempo de análisis de triggers",
+      "Skills activados por petición",
+      "Efectividad de detección automática"
+    ]
+  },
+
+  "debugMode": {
+    "enabled": false,
+    "logTriggers": false,
+    "description": "Cambiar a true para ver logs de triggers activos"
+  },
+
+  "versionHistory": [
+    {
+      "version": "1.0",
+      "date": "2026-09-03",
+      "changes": "Versión inicial con 5 skills"
+    }
+  ]
+}

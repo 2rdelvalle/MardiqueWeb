@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Sociedad Portuaria Mardique</title>
+    <script>document.documentElement.classList.add('js');</script>
+    <style>
+        html,body{margin:0;padding:0;background:#fff;}
+        /* Anti-flash: la página se muestra solo cuando CSS, iconos y fuentes ya están listos */
+        html.js body{opacity:0;}
+        html.js.ready body{opacity:1;transition:opacity .35s ease;}
+    </style>
+    <script>
+        (function(){
+            var d=document,r=d.documentElement,shown=false;
+            function show(){ if(shown) return; shown=true; requestAnimationFrame(function(){ r.classList.add('ready'); }); }
+            d.addEventListener('DOMContentLoaded',function(){
+                var f=(d.fonts&&d.fonts.ready)?d.fonts.ready:Promise.resolve();
+                Promise.race([f,new Promise(function(x){setTimeout(x,1200);})]).then(show);
+            });
+            setTimeout(show,2500); /* red de seguridad */
+        })();
+    </script>
+    <link rel="stylesheet" href="/css/inicio.css">
+    <link rel="stylesheet" href="/css/portal.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link data-cc-href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" data-cc-category="personalization" rel="stylesheet" id="cc-font-jakarta">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <style>
+        #main-header { padding: 16px 0 !important; }
+        #main-header.scrolled { padding: 10px 0 !important; }
+        nav { padding-right: 20px; min-width: 0; }
+        .nav-menu { gap: 35px; flex-wrap: nowrap; }
+        .nav-menu li a { font-size: 12.5px; font-weight: 500; padding: 8px 0; letter-spacing: 0.5px; }
+        .nav-menu li a i { margin-left: 4px; font-size: 10px; }
+        .nav-menu li.dropdown .dropdown-trigger { font-size: 12.5px; font-weight: 500; padding: 8px 0; letter-spacing: 0.5px; color: #0a2e4d; }
+        .nav-menu li.dropdown .dropdown-trigger i { margin-left: 4px; font-size: 10px; }
+        @media (max-width: 1200px) {
+            .nav-menu { gap: clamp(14px, 2.5vw, 24px); }
+            .nav-menu li a { font-size: 11px; letter-spacing: 0.2px; }
+            .nav-menu li.dropdown .dropdown-trigger { font-size: 11px; letter-spacing: 0.2px; }
+        }
+        .header-auth { display:flex;align-items:center;gap:8px;margin-left:12px; }
+        .header-auth-btn { display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;color:#0a2e4d;text-decoration:none;transition:0.2s;letter-spacing:0.3px; }
+        .header-auth-btn:hover { color:#e6ab09;background:rgba(230,171,9,0.08); }
+        .header-auth-btn i { font-size:13px; }
+        @media (max-width:768px) { .header-auth .auth-text { display:none; } .header-auth { margin-left:4px; } .header-auth-btn { padding:6px 8px; } }
+    </style>
+    <link rel="stylesheet" href="/css/chatbot.css">
+    <link rel="stylesheet" href="/css/inicio-v3.css?v=20261028-2">
+    <link rel="stylesheet" href="/css/mardique-theme.css?v=20261028-4">
+</head>
+<body class="home-v2">
+<div id="scroll-progress"></div>
+
+<div class="carousel-overlay" id="carouselOverlay" onclick="handleCarouselOverlayClick(event)">
+    <div class="carousel-modal" id="carouselModal">
+        <button class="carousel-close" onclick="closeCarousel()" aria-label="Cerrar">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="carousel-img-wrap">
+            <img class="carousel-img" id="carouselImg" src="" alt="">
+            <button class="carousel-arrow carousel-arrow-left" onclick="carouselNav(-1)" aria-label="Anterior">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-arrow carousel-arrow-right" onclick="carouselNav(1)" aria-label="Siguiente">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="carousel-info">
+            <div class="carousel-label" id="carouselLabel">MARDIQUE</div>
+            <h4 class="carousel-title" id="carouselTitle">Puerto Mardique</h4>
+            <p class="carousel-desc" id="carouselDesc">Descripción de la imagen</p>
+        </div>
+        <div class="carousel-thumbs" id="carouselThumbs"></div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+</div>
+
+<style>
+    /* ── CARRUSEL MODAL ─────────────────────────────────── */
+    .carousel-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(11,56,81,0.92);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        animation: carouselFadeIn 0.25s ease;
+    }
+    .carousel-overlay.open { display: flex; }
+    @keyframes carouselFadeIn { from { opacity:0; } to { opacity:1; } }
+
+    .carousel-modal {
+        position: relative;
+        background: #0b3851;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 820px;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        animation: carouselSlideUp 0.3s cubic-bezier(.22,.68,0,1.2);
+    }
+    @keyframes carouselSlideUp { from { transform: translateY(40px) scale(0.97); opacity:0; } to { transform: none; opacity:1; } }
+
+    .carousel-close {
+        position: absolute;
+        top: 12px; right: 12px;
+        background: rgba(11,56,81,0.85);
+        border: 1.5px solid rgba(255,255,255,0.22);
+        color: #fff;
+        font-size: 18px;
+        width: 46px; height: 46px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 20;
+        display: flex; align-items: center; justify-content: center;
+        transition: background 0.2s, border-color 0.2s, color 0.2s;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+    }
+    .carousel-close:hover {
+        background: #e6ab09;
+        border-color: #e6ab09;
+        color: #0b3851;
+    }
+    .carousel-img-wrap { position: relative; width: 100%; aspect-ratio: 16/9; background: #0b3851; overflow: hidden; }
+    .carousel-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.3s ease; }
+    .carousel-img.fading { opacity: 0; }
+    .carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(11,56,81,0.55); border: 1.5px solid rgba(255,255,255,0.15); color: #fff; width: 44px; height: 44px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, border-color 0.2s; z-index: 5; }
+    .carousel-arrow:hover { background: rgba(230,171,9,0.75); border-color: #e6ab09; }
+    .carousel-arrow-left  { left:  14px; }
+    .carousel-arrow-right { right: 14px; }
+    .carousel-info { padding: 22px 28px 12px; }
+    .carousel-label { font-size: 11px; font-weight: 800; letter-spacing: 2px; color: #e6ab09; margin-bottom: 6px; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .carousel-title { font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 8px; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .carousel-desc { font-size: 14px; color: #55b4e7; margin: 0; line-height: 1.65; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .carousel-thumbs { display: flex; gap: 10px; padding: 10px 28px 0; overflow-x: auto; scrollbar-width: thin; scrollbar-color: #0b3851 transparent; }
+    .carousel-thumbs::-webkit-scrollbar { height: 4px; }
+    .carousel-thumbs::-webkit-scrollbar-thumb { background: #0b3851; border-radius: 4px; }
+    .carousel-thumb { flex-shrink: 0; width: 72px; height: 50px; border-radius: 8px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: border-color 0.2s, transform 0.2s; background: #0b3851; }
+    .carousel-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.55; transition: opacity 0.2s; }
+    .carousel-thumb:hover img { opacity: 0.85; }
+    .carousel-thumb.active { border-color: #e6ab09; transform: scale(1.06); }
+    .carousel-thumb.active img { opacity: 1; }
+    .carousel-dots { display: flex; justify-content: center; gap: 8px; padding: 14px 28px 20px; }
+    .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; cursor: pointer; transition: background 0.2s, transform 0.2s; padding: 0; }
+    .carousel-dot.active { background: #e6ab09; transform: scale(1.3); }
+
+    @media (max-width: 640px) {
+        .carousel-overlay { padding: 12px; align-items: center; justify-content: center; }
+        .carousel-modal { border-radius: 14px; width: 100%; max-width: 100%; max-height: 92vh; overflow: hidden; display: flex; flex-direction: column; }
+        .carousel-img-wrap { aspect-ratio: 1/1; flex-shrink: 0; }
+        .carousel-close { width: 48px; height: 48px; font-size: 20px; top: 10px; right: 10px; background: rgba(11,56,81,0.88); border-color: rgba(255,255,255,0.25); }
+        .carousel-arrow { width: 52px; height: 52px; font-size: 20px; background: rgba(11,56,81,0.65); }
+        .carousel-arrow-left  { left: 8px; }
+        .carousel-arrow-right { right: 8px; }
+        .carousel-info { padding: 14px 16px 8px; flex-shrink: 0; }
+        .carousel-label { font-size: 10px; margin-bottom: 4px; }
+        .carousel-title { font-size: 16px; margin-bottom: 6px; }
+        .carousel-desc  { font-size: 13px; line-height: 1.5; }
+        .carousel-thumbs { padding: 8px 16px 0; gap: 8px; flex-shrink: 0; }
+        .carousel-thumb { width: 60px; height: 44px; border-radius: 7px; }
+        .carousel-dots { padding: 10px 16px 14px; gap: 10px; flex-shrink: 0; }
+        .carousel-dot { width: 9px; height: 9px; }
+    }
+</style>
+<header id="main-header">
+    <div class="container header-content">
+        <a href="/inicio" class="logo-box">
+            <img src="/images/Logo.png" alt="Sociedad Portuaria Mardique">
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li class="active"><a href="/inicio">INICIO</a></li>
+                <li><a href="/empresa">EMPRESA</a></li>
+                <li><a href="/servicios">SERVICIOS</a></li>
+                <li class="dropdown">
+                    <span class="dropdown-trigger">SERVICIO AL CLIENTE <i class="fas fa-chevron-down"></i></span>
+                    <ul class="dropdown-menu">
+                        <li><a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a></li>
+                        <li><a href="/procedimientos">PROCEDIMIENTOS</a></li>
+                        <li><a href="/tarifas">TARIFAS</a></li>
+                    </ul>
+                </li>
+                <li><a href="/contacto">CONTACTO</a></li>
+                <li><a href="/galeria">GALERÍA</a></li>
+                <li><a href="/login">ACCESO</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="header-pse-btn"><img src="/images/pse.png" alt="PSE"></a>
+        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+
+<div class="page-wrapper">
+
+    <section class="hero">
+        <div class="hero-yt-bg">
+            <video autoplay muted loop playsinline>
+                <source th:src="${mediaVideo}" src="/videos/VideoCorporativo.mp4" type="video/mp4">
+            </video>
+            <div class="hero-yt-block"></div>
+        </div>
+        <div class="hero-particles" id="heroParticles"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge"><i class="fas fa-anchor"></i> Puerto Multipropósito · Cartagena, Colombia</div>
+                <h1 class="hero-title">
+                    <span th:utext="${pageContents != null and pageContents.get('hero-title') != null and !pageContents.get('hero-title').isEmpty()} ? ${pageContents.get('hero-title')} : 'SOCIEDAD PORTUARIA'">SOCIEDAD PORTUARIA</span>
+                    <strong><span class="typed-wrap" id="typedText"></span></strong>
+                </h1>
+                <div class="hero-line" id="heroLine"></div>
+                <p class="hero-desc" th:utext="${pageContents != null and pageContents.get('hero-sub') != null and !pageContents.get('hero-sub').isEmpty()} ? ${pageContents.get('hero-sub')} : 'Un puerto multipropósito privado de uso público con servicios portuarios y de infraestructura de clase mundial.'">Un puerto multipropósito privado de uso público con servicios portuarios y de infraestructura de clase mundial.</p>
+                <div class="hero-buttons">
+                    <a href="/servicios" class="btn btn-orange">NUESTROS SERVICIOS <i class="fas fa-arrow-right"></i></a>
+                    <a href="/empresa" class="btn btn-outline">CONÓCENOS <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-hint"><i class="fas fa-chevron-down"></i><span>Explorar</span></div>
+    </section>
+
+    <div class="stats-strip">
+        <div class="container stats-container">
+            <div class="stat-item reveal delay-1"><svg class="stat-icon"> de la franja de datos (mismo orden). Clases: ia = cian, ib = ocre --><!-- 1 · 15m — barco --><svg class="stat-icon" viewBox="0 0 48 48" aria-hidden="true"><path class="ia" d="M14 27V18h20v9M19 18v-5h10v5M8 27h32l-4 9H12z"/><circle class="ib" cx="20" cy="22.5" r="1.2"/><circle class="ib" cx="24" cy="22.5" r="1.2"/><circle class="ib" cx="28" cy="22.5" r="1.2"/><path class="ib" d="M5 42c2-2 4-2 6 0s4 2 6 0 4-2 6 0 4 2 6 0 4-2 6 0 4 2 6 0"/></svg><div class="stat-text"><h4><span class="counter" data-target="15">0</span>m</h4><p>Profundidad del<br>canal de acceso</p></div></div>
+            <div class="stat-item reveal delay-2"><svg class="stat-icon" viewBox="0 0 48 48" aria-hidden="true"><path class="ia" d="M7 19h32M15 6v8M31 6v8M39 28V14a4 4 0 0 0-4-4H11a4 4 0 0 0-4 4v22a4 4 0 0 0 4 4h14"/><circle class="ib-fill" cx="35" cy="35" r="9"/><path class="ib" d="M35 30v5l3.5 2"/></svg><div class="stat-text"><h4>+<span class="counter" data-target="20">0</span> Años</h4><p>De experiencia en<br>servicios portuarios</p></div></div>
+            <div class="stat-item reveal delay-3"><svg class="stat-icon" viewBox="0 0 48 48" aria-hidden="true"><path class="ia" d="M24 5l7 4v8l-7 4-7-4V9zM17 9l7 4 7-4M24 13v8"/><path class="ia" d="M12 25l7 4v8l-7 4-7-4v-8zM5 29l7 4 7-4M12 33v8"/><path class="ib" d="M36 25l7 4v8l-7 4-7-4v-8zM29 29l7 4 7-4M36 33v8"/></svg><div class="stat-text"><h4><span class="counter" data-target="5">0</span></h4><p>Terminales especializadas<br>para todo tipo de carga</p></div></div>
+            <div class="stat-item reveal delay-4"><svg class="stat-icon" viewBox="0 0 48 48" aria-hidden="true"><path class="ia" d="M24 5l15 5v12c0 10-6 17-15 21C15 39 9 32 9 22V10z"/><path class="ib" d="M24 33s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10z"/><circle class="ib" cx="24" cy="23" r="2"/></svg><div class="stat-text"><h4>ISO 9001, 45001</h4><p>Certificaciones en calidad,<br>ambiente y seguridad</p></div></div>
+            <div class="stat-item reveal delay-5"><svg class="stat-icon" viewBox="0 0 48 48" aria-hidden="true"><circle class="ia" cx="24" cy="24" r="17"/><path class="ib" d="M24 13v11l7 4"/></svg><div class="stat-text"><h4>24/7</h4><p>Operaciones<br>continuas</p></div></div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE SERVICIOS REDISEÑADA Y ALINEADA -->
+    <section class="services-section">
+        <div class="container section-layout">
+
+            <!-- Columna Izquierda (Título + Tarjetas) -->
+            <div class="services-left">
+                <div class="services-header-left">
+                    <div class="services-label"><span class="line"></span> NUESTROS SERVICIOS</div>
+                    <h2 class="services-main-title">Soluciones logísticas para un <br><span>puerto más eficiente</span></h2>
+                    <p class="services-subtitle">Ofrecemos servicios integrales que garantizan la operación segura, eficiente y competitiva del puerto.</p>
+                </div>
+
+                <div class="services-grid">
+                    <!-- Tarjeta 1 -->
+                    <div class="service-card svc-reveal" style="--i:0">
+                        <div class="svc-ico"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="a" d="M5 36v-8l5-5h7v13zM17 28h23v8H17z"/><circle class="a" cx="12" cy="37" r="3.2"/><circle class="a" cx="33" cy="37" r="3.2"/><path class="b" d="M22 28 38 9M38 9v10"/><circle class="b" cx="38" cy="21.500" r="2"/></svg></div>
+                        <h3>GRÚAS MÓVILES</h3>
+                        <p>Operaciones seguras y eficientes con equipos de última generación.</p>
+                    </div>
+                    <!-- Tarjeta 2 -->
+                    <div class="service-card svc-reveal" style="--i:1">
+                        <div class="svc-ico"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="a" d="M8 18c0-3 7-5 16-5s16 2 16 5v18c0 3-7 5-16 5S8 39 8 36z"/><path class="a" d="M8 18c0 3 7 5 16 5s16-2 16-5"/><path class="bf" d="M24 27c3.200 3.600 4.600 5.600 4.600 7.600a4.600 4.600 0 0 1-9.200 0c0-2 1.400-4 4.600-7.600z"/></svg></div>
+                        <h3>HIDROCARBUROS</h3>
+                        <p>Infraestructura especializada para almacenamiento y manejo de hidrocarburos.</p>
+                    </div>
+                    <!-- Tarjeta 3 -->
+                    <div class="service-card svc-reveal" style="--i:2">
+                        <div class="svc-ico"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="a" d="M13 19a11 11 0 0 1 22 0v21H13z"/><path class="b" d="M13 27h22M13 34h22"/><path class="b" d="M24 8V4"/><path class="a" d="M10 40h28"/></svg></div>
+                        <h3>GRÁNELES</h3>
+                        <p>Silos y sistemas de manejo de gráneles sólidos con altos estándares.</p>
+                    </div>
+                    <!-- Tarjeta 4 -->
+                    <div class="service-card svc-reveal" style="--i:0">
+                        <div class="svc-ico"><svg viewBox="0 0 48 48" aria-hidden="true"><rect class="a" x="6" y="12" width="36" height="24" rx="3"/><path class="b" d="M15 17v14M24 17v14M33 17v14"/><path class="a" d="M10 40h28"/></svg></div>
+                        <h3>CONTENEDORES</h3>
+                        <p>Servicios integrales para la manipulación y almacenamiento.</p>
+                    </div>
+                    <!-- Tarjeta 5 -->
+                    <div class="service-card svc-reveal" style="--i:1">
+                        <div class="svc-ico"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="a" d="M4 14h24v20H4z"/><path class="a" d="M28 21h8l7 7v6H28z"/><circle class="a" cx="12" cy="36" r="3.200"/><circle class="a" cx="35" cy="36" r="3.200"/><path class="b" d="M10 20h12v8H10zM10 24h12"/></svg></div>
+                        <h3>CARGA GENERAL</h3>
+                        <p>Manejo de carga general y de proyecto con soluciones a la medida.</p>
+                    </div>
+                    <!-- Tarjeta 6 -->
+                    <div class="service-card svc-reveal" style="--i:2">
+                        <div class="svc-ico"><svg viewBox="0 0 48 48" aria-hidden="true"><circle class="b" cx="24" cy="10" r="3.500"/><path class="a" d="M24 14v27M16 20h16"/><path class="a" d="M9 29c0 8 6.500 12 15 12s15-4 15-12M9 29l-3.500 4M39 29l3.500 4"/></svg></div>
+                        <h3>SHORE BASE</h3>
+                        <p>Soporte logístico para la industria offshore y proyectos especiales.</p>
+                    </div>
+                </div>
+                <div class="services-left-bottom">
+                    <a href="/servicios" class="btn btn-outline-services">VER TODOS LOS SERVICIOS <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Columna Derecha (Panel ¿Por qué escogernos?) -->
+            <div id="por-que-escogernos" class="why-us-right svc-reveal">
+                <div>
+                    <h3>¿POR QUÉ<br><span>ESCOGERNOS?</span></h3>
+                    <div class="why-us-list">
+                        <div class="why-us-item" style="--i:0">
+                            <div class="why-icon-wrapper"><svg viewBox="0 0 48 48" aria-hidden="true"><rect class="a" x="17" y="6" width="14" height="9" rx="2"/><rect class="a" x="5" y="33" width="14" height="9" rx="2"/><rect class="a" x="29" y="33" width="14" height="9" rx="2"/><path class="b" d="M24 15v9M12 33v-9h24v9"/></svg></div>
+                            <div class="why-text-wrap">
+                                <strong>Infraestructura moderna y estratégica</strong>
+                                <span>Equipos y tecnología de vanguardia para una operación eficiente.</span>
+                            </div>
+                        </div>
+                        <div class="why-us-item" style="--i:1">
+                            <div class="why-icon-wrapper"><svg viewBox="0 0 48 48" aria-hidden="true"><circle class="a" cx="20" cy="15" r="6"/><path class="a" d="M8 40c0-7 5-12 12-12s12 5 12 12z"/><circle class="b" cx="35" cy="19" r="3.800"/><path class="b" d="M33 29c5-.800 9 2 9 8"/></svg></div>
+                            <div class="why-text-wrap">
+                                <strong>Talento humano calificado</strong>
+                                <span>Personal capacitado y comprometido con la excelencia.</span>
+                            </div>
+                        </div>
+                        <div class="why-us-item" style="--i:2">
+                            <div class="why-icon-wrapper"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="a" d="M24 41V22"/><path class="b" d="M24 27c-8 0-12-5-12-13 8 0 12 5 12 13z"/><path class="a" d="M24 22c0-8 4-12 13-12 0 8-4 12-13 12z"/></svg></div>
+                            <div class="why-text-wrap">
+                                <strong>Compromiso con la sostenibilidad</strong>
+                                <span>Operamos con responsabilidad ambiental y social.</span>
+                            </div>
+                        </div>
+                        <div class="why-us-item" style="--i:3">
+                            <div class="why-icon-wrapper"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="a" d="M24 5l15 6v12c0 10-6.500 17-15 20-8.500-3-15-10-15-20V11z"/><path class="b" d="M16.500 24l5 5L32 18"/></svg></div>
+                            <div class="why-text-wrap">
+                                <strong>Operaciones seguras y eficientes</strong>
+                                <span>Protocolos y estándares internacionales de seguridad.</span>
+                            </div>
+                        </div>
+                        <div class="why-us-item" style="--i:4">
+                            <div class="why-icon-wrapper"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="a" d="M9 27v-5a15 15 0 0 1 30 0v5"/><rect class="a" x="6" y="25" width="6" height="11" rx="2.500"/><rect class="a" x="36" y="25" width="6" height="11" rx="2.500"/><path class="b" d="M39 36c0 4-4 6-11 6"/></svg></div>
+                            <div class="why-text-wrap">
+                                <strong>Cercanía y atención personalizada</strong>
+                                <span>Tu aliado estratégico en cada operación.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="/empresa" class="btn btn-orange btn-why-us">CONOCE MÁS SOBRE NOSOTROS <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="strategic-section">
+        <div class="container">
+            <div class="strategic-layout">
+                <div class="strategic-text reveal-left">
+                    <div class="section-label-globe">CONECTIVIDAD GLOBAL</div>
+                    <h2><strong>POSICIÓN</strong> ESTRATÉGICA</h2>
+                    <p class="lead">Nuestra posición estratégica nos convierte en el único puerto con capacidad de disminuir trasbordos y cabotajes en las operaciones de importación y exportación de bienes con conexión directa al interior del país.</p>
+                    <ul class="route-benefits"><li><i class="fa-solid fa-route"></i> Conectividad Global Directa</li><li><i class="fa-solid fa-ship"></i> Reducción de Tiempos de Tránsito</li><li><i class="fa-solid fa-map-location-dot"></i> Acceso Multimodal al Interior</li></ul>
+                </div>
+                <div class="strategic-map-wrapper reveal-right">
+                    <button class="globe-mobile-toggle" id="globeToggle" type="button">
+                        <span class="globe-toggle-icon"><i class="fas fa-globe-americas"></i></span>
+                        <span class="globe-toggle-body">
+                        <span class="globe-toggle-title">CONECTIVIDAD GLOBAL</span>
+                        <span class="globe-toggle-sub">Toca para explorar el mapa interactivo</span>
+                    </span>
+                        <span class="globe-toggle-action">
+                        <i class="fas fa-chevron-down globe-toggle-arrow"></i>
+                    </span>
+                    </button>
+                    <div class="strategic-map" id="strategicMap">
+                        <div class="globe-collapse" id="globeCollapse">
+                            <canvas id="globeCanvas"></canvas>
+                            <div id="globeInfoCard" class="globe-detail-card">
+                                <img id="globeInfoImg" src="" alt="Puerto" class="globe-card-img" style="display:none;">
+                                <div class="globe-card-body">
+                                    <div class="globe-card-tag" id="globeInfoTag">PUERTO</div>
+                                    <h4 id="globeInfoTitle">Cartagena</h4>
+                                    <p id="globeInfoDesc">Puerto multipropósito privado con conexión directa al interior del país.</p>
+                                </div>
+                            </div>
+                            <div class="globe-hint"><i class="fas fa-hand-pointer"></i> Arrastra · Rueda = Zoom</div>
+                            <div class="globe-zoom-controls"><button class="globe-zoom-btn" id="zoomIn">+</button><button class="globe-zoom-btn" id="zoomOut">−</button><button class="globe-zoom-btn" id="zoomReset">⟳</button></div>
+                            <div class="globe-legend"><div class="globe-legend-item"><div class="globe-legend-dot" style="background:#e6ab09;box-shadow:0 0 6px #e6ab09"></div>HUB Mardique</div><div class="globe-legend-item"><div class="globe-legend-dot" style="background:#1e98d9;box-shadow:0 0 6px #1e98d9"></div>Rutas activas</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="about-gallery">
+        <div class="container ag-layout">
+            <div class="ag-text reveal-left"><h4>SOBRE MARDIQUE</h4><h2>Comprometidos con el desarrollo del país y la región.</h2><p>Generamos desarrollo y bienestar para la región a través de operaciones responsables, seguras y sostenibles. Más de dos décadas de experiencia nos respaldan.</p><a href="/empresa" class="btn btn-outline">CONOCE MÁS <i class="fas fa-arrow-right"></i></a></div>
+            <div class="ag-gallery reveal-right">
+                <div class="gallery-item" onclick="openLightbox('Puerto1.png')"><img src="/images/Puerto1.png" alt="Puerto 1" class="gallery-img"><div class="gallery-item-overlay"><i class="fas fa-expand-alt"></i></div></div>
+                <div class="gallery-item" onclick="openLightbox('Puerto2.png')"><img src="/images/Puerto2.png" alt="Puerto 2" class="gallery-img"><div class="gallery-item-overlay"><i class="fas fa-expand-alt"></i></div></div>
+                <div class="gallery-item" onclick="openLightbox('Puerto3.png')"><img src="/images/Puerto3.png" alt="Puerto 3" class="gallery-img"><div class="gallery-item-overlay"><i class="fas fa-expand-alt"></i></div></div>
+                <div class="gallery-item" onclick="openLightbox('Puerto4.png')"><img src="/images/Puerto4.png" alt="Puerto 4" class="gallery-img"><div class="gallery-item-overlay"><i class="fas fa-expand-alt"></i></div></div>
+            </div>
+        </div>
+    </section>
+    <section class="cta-band">
+        <img th:src="@{${ctaImage}}" src="/images/Operar.png" alt="" class="cta-bg-img">
+        <div class="cta-overlay"></div>
+        <div class="cta-wave" aria-hidden="true">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="ctaGold" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1440" y2="0">
+                        <stop offset="0" stop-color="#e6ab09" stop-opacity="0"/>
+                        <stop offset=".18" stop-color="#e6ab09"/>
+                        <stop offset=".62" stop-color="#f4c542"/>
+                        <stop offset="1" stop-color="#f4c542" stop-opacity="0"/>
+                    </linearGradient>
+                    <linearGradient id="ctaBlue" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1440" y2="0">
+                        <stop offset="0" stop-color="#0b74af"/>
+                        <stop offset=".48" stop-color="#1e98d9"/>
+                        <stop offset="1" stop-color="#38b8ef"/>
+                    </linearGradient>
+                </defs>
+                <path d="M0 0H1440V66C1190 102 950 34 705 60C470 85 230 102 0 68Z" fill="url(#ctaBlue)"/>
+                <path d="M0 0H1440V40C1190 78 950 12 705 36C470 60 230 82 0 46Z" fill="#ffffff"/>
+                <path d="M0 46C230 82 470 60 705 36C950 12 1190 78 1440 40" fill="none" stroke="url(#ctaGold)" stroke-width="2.6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+            </svg>
+        </div>
+        <div class="container">
+            <h2>¿Listo para operar con nosotros?</h2>
+            <p>Conozca todas las soluciones que Mardique tiene disponibles para su operación.</p>
+            <div class="cta-buttons">
+                <a href="/servicios" class="btn btn-orange">VER TODOS LOS SERVICIOS <i class="fas fa-arrow-right"></i></a>
+                <button type="button" onclick="openServiceForm('Solicite una Cotización', 'Cotización de Servicios', 'Su operación portuaria', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted para preparar su cotización a la brevedad posible.')" class="btn btn-outline-light">CONTÁCTENOS <i class="fas fa-phone-alt"></i></button>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo"><img src="/images/Logo.png" alt="Mardique Logo"></div>
+                    <p class="footer-desc">Puerto multipropósito privado de uso público con servicios portuarios y de infraestructura para el desarrollo del país.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-title">ENLACES RÁPIDOS</h4>
+                    <ul class="footer-links">
+                        <li><a href="/inicio">Inicio</a></li>
+                        <li><a href="/empresa">Empresa</a></li>
+                        <li><a href="/servicios">Servicios</a></li>
+                        <li><a href="/tramites-en-linea">Servicio al Cliente</a></li>
+                        <li><a href="/contacto">Contacto</a></li>
+                        <li><a href="/galeria">Galería</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">CONTÁCTANOS</h4>
+                    <ul class="contact-info">
+                        <li><i class="fa-solid fa-location-dot"></i> Km 7 Vía a Mamonal, Cartagena</li>
+                        <li><i class="fa-solid fa-phone"></i> PBX: (57) (5) 669 0730</li>
+                        <li><i class="fa-solid fa-envelope"></i> info@spmardique.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">CERTIFICACIONES</h4>
+                    <div class="certs-container">
+                        <div class="cert-item">
+                            <div class="cert-circle"><i class="fas fa-certificate"></i></div>
+                            <p>ISO<br>9001</p>
+                        </div>
+                        <div class="cert-item">
+                            <div class="cert-circle"><i class="fas fa-hard-hat"></i></div>
+                            <p>ISO<br>45001</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Sociedad Portuaria Mardique S.A. Todos los derechos reservados.</span>
+                <div class="footer-bottom-links">
+                    <a href="https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf" target="_blank"><i class="fas fa-file-pdf"></i> Reglamento Operativo</a>
+                    <a href="/privacidad"><i class="fas fa-shield-alt"></i> Políticas de Privacidad</a>
+                    <a href="#"><i class="fas fa-shield-halved"></i> Políticas de Seguridad</a>
+                    <a href="#" data-cc-action="open-modal"><i class="fas fa-cookie-bite"></i> Preferencias de cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script th:inline="javascript">
+        window.PUB_CAROUSEL_JSON = /*[[${carouselJson}]]*/ null;
+    </script>
+    <script>
+        /* Animación de entrada de Servicios / ¿Por qué escogernos? (una sola vez al entrar en pantalla) */
+        (function(){
+            var els=document.querySelectorAll('.svc-reveal');
+            if(!els.length) return;
+            if(!('IntersectionObserver' in window)){ els.forEach(function(e){e.classList.add('in');}); return; }
+            var io=new IntersectionObserver(function(entries){
+                entries.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } });
+            },{threshold:.15,rootMargin:'0px 0px -6% 0px'});
+            els.forEach(function(e){ io.observe(e); });
+        })();
+    </script>
+    <script src="/js/inicio.js"></script>
+    <script src="/js/panel-nav.js"></script>
+    <script>
+
+        document.querySelectorAll('.nav-menu li.dropdown .dropdown-menu').forEach(function(m) {
+            m.style.setProperty('opacity', '0', 'important');
+            m.style.setProperty('visibility', 'hidden', 'important');
+        });
+        document.querySelectorAll('.nav-menu li.dropdown').forEach(function(li) {
+            var menu = li.querySelector('.dropdown-menu');
+            if (!menu) return;
+            var timer;
+            li.addEventListener('mouseenter', function() {
+                clearTimeout(timer);
+                menu.style.setProperty('opacity', '1', 'important');
+                menu.style.setProperty('visibility', 'visible', 'important');
+                menu.style.pointerEvents = 'auto';
+            });
+            li.addEventListener('mouseleave', function() {
+                timer = setTimeout(function() {
+                    menu.style.setProperty('opacity', '0', 'important');
+                    menu.style.setProperty('visibility', 'hidden', 'important');
+                    menu.style.pointerEvents = '';
+                }, 150);
+            });
+            menu.addEventListener('mouseenter', function() {
+                clearTimeout(timer);
+                menu.style.setProperty('opacity', '1', 'important');
+                menu.style.setProperty('visibility', 'visible', 'important');
+                menu.style.pointerEvents = 'auto';
+            });
+            menu.addEventListener('mouseleave', function() {
+                menu.style.setProperty('opacity', '0', 'important');
+                menu.style.setProperty('visibility', 'hidden', 'important');
+                menu.style.pointerEvents = '';
+            });
+        });
+
+    </script>
+</div><div class="drawer-overlay" id="drawerOverlay"></div>
+
+
+<nav class="mobile-nav-drawer" id="mobileDrawer" aria-label="Menú móvil">
+    <div class="drawer-header">
+        <img src="/images/Logo.png" alt="Mardique">
+        <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&times;</button>
+    </div>
+    <div class="drawer-nav">
+        <a href="/inicio" class="active">INICIO</a>
+        <a href="/empresa">EMPRESA</a>
+        <a href="/servicios">SERVICIOS</a>
+        <div class="drawer-divider"></div>
+        <button class="drawer-item" id="drawerServCliente">
+            SERVICIO AL CLIENTE <i class="fas fa-chevron-down drawer-chevron"></i>
+        </button>
+        <div class="drawer-submenu" id="subServCliente">
+            <a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a>
+            <a href="/procedimientos">PROCEDIMIENTOS</a>
+            <a href="/tarifas">TARIFAS</a>
+        </div>
+        <a href="/contacto">CONTACTO</a>
+        <a href="/galeria">GALERÍA</a>
+        <div class="drawer-divider"></div>
+        <a href="/login">ACCESO</a>
+        <button type="button" class="drawer-contact-btn" onclick="openServiceForm('Contáctenos', 'Otro', 'Solicitud General', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted a la brevedad posible.')" style="border:none;cursor:pointer;"><i class="fas fa-phone-alt"></i> CONTÁCTANOS</button>
+    </div>
+</nav>
+<script src="/js/chatbot.js"></script>
+
+<th:block th:fragment="contactModal">
+    <div class="svc-modal-overlay" id="svcModalOverlay" onclick="if(event.target===this)closeServiceForm()">
+        <div class="svc-modal" role="dialog" aria-modal="true" aria-labelledby="svcFormTitle">
+            <button class="svc-close" onclick="closeServiceForm()" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+            <h3 id="svcFormTitle">Contáctenos</h3>
+            <p class="svc-modal-sub" id="svcFormSub">Complete el formulario y nuestro equipo se pondrá en contacto con usted a la brevedad posible.</p>
+            <span class="svc-service-badge"><i class="fas fa-anchor"></i> <span id="svcFormService">Solicitud General</span></span>
+            <form id="svcForm" novalidate>
+                <div class="svc-form-grid">
+                    <div class="svc-form-group full">
+                        <label>Nombre y Apellidos <span style="color:var(--accent-gold)">*</span></label>
+                        <input type="text" name="nombre" required placeholder="Su nombre completo">
+                    </div>
+                    <div class="svc-form-group">
+                        <label>Correo Electrónico <span style="color:var(--accent-gold)">*</span></label>
+                        <input type="email" name="email" required placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="svc-form-group">
+                        <label>Celular <span style="color:var(--accent-gold)">*</span></label>
+                        <input type="tel" name="telefono" required placeholder="+57 300 000 0000" oninput="formatPhone(this)">
+                    </div>
+                    <div class="svc-form-group full">
+                        <label>Asunto</label>
+                        <select name="asunto" id="svcFormAsunto">
+                            <option>Información de Servicios Portuarios</option>
+                            <option>Cotización de Servicios</option>
+                            <option>Trámites Aduaneros</option>
+                            <option>Zona Franca</option>
+                            <option>Talento Humano</option>
+                            <option>Otro</option>
+                        </select>
+                    </div>
+                    <div class="svc-form-group full">
+                        <label>Mensaje <span style="color:var(--accent-gold)">*</span></label>
+                        <textarea name="mensaje" rows="5" required placeholder="Escriba su consulta o mensaje aquí..."></textarea>
+                    </div>
+                </div>
+                <p class="svc-form-note">Los campos marcados con <span>*</span> son obligatorios.</p>
+                <div class="pc-consent pc-consent--dark" id="pcConsentSvcWrap">
+                    <div class="pc-consent-row">
+                        <input type="checkbox"
+                               id="privacyConsent-svc"
+                               name="privacyConsent"
+                               value="true"
+                               required
+                               aria-describedby="privacyConsentErr-svc">
+                        <label for="privacyConsent-svc">
+                            Conozco y acepto la
+                            <a href="/privacidad" target="_blank" rel="noopener noreferrer">Política de privacidad</a>
+                            &nbsp;y el&nbsp;
+                            <a href="/privacidad#tratamiento" target="_blank" rel="noopener noreferrer">Tratamiento de Datos Personales</a>.
+                        </label>
+                    </div>
+                    <div class="pc-consent-error" id="privacyConsentErr-svc" role="alert" aria-live="polite"></div>
+                </div>
+                <button type="submit" class="svc-submit">Enviar Solicitud <i class="fa-solid fa-paper-plane"></i></button>
+                <div class="svc-status" id="svcStatus"><i></i><span></span></div>
+            </form>
+        </div>
+    </div>
+</th:block>
+
+<div th:replace="~{fragments/cookie-consent :: cookieBanner}"></div>
+</body>
+</html>

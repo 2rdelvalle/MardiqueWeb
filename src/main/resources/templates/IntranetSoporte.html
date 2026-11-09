@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Soporte — Intranet Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
+    <style>
+        :root{--pd:var(--navy);--pb:var(--navy);--ag:var(--miel);--ac:var(--cian);--gn:#16a34a;--rd:#dc2626;--bg:#f0f4f8;--sur:#fff;--bdr:#e2e8f2;--tx:#1e293b;--mx:#64748b;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:var(--bg);font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased;}
+        a{text-decoration:none;color:inherit;}
+
+        /* ── Animations ── */
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes floatIcon{0%,100%{transform:translateY(0)}25%{transform:translateY(-14px)}75%{transform:translateY(-8px)}}
+        @keyframes thReveal{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @keyframes cardPop{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+        /* ── Hero ── */
+        .phero{background:linear-gradient(155deg,var(--navy-deep) 0%,var(--pd) 55%,var(--navy-deep) 100%);padding:0 32px;position:relative;overflow:hidden;}
+        .phw-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;opacity:.35;width:520px;height:520px;background:radial-gradient(circle,rgba(30,152,217,.32),transparent 70%);top:-180px;right:-140px;}
+        .phw-glow2{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;opacity:.2;width:400px;height:400px;background:radial-gradient(circle,rgba(230,171,9,.25),transparent 70%);bottom:-100px;left:10%;}
+        .phw-container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:92px 0 52px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+
+        .phero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(230,171,9,.14);border:1px solid rgba(230,171,9,.3);color:var(--ag);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;padding:6px 16px;border-radius:50px;margin-bottom:20px;animation:fadeInDown .6s ease both;}
+        .phero h1{font-size:38px;font-weight:800;color:#fff;line-height:1.18;margin-bottom:14px;letter-spacing:-.5px;animation:fadeInUp .7s ease .1s both;}
+        .phero h1 strong{color:var(--ag);font-weight:800;}
+        .phero p{font-size:15px;color:rgba(255,255,255,.65);margin-bottom:28px;max-width:540px;line-height:1.65;animation:fadeInUp .7s ease .25s both;}
+
+        .phero-stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fadeInUp .7s ease .4s both;}
+        .phero-stat{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:50px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.8);font-size:11.5px;font-weight:600;}
+        .phero-stat i{color:var(--ag);font-size:10px;}
+
+        .phero-floaters{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+        .phero-floaters i{position:absolute;color:rgba(255,255,255,.06);animation:floatIcon 9s ease-in-out infinite;}
+        .phero-floaters i:nth-child(1){font-size:64px;top:12%;left:8%;animation-delay:0s;}
+        .phero-floaters i:nth-child(2){font-size:42px;top:60%;left:15%;animation-delay:1.4s;}
+        .phero-floaters i:nth-child(3){font-size:50px;top:18%;right:10%;animation-delay:.7s;}
+        .phero-floaters i:nth-child(4){font-size:38px;bottom:14%;right:18%;animation-delay:2.1s;}
+        .phero-floaters i:nth-child(5){font-size:30px;top:45%;left:80%;animation-delay:1.8s;}
+        .phero-floaters i:nth-child(6){font-size:44px;top:70%;left:28%;animation-delay:.4s;}
+
+        .phw-wave{position:relative;z-index:1;line-height:0;margin:44px -32px 0;}
+        .phw-wave svg{display:block;width:100%;height:60px;}
+
+        /* ── Intranet Shell ── */
+        .intranet-shell{max-width:1200px;margin:0 auto;padding:0 24px 70px;display:flex;flex-direction:column;gap:40px;}
+        .reveal{opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1);}
+        .reveal.visible{opacity:1;transform:none;}
+
+        /* ── Main CTA Card ── */
+        .sop-cta-card{background:var(--sur);border:1px solid var(--bdr);border-radius:24px;padding:44px 48px;display:flex;align-items:center;gap:40px;box-shadow:0 12px 40px rgba(15,42,58,.04);position:relative;overflow:hidden;animation:cardPop .5s cubic-bezier(.22,1,.36,1) .1s both;transition:all .3s;}
+        .sop-cta-card:hover{box-shadow:0 16px 50px rgba(15,42,58,.08);border-color:rgba(230,171,9,.25);transform:translateY(-2px);}
+        .sop-cta-card::before{content:'';position:absolute;top:0;right:0;width:400px;height:100%;background:radial-gradient(ellipse at right, rgba(230,171,9,.08) 0%, transparent 70%);pointer-events:none;}
+
+        .sop-cta-icon{width:96px;height:96px;border-radius:24px;background:linear-gradient(135deg,rgba(230,171,9,.15),rgba(230,171,9,.05));border:1.5px solid rgba(230,171,9,.3);color:var(--ag);display:flex;align-items:center;justify-content:center;font-size:42px;flex-shrink:0;box-shadow:0 10px 24px rgba(230,171,9,.15);position:relative;z-index:1;}
+        .sop-cta-body{flex:1;position:relative;z-index:1;}
+        .sop-cta-body h2{font-size:26px;font-weight:800;color:var(--pd);margin:0 0 10px;letter-spacing:-.3px;line-height:1.2;}
+        .sop-cta-body p{font-size:14px;color:var(--mx);margin:0 0 24px;line-height:1.6;max-width:560px;}
+
+        .sop-cta-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border-radius:12px;font-size:13.5px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--pd),var(--navy-deep));transition:all .25s ease;box-shadow:0 8px 20px rgba(10,46,77,.15);border:none;cursor:pointer;}
+        .sop-cta-btn:hover{background:linear-gradient(135deg,var(--navy),var(--pd));transform:translateY(-2px);box-shadow:0 12px 28px rgba(10,46,77,.25);}
+        .sop-cta-btn i{font-size:14px;transition:transform .3s ease;}
+        .sop-cta-btn:hover i{transform:translateX(4px);}
+
+        /* ── Section Headers ── */
+        .sec-hdr{margin-bottom:24px;display:flex;flex-direction:column;gap:6px;}
+        .sec-hdr h3{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;color:var(--pd);margin:0;letter-spacing:-.3px;}
+        .sec-hdr h3 i{color:var(--ag);font-size:18px;}
+        .sec-hdr p{font-size:13.5px;color:var(--mx);margin:0;line-height:1.5;}
+
+        /* ── Steps Grid ── */
+        .sop-steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;}
+        .sop-step-card{background:var(--sur);border:1px solid var(--bdr);border-radius:18px;padding:28px 24px;position:relative;transition:all .3s ease;display:flex;flex-direction:column;box-shadow:0 4px 16px rgba(15,42,58,.03);overflow:hidden;}
+        .sop-step-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(15,42,58,.08);border-color:rgba(230,171,9,.3);}
+        .sop-step-num{position:absolute;top:20px;right:20px;font-size:56px;font-weight:900;color:rgba(15,42,58,.03);line-height:1;transition:color .3s;}
+        .sop-step-card:hover .sop-step-num{color:rgba(230,171,9,.08);}
+
+        .sop-step-icon{width:48px;height:48px;border-radius:12px;background:rgba(230,171,9,.1);color:var(--ag);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:20px;position:relative;z-index:1;}
+        .sop-step-card h4{font-size:15px;font-weight:800;color:var(--pd);margin:0 0 10px;position:relative;z-index:1;}
+        .sop-step-card p{font-size:13px;color:var(--mx);margin:0 0 16px;line-height:1.6;position:relative;z-index:1;flex:1;}
+        .sop-step-tip{background:#f8fafc;border:1px solid #eef1f4;border-radius:10px;padding:12px;font-size:11.5px;color:var(--tx);line-height:1.5;position:relative;z-index:1;display:flex;gap:8px;}
+        .sop-step-tip i{color:var(--ac);font-size:12px;margin-top:2px;}
+
+        /* ── Contact Grid ── */
+        .sop-contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}
+        .sop-contact-card{background:var(--sur);border:1px solid var(--bdr);border-radius:18px;padding:24px;display:flex;align-items:center;gap:18px;transition:all .3s ease;box-shadow:0 4px 16px rgba(15,42,58,.03);}
+        .sop-contact-card:hover{box-shadow:0 10px 28px rgba(15,42,58,.07);border-color:var(--ac);transform:translateY(-2px);}
+        .sop-contact-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 4px 12px rgba(15,42,58,.08);}
+        .sop-contact-card:nth-child(1) .sop-contact-icon{background:linear-gradient(135deg,var(--cian),#0080b0);color:#fff;}
+        .sop-contact-card:nth-child(2) .sop-contact-icon{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;}
+        .sop-contact-card:nth-child(3) .sop-contact-icon{background:linear-gradient(135deg,var(--navy),var(--navy-deep));color:#fff;}
+        .sop-contact-info h4{font-size:14px;font-weight:800;color:var(--pd);margin:0 0 4px;}
+        .sop-contact-info p{font-size:12.5px;color:var(--mx);margin:0;line-height:1.5;}
+        .sop-contact-info strong{color:var(--tx);}
+
+        /* ── Footer ── */
+        .pfooter{text-align:center;padding:22px 28px;border-top:1px solid var(--bdr);color:var(--mx);font-size:12px;margin-top:auto;background:var(--bg);position:relative;}
+        .pfooter::before{content:'';position:absolute;top:0;left:15%;width:70%;height:2px;background:linear-gradient(90deg,transparent,var(--ag),transparent);opacity:.35;}
+
+        /* ── Responsive ── */
+        @media(max-width:920px){
+            .sop-cta-card{flex-direction:column!important;text-align:center!important;padding:36px 24px!important;gap:24px!important;}
+            .sop-cta-body p{margin:0 auto 24px!important;}
+        }
+        @media(max-width:768px){
+            .phero{padding:0 16px!important;}
+            .phw-container{padding:72px 0 32px!important;}
+            .phero h1{font-size:28px!important;}
+            .phero p{font-size:13.5px!important;padding:0 10px!important;}
+            .phero-floaters i{display:none!important;}
+            .phw-glow,.phw-glow2{display:none!important;}
+            .intranet-shell{padding:0 12px 60px!important;gap:24px!important;}
+            .phw-wave{margin:24px -16px 0!important;}
+            .phw-wave svg{height:36px!important;}
+        }
+    </style>
+    <link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body>
+
+<div th:replace="~{IntranetNav :: nav(current='soporte')}"></div>
+
+<div class="phero">
+    <div class="phw-glow"></div>
+    <div class="phw-glow2"></div>
+    <div class="phero-floaters">
+        <i class="fas fa-headset"></i>
+        <i class="fas fa-wrench"></i>
+        <i class="fas fa-microchip"></i>
+        <i class="fas fa-server"></i>
+        <i class="fas fa-laptop-code"></i>
+        <i class="fas fa-shield-halved"></i>
+    </div>
+    <div class="phw-container">
+        <div class="phero-badge"><i class="fas fa-headset"></i> Mesa de Ayuda</div>
+        <h1>Soporte <strong>Técnico</strong></h1>
+        <p>Reporta incidentes, solicita asistencia especializada y da seguimiento a tus requerimientos de TI.</p>
+        <div class="phero-stats">
+            <span class="phero-stat"><i class="fas fa-stopwatch"></i> SLA: 2-4 hrs</span>
+            <span class="phero-stat"><i class="fas fa-ticket-alt"></i> Tickets en línea</span>
+            <span class="phero-stat"><i class="fas fa-user-shield"></i> Soporte Especializado</span>
+        </div>
+    </div>
+    <div class="phw-wave"></div>
+</div>
+
+<div class="intranet-shell">
+
+    <!-- CTA Card -->
+    <div class="sop-cta-card reveal">
+        <div class="sop-cta-icon">
+            <i class="fas fa-bolt"></i>
+        </div>
+        <div class="sop-cta-body">
+            <h2>Abre tu reporte de soporte ahora</h2>
+            <p>Genera un ticket detallando tu solicitud para el departamento de Sistemas. Nuestro equipo técnico asignará tu caso inmediatamente para brindarte una solución eficaz.</p>
+            <a href="https://helpdesk.agmdesarrollos.com/marketplace/formcreator/front/formdisplay.php?id=4" target="_blank" rel="noopener" class="sop-cta-btn">
+                <i class="fas fa-external-link-alt"></i> Ir al formulario GLPI
+            </a>
+        </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="reveal">
+        <div class="sec-hdr">
+            <h3><i class="fas fa-list-check"></i> ¿Cómo reportar un problema?</h3>
+            <p>Sigue estos pasos para crear un ticket de soporte de manera exitosa y agilizar tu atención.</p>
+        </div>
+        <div class="sop-steps-grid">
+            <div class="sop-step-card">
+                <div class="sop-step-num">1</div>
+                <div class="sop-step-icon"><i class="fas fa-magnifying-glass"></i></div>
+                <h4>Identifica el problema</h4>
+                <p>Describe claramente qué está fallando. Sé específico sobre el equipo, el sistema y los mensajes de error mostrados.</p>
+                <div class="sop-step-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Ej: "Error 'Usuario no autorizado' en el ERP al intentar iniciar sesión."</span>
+                </div>
+            </div>
+
+            <div class="sop-step-card">
+                <div class="sop-step-num">2</div>
+                <div class="sop-step-icon"><i class="fas fa-layer-group"></i></div>
+                <h4>Categoriza la solicitud</h4>
+                <p>Elige la opción que mejor describa tu problema dentro del formulario para una correcta asignación.</p>
+                <div class="sop-step-tip">
+                    <i class="fas fa-tags"></i>
+                    <span>Categorías: Hardware, Software, Redes, Permisos y Accesos.</span>
+                </div>
+            </div>
+
+            <div class="sop-step-card">
+                <div class="sop-step-num">3</div>
+                <div class="sop-step-icon"><i class="fas fa-file-pen"></i></div>
+                <h4>Aporta evidencias</h4>
+                <p>Completa tus datos de contacto y proporciona todos los detalles posibles. Si aplica, adjunta una captura de pantalla.</p>
+                <div class="sop-step-tip">
+                    <i class="fas fa-camera"></i>
+                    <span>Una imagen clara del error acelera significativamente el diagnóstico.</span>
+                </div>
+            </div>
+
+            <div class="sop-step-card">
+                <div class="sop-step-num">4</div>
+                <div class="sop-step-icon"><i class="fas fa-paper-plane"></i></div>
+                <h4>Envía y haz seguimiento</h4>
+                <p>Al enviar, recibirás un número de ticket (ID). Guárdalo para consultar el estado de tu solicitud.</p>
+                <div class="sop-step-tip">
+                    <i class="fas fa-clock"></i>
+                    <span>Tiempo estimado de primera respuesta: 2 a 4 horas hábiles.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="reveal">
+        <div class="sec-hdr">
+            <h3><i class="fas fa-address-book"></i> Directorio de Sistemas</h3>
+            <p>Canales alternativos para consultas rápidas o seguimientos.</p>
+        </div>
+        <div class="sop-contact-grid">
+            <div class="sop-contact-card">
+                <div class="sop-contact-icon"><i class="fas fa-envelope"></i></div>
+                <div class="sop-contact-info">
+                    <h4>Correo Electrónico</h4>
+                    <p><strong>sistemas@mardique.com</strong><br>Para consultas no urgentes.</p>
+                </div>
+            </div>
+            <div class="sop-contact-card">
+                <div class="sop-contact-icon"><i class="fas fa-phone"></i></div>
+                <div class="sop-contact-info">
+                    <h4>Línea de Atención</h4>
+                    <p><strong>+57 318 7243180</strong><br>Lun - Sáb, 8:00 a 17:00 hrs.</p>
+                </div>
+            </div>
+            <div class="sop-contact-card">
+                <div class="sop-contact-icon"><i class="fas fa-location-dot"></i></div>
+                <div class="sop-contact-info">
+                    <h4>Ubicación Física</h4>
+                    <p><strong>Edificio Corporativo</strong><br>Planta Baja, Área de TI.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="pfooter">
+    &copy; 2026 Sociedad Portuaria Mardique S.A. Intranet Corporativa &mdash; Todos los derechos reservados.
+</div>
+
+<script src="/js/msal-config.js"></script>
+<script src="/js/api-service.js"></script>
+<script src="/js/intranet.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (!isMsalAuthenticated()) { window.location.href = "/login"; return; }
+
+        getCurrentUser().then(user => {
+            const el = document.getElementById("userDisplay");
+            if (el) el.textContent = user.displayName || user.userPrincipalName || "Empleado";
+        }).catch(() => {
+            const el = document.getElementById("userDisplay");
+            if (el) el.textContent = "Empleado";
+        });
+
+        const revealObs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+    });
+</script>
+</body>
+</html>

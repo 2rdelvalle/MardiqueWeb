@@ -1,0 +1,113 @@
+package com.example.MardiqueWeb.Entity;
+
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "support_tickets")
+public class SupportTicket {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String username;
+    private String email;
+    private String telefono;
+    private String subject;
+
+    @Column(columnDefinition = "TEXT")
+    private String message;
+
+    private String tipoDocumento;
+    private String numeroDocumento;
+    private String nombreCompleto;
+    private String tipoPeticion;
+    private String departamento;
+
+    @Column(columnDefinition = "TEXT")
+    private String respuesta;
+
+    private String origen = "PQRS";
+
+    private String status = "ABIERTO";
+
+    @Column(name = "radicado", unique = true)
+    private String radicado;
+
+    private String prioridad = "MEDIA";
+
+    private String asignadoA;
+
+    @Column(name = "fecha_limite")
+    private LocalDateTime fechaLimite;
+
+    @Column(name = "fecha_resuelto")
+    private LocalDateTime fechaResuelto;
+
+    @Column(name = "fecha_cerrado")
+    private LocalDateTime fechaCerrado;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    /** Consentimiento de tratamiento de datos personales */
+    @Column(name = "privacy_consent_accepted")
+    private Boolean privacyConsentAccepted;
+
+    @Column(name = "privacy_consent_at")
+    private LocalDateTime privacyConsentAt;
+
+    @Column(name = "privacy_policy_version", length = 20)
+    private String privacyPolicyVersion;
+
+    public SupportTicket() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getSubject() { return subject; }
+    public void setSubject(String subject) { this.subject = subject; }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+    public String getTipoDocumento() { return tipoDocumento; }
+    public void setTipoDocumento(String tipoDocumento) { this.tipoDocumento = tipoDocumento; }
+    public String getNumeroDocumento() { return numeroDocumento; }
+    public void setNumeroDocumento(String numeroDocumento) { this.numeroDocumento = numeroDocumento; }
+    public String getNombreCompleto() { return nombreCompleto; }
+    public void setNombreCompleto(String nombreCompleto) { this.nombreCompleto = nombreCompleto; }
+    public String getTipoPeticion() { return tipoPeticion; }
+    public void setTipoPeticion(String tipoPeticion) { this.tipoPeticion = tipoPeticion; }
+    public String getDepartamento() { return departamento; }
+    public void setDepartamento(String departamento) { this.departamento = departamento; }
+    public String getRespuesta() { return respuesta; }
+    public void setRespuesta(String respuesta) { this.respuesta = respuesta; }
+    public String getOrigen() { return origen; }
+    public void setOrigen(String origen) { this.origen = origen; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public String getRadicado() { return radicado; }
+    public void setRadicado(String radicado) { this.radicado = radicado; }
+    public String getPrioridad() { return prioridad; }
+    public void setPrioridad(String prioridad) { this.prioridad = prioridad; }
+    public String getAsignadoA() { return asignadoA; }
+    public void setAsignadoA(String asignadoA) { this.asignadoA = asignadoA; }
+    public LocalDateTime getFechaLimite() { return fechaLimite; }
+    public void setFechaLimite(LocalDateTime fechaLimite) { this.fechaLimite = fechaLimite; }
+    public LocalDateTime getFechaResuelto() { return fechaResuelto; }
+    public void setFechaResuelto(LocalDateTime fechaResuelto) { this.fechaResuelto = fechaResuelto; }
+    public LocalDateTime getFechaCerrado() { return fechaCerrado; }
+    public void setFechaCerrado(LocalDateTime fechaCerrado) { this.fechaCerrado = fechaCerrado; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Boolean getPrivacyConsentAccepted() { return privacyConsentAccepted; }
+    public void setPrivacyConsentAccepted(Boolean privacyConsentAccepted) { this.privacyConsentAccepted = privacyConsentAccepted; }
+    public LocalDateTime getPrivacyConsentAt() { return privacyConsentAt; }
+    public void setPrivacyConsentAt(LocalDateTime privacyConsentAt) { this.privacyConsentAt = privacyConsentAt; }
+    public String getPrivacyPolicyVersion() { return privacyPolicyVersion; }
+    public void setPrivacyPolicyVersion(String privacyPolicyVersion) { this.privacyPolicyVersion = privacyPolicyVersion; }
+}

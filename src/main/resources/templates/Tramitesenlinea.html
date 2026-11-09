@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Trámites en Línea – Sociedad Portuaria Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link data-cc-href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" data-cc-category="personalization" rel="stylesheet" id="cc-font-jakarta">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/inicio.css">
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <style>
+        :root { --primary-blue: var(--navy,#0a2e4d); --primary-dark: var(--navy,#0a2e4d); --accent-gold: var(--miel,#e6ab09); --accent-cyan: var(--cian,#1e98d9); --bg-light:#f3f7fb; --text-muted:#94a3b8; --text-dark:#1e293b; --border-color:#dfe8f1; --radius:10px; --transition: all .3s cubic-bezier(.4,0,.2,1); }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; }
+        body { background:#fff; color:var(--text-dark); -webkit-font-smoothing:antialiased; }
+        a { text-decoration:none; color:inherit; } ul { list-style:none; }
+        .container { max-width:1280px; margin:0 auto; padding:0 24px; width:100%; }
+        #scroll-progress { position:fixed; top:0; left:0; height:3px; width:0; background:linear-gradient(90deg,var(--accent-gold),var(--accent-cyan)); z-index:9999; }
+        .btn { display:inline-flex; align-items:center; justify-content:center; padding:12px 24px; font-size:12.5px; font-weight:700; border-radius:6px; cursor:pointer; transition:var(--transition); text-transform:uppercase; letter-spacing:.5px; border:none; }
+        .btn i { margin-left:8px; font-size:11px; transition:var(--transition); } .btn:hover i { transform:translateX(4px); }
+        .btn-orange { background:var(--accent-gold); color:#fff; box-shadow:0 4px 15px rgba(230,171,9,.25); } .btn-orange:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(230,171,9,.4); }
+        .btn-outline-dark { background:transparent; color:var(--primary-dark); border:2px solid var(--primary-dark); } .btn-outline-dark:hover { background:var(--primary-dark); color:#fff; transform:translateY(-3px); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        nav { flex: 1; display: flex; justify-content: center; padding-right: 20px; }
+        .nav-menu { display: flex; gap: 35px; align-items: center; }
+        .nav-menu li a { color: rgba(255,255,255,0.75); font-size: 12.5px; font-weight: 500; text-transform: uppercase; position: relative; padding: 8px 0; letter-spacing: 0.5px; transition: color 0.25s ease; }
+        .nav-menu > li > a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent-gold); transition: var(--transition); }
+        .nav-menu > li.active > a, .nav-menu > li > a:hover { color: #fff; font-weight: 600; }
+        .nav-menu > li.active > a::after, .nav-menu > li > a:hover::after { width: 100%; }
+        .nav-menu li a i { margin-left: 4px; font-size: 10px; vertical-align: middle; }
+        .nav-menu li.dropdown { position: relative; }
+        .nav-menu li.dropdown .dropdown-trigger {
+            color: rgba(255,255,255,0.75); font-size: 12.5px; font-weight: 500;
+            text-transform: uppercase; padding: 8px 0; letter-spacing: 0.5px; cursor: default;
+            display: inline-block;
+        }
+        .nav-menu li.dropdown .dropdown-trigger i { margin-left: 4px; font-size: 10px; vertical-align: middle; }
+        .nav-menu li.dropdown:hover .dropdown-trigger,
+        .nav-menu li.dropdown.active .dropdown-trigger { color: #fff; font-weight: 600; }
+        .nav-menu li.dropdown .dropdown-menu {
+            position: absolute; top: 100%; left: 0; padding-top: 4px;
+            background: rgba(10,46,77,0.72); min-width: 210px; border-radius: 10px;
+            padding: 6px 0; opacity: 0 !important; visibility: hidden !important;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06);
+            z-index: 1000; list-style: none; pointer-events: none;
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+        }
+        .nav-menu li.dropdown .dropdown-menu::before {
+            content: ''; position: absolute; top: -4px; left: 0; right: 0; height: 4px;
+        }
+        .nav-menu li.dropdown:last-child .dropdown-menu { left: auto; right: 0; }
+
+        .nav-menu li.dropdown .dropdown-menu li { display: block; margin: 0; padding: 0; }
+        .nav-menu li.dropdown .dropdown-menu li a {
+            display: block; width: 100%; padding: 10px 22px; margin: 0;
+            font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,0.7);
+            text-transform: none; letter-spacing: 0.3px; text-decoration: none;
+            background: none; border: none; line-height: 1.4;
+            position: static; white-space: nowrap; box-sizing: border-box;
+        }
+        .nav-menu li.dropdown .dropdown-menu li a:hover {
+            color: #fff; background: rgba(255,255,255,0.04); padding-left: 26px;
+        }
+
+
+        /* HERO: panel azul + foto (segun boceto) */
+        .tl-hero { position:relative; overflow:hidden; min-height:440px; display:flex; align-items:center; padding:132px 0 120px; background:#0a2e4d; }
+        .tl-hero-photo { position:absolute; inset:0; background:var(--tl-img,url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80')) center right / cover no-repeat; }
+        .tl-hero-panel { position:absolute; top:0; bottom:0; left:0; width:58%; background:linear-gradient(105deg,#0a2e4d 0%,#0a3a6b 70%,#0b4a80 100%); clip-path:polygon(0 0,88% 0,100% 100%,0 100%); }
+        .tl-hero .container { position:relative; z-index:3; }
+        .tl-hero-copy { max-width:620px; }
+        .tl-eyebrow { display:flex; align-items:center; gap:10px; font-size:12px; font-weight:800; letter-spacing:.9px; text-transform:uppercase; color:#fff; margin-bottom:12px; }
+        .tl-eyebrow::before { content:''; width:34px; height:5px; border-radius:3px; background:var(--accent-gold); }
+        .tl-hero h1 { font-size:clamp(32px,3.7vw,52px); font-weight:800; line-height:1.08; color:#fff; letter-spacing:-.5px; }
+        .tl-hero h1 strong { color:var(--accent-gold); font-weight:800; }
+        .tl-hero-line { width:48px; height:4px; border-radius:2px; background:var(--accent-gold); margin:16px 0 20px; }
+        .tl-hero p { font-size:15px; line-height:1.7; color:rgba(255,255,255,.92); max-width:500px; }
+        .tl-wave { position:absolute; left:0; right:0; bottom:-1px; height:clamp(54px,6.5vw,96px); z-index:4; pointer-events:none; transform:scaleY(-1); }
+        .tl-wave svg { display:block; width:100%; height:100%; }
+        /* FIX nav: la linea naranja solo va en el item principal, nunca dentro del desplegable */
+        #main-header .nav-menu li.dropdown .dropdown-menu li a::after,
+        #main-header .nav-menu li.dropdown .dropdown-menu li a:hover::after,
+        #main-header .nav-menu li.dropdown.active .dropdown-menu li a::after { content:none !important; display:none !important; width:0 !important; height:0 !important; }
+
+        .reveal { opacity:0; transform:translateY(28px); transition:opacity .6s ease, transform .6s ease; }
+        .reveal.visible { opacity:1; transform:none; }
+        .delay-1{transition-delay:.1s} .delay-2{transition-delay:.2s} .delay-3{transition-delay:.3s} .delay-4{transition-delay:.4s}
+
+        .section-block { padding:48px 0; } .section-bg-light { background:var(--bg-light); }
+        /* Banner info */
+        .process-note { background:linear-gradient(120deg,#0a2e4d 0%,#0d3a63 100%); border-radius:var(--radius); padding:30px 40px; color:#fff; display:flex; align-items:center; gap:28px; margin-bottom:48px; position:relative; overflow:hidden; box-shadow:0 12px 32px rgba(10,46,77,.22); }
+        .process-note::after { content:'\f21a'; font-family:'Font Awesome 6 Free'; font-weight:900; position:absolute; right:48px; bottom:-14px; font-size:96px; color:rgba(30,152,217,.14); }
+        .process-note-icon { width:60px; height:60px; border-radius:50%; background:var(--accent-gold); color:var(--primary-dark); display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; padding-right:0; box-shadow:0 0 0 5px rgba(230,171,9,.25); }
+        .process-note-text { padding-left:28px; border-left:1px solid rgba(255,255,255,.18); max-width:760px; position:relative; z-index:1; }
+        .process-note-text h3 { font-size:20px; font-weight:800; margin-bottom:6px; }
+        .process-note-text p { font-size:13.5px; color:rgba(255,255,255,.85); line-height:1.65; }
+        /* Pasos */
+        .steps-row { display:flex; margin-bottom:56px; position:relative; }
+        .steps-row::before { content:''; position:absolute; top:28px; left:12%; right:12%; height:2px; background:var(--accent-gold); opacity:.8; }
+        .step-item { flex:1; text-align:center; position:relative; padding:0 14px; }
+        .step-num { width:56px; height:56px; border-radius:50%; background:var(--primary-dark); color:#fff; font-size:19px; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; border:3px solid var(--accent-gold); box-shadow:0 0 0 7px #fff; transition:var(--transition); }
+        .step-item:hover .step-num { background:var(--accent-gold); transform:scale(1.08); }
+        .step-item h4 { font-size:14px; font-weight:800; color:var(--primary-dark); margin-bottom:6px; }
+        .step-item p { font-size:12.5px; color:#6b7f96; line-height:1.5; max-width:210px; margin:0 auto; }
+        /* Categorías y tarjetas */
+        .cat-heading { display:flex; align-items:center; gap:16px; margin-bottom:26px; }
+        .cat-heading-icon { width:48px; height:48px; border-radius:10px; background:var(--primary-dark); color:var(--accent-gold); display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; box-shadow:0 6px 16px rgba(10,46,77,.2); }
+        .cat-heading h2 { font-size:25px; font-weight:800; color:var(--primary-dark); }
+        .cat-underline { width:44px; height:3px; border-radius:2px; background:var(--accent-gold); margin-top:8px; }
+        .formats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:22px; }
+        .format-card { background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:26px 26px 24px; transition:var(--transition); position:relative; overflow:hidden; display:flex; flex-direction:column; }
+        .format-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:linear-gradient(180deg,var(--accent-gold),var(--accent-cyan)); transform:scaleY(0); transform-origin:bottom; transition:transform .35s ease; }
+        .format-card:hover { transform:translateY(-5px); box-shadow:0 16px 38px rgba(10,46,77,.1); border-color:transparent; } .format-card:hover::before { transform:scaleY(1); }
+        .format-card-icon { width:54px; height:54px; border-radius:50%; background:#e8f2fb; color:var(--primary-dark); font-size:21px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; transition:var(--transition); }
+        .format-card:hover .format-card-icon { background:var(--primary-dark); color:var(--accent-gold); }
+        .format-card h3 { font-size:16px; font-weight:800; color:var(--primary-dark); margin-bottom:8px; }
+        .format-card p { font-size:13px; color:#5f748b; line-height:1.6; margin-bottom:18px; flex:1; }
+        .email-hint { display:flex; gap:8px; background:rgba(30,152,217,.07); border-radius:6px; padding:8px 12px; margin-bottom:14px; font-size:12px; color:#556b82; }
+        .email-hint i { color:var(--accent-cyan); margin-top:2px; } .email-hint a { color:var(--primary-blue); font-weight:700; word-break:break-all; } .email-hint a:hover { color:var(--accent-gold); }
+        .download-btn { align-self:flex-start; display:inline-flex; align-items:center; gap:8px; background:var(--accent-gold); color:#fff; padding:10px 18px; border-radius:6px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; transition:var(--transition); }
+        .download-btn:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(230,171,9,.35); }
+        .card-link { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--accent-cyan); } .card-link .fa-arrow-right { font-size:11px; color:var(--primary-dark); }
+        .tl-first { background:#f4faff; padding:24px 0; }
+        .process-note-icon { position:relative; box-shadow:none; }
+        .process-note-icon::before { content:''; position:absolute; inset:-8px; border-radius:50%; border:2px solid transparent; border-top-color:var(--accent-gold); border-left-color:var(--accent-gold); transform:rotate(-25deg); }
+        /* ── FOOTER ── */
+        footer {
+            background: linear-gradient(180deg, var(--primary-dark) 0%, #0a1a2b 100%);
+            padding: 60px 0 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            position: relative;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-gold));
+            opacity: .5;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.8fr 1.2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-logo {
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 18px;
+            position: relative;
+        }
+        .footer-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 15%;
+            width: 70%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        .footer-logo img { height: 34px; object-fit: contain; }
+        .footer-desc { margin-bottom: 20px; line-height: 1.65; font-size: 12.5px; color: rgba(148,163,184,.85); }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a {
+            display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px;
+            border: 1px solid rgba(148,163,184,.2);
+            border-radius: 50%;
+            color: #94a3b8;
+            transition: all .3s ease;
+            font-size: 14px;
+        }
+        .social-icons a:hover {
+            color: #fff;
+            border-color: var(--accent-gold);
+            background: rgba(230,171,9,.12);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(230,171,9,.2);
+        }
+        .footer-title {
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 26px; height: 2.5px;
+            background: var(--accent-gold);
+            border-radius: 2px;
+        }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a {
+            transition: all .25s ease;
+            font-size: 12.5px;
+            color: rgba(148,163,184,.85);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-links a:hover {
+            color: var(--accent-gold);
+            padding-left: 5px;
+        }
+        .contact-info { list-style: none; padding: 0; }
+        .contact-info li {
+            display: flex; gap: 10px;
+            margin-bottom: 14px;
+            align-items: flex-start;
+            font-size: 12.5px;
+            color: rgba(148,163,184,.85);
+        }
+        .contact-info i { margin-top: 3px; font-size: 14px; color: var(--accent-gold); }
+        .certs-container { display: flex; gap: 14px; }
+        .cert-item { text-align: center; flex: 1; }
+        .cert-circle {
+            width: 54px; height: 54px;
+            border: 1.5px solid rgba(148,163,184,.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 10px auto;
+            font-size: 8px;
+            font-weight: 800;
+            color: #fff;
+            transition: all .35s ease;
+            background: rgba(255,255,255,.03);
+        }
+        .cert-item:hover .cert-circle {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 16px rgba(230,171,9,.25);
+            transform: scale(1.08);
+        }
+        .cert-item p { font-size: 9.5px; line-height: 1.3; color: rgba(148,163,184,.75); }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,.05);
+            padding: 18px 0;
+            text-align: center;
+            font-size: 12px;
+        }
+        .footer-bottom-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .footer-bottom-links a {
+            color: rgba(148,163,184,.7);
+            text-decoration: none;
+            transition: all .25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            margin-left: 0;
+        }
+        .footer-bottom-links a:hover { color: #fff; }
+        .footer-bottom-links a i { font-size: 11px; }
+
+        /* ===== CTA con la misma ola que Inicio ===== */
+        .cta-v3 { position: relative; overflow: hidden; text-align: center; color: #fff; background: #0b3851; padding: clamp(120px, 13vw, 180px) 0 clamp(80px, 10vw, 130px); border-bottom: 3px solid transparent; border-image: linear-gradient(90deg, #e6ab09, #1e98d9, #e6ab09) 1; }
+        .cta-v3 .cta-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 1; }
+        .cta-v3 .cta-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(135deg, rgba(11,56,81,.90) 0%, rgba(16,82,116,.76) 55%, rgba(22,113,161,.60) 100%); }
+        .cta-v3 .cta-wave { position: absolute; left: 0; right: 0; top: -1px; width: 100%; height: clamp(54px, 6.5vw, 96px); z-index: 2; pointer-events: none; }
+        .cta-v3 .cta-wave svg { display: block; width: 100%; height: 100%; }
+        .cta-v3 .container { position: relative; z-index: 3; }
+        .cta-v3 h2 { text-wrap: balance; color: #fff; font-size: clamp(28px, 3.6vw, 46px); font-weight: 800; letter-spacing: -.5px; margin: 0 0 14px; }
+        .cta-v3 h2::after { content: ''; display: block; width: 56px; height: 3px; border-radius: 2px; margin: 18px auto 0; background: linear-gradient(90deg, #e6ab09 0%, #f4c542 40%, #1e98d9 100%); }
+        .cta-v3 p { color: #cfe9f7; font-size: clamp(15px, 1.4vw, 19px); line-height: 1.6; margin: 0 auto 34px; max-width: 760px; text-wrap: balance; }
+        .cta-v3 .cta-buttons { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .cta-v3 .btn { border-radius: 999px; }
+        .cta-v3 .btn-orange { color: #0a2e4d; font-weight: 800; }
+        .cta-v3 .btn-outline-light { color: #fff; border: 1.5px solid rgba(255,255,255,.6) !important; background: rgba(255,255,255,.08); cursor: pointer; }
+        .cta-v3 .btn-outline-light:hover { background: #fff; color: #0b3851; border-color: #fff !important; }
+
+        /* ===== FOOTER legible, igual que Inicio ===== */
+        footer.site-footer { background: linear-gradient(180deg, #105274 0%, #0b3851 100%); padding: clamp(48px, 6vw, 80px) 0 0; font-size: 14px; color: rgba(255,255,255,.85); }
+        footer.site-footer::before { display: none; }
+        footer.site-footer .footer-grid { grid-template-columns: 1.4fr .9fr 2fr .9fr; gap: clamp(28px, 4vw, 56px); }
+        footer.site-footer .footer-logo { display: inline-block; background: #fff; border-radius: 14px; padding: 12px 18px; margin-bottom: 18px; }
+        footer.site-footer .footer-logo::after { display: none; }
+        footer.site-footer .footer-logo img { height: 44px; width: auto; display: block; }
+        footer.site-footer .footer-desc { color: #cfe9f7; font-size: 14px; line-height: 1.7; max-width: 380px; }
+        footer.site-footer .social-icons a { color: #fff; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.35); }
+        footer.site-footer .social-icons a:hover { background: #e6ab09; border-color: #e6ab09; color: #0a2e4d; }
+        footer.site-footer .footer-title { color: #fff; }
+        footer.site-footer .footer-links a { color: rgba(255,255,255,.85); font-size: 14px; }
+        footer.site-footer .footer-links a:hover { color: #e6ab09; }
+        footer.site-footer .contact-info li, footer.site-footer .contact-info li span, footer.site-footer .contact-info li a { color: rgba(255,255,255,.88) !important; font-size: 14px; }
+        footer.site-footer .contact-info i { color: #e6ab09; }
+        footer.site-footer .certs-container { gap: 22px; }
+        footer.site-footer .cert-circle { width: 56px; height: 56px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.4); background: rgba(255,255,255,.08); color: #f4c542; font-size: 22px; }
+        footer.site-footer .cert-circle i { font-size: 22px; }
+        footer.site-footer .cert-item p { color: rgba(255,255,255,.85); font-size: 11px; line-height: 1.35; }
+        footer.site-footer .footer-bottom { border-top: 1px solid rgba(255,255,255,.14); }
+        footer.site-footer .footer-bottom span { color: rgba(255,255,255,.75); font-size: 13px; }
+        footer.site-footer .footer-bottom-links a { color: rgba(255,255,255,.82); font-size: 13px; }
+        footer.site-footer .footer-bottom-links a:hover { color: #e6ab09; }
+        @media (max-width: 1024px) { footer.site-footer .footer-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 768px)  { footer.site-footer .footer-grid { grid-template-columns: 1fr; } footer.site-footer .footer-grid > div > div[style*="flex"] { flex-direction: column; gap: 24px !important; } }
+
+        @media (max-width:1024px) { .tl-hero-panel { width:72%; } }
+        @media (max-width:768px) {
+            .nav-menu, nav, .header-pse-btn { display:none; } .mobile-menu-toggle { display:flex; } .mobile-nav-drawer { display:flex; }
+            .tl-hero { padding:110px 0 90px; min-height:0; } .tl-hero-panel { width:100%; clip-path:none; opacity:.93; }
+            .process-note { flex-direction:column; text-align:center; padding:26px 20px; } .process-note-text { padding-left:0; border-left:0; }
+            .steps-row { flex-direction:column; gap:26px; } .steps-row::before { display:none; }
+            .formats-grid { grid-template-columns:1fr; } .cat-heading h2 { font-size:20px; }
+        }
+    </style>
+    <script src="/js/inicio.js"></script>
+    <script src="/js/panel-nav.js"></script>
+    <link rel="stylesheet" href="/css/chatbot.css">
+    <link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body>
+<div id="scroll-progress"></div>
+<header id="main-header">
+    <div class="container header-content">
+        <a href="/inicio" class="logo-box">
+            <img src="/images/Logo.png" alt="Sociedad Portuaria Mardique">
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/inicio">INICIO</a></li>
+                <li><a href="/empresa">EMPRESA</a></li>
+                <li><a href="/servicios">SERVICIOS</a></li>
+                <li class="dropdown active">
+                    <span class="dropdown-trigger">SERVICIO AL CLIENTE <i class="fas fa-chevron-down"></i></span>
+                    <ul class="dropdown-menu">
+                        <li><a href="/tramites-en-linea">TRÁMITES EN LÍNEA</a></li>
+                        <li><a href="/procedimientos">PROCEDIMIENTOS</a></li>
+                        <li><a href="/tarifas">TARIFAS</a></li>
+                    </ul>
+                </li>
+                <li><a href="/contacto">CONTACTO</a></li>
+                <li><a href="/galeria">GALERÍA</a></li>
+                <li><a href="/login">ACCESO</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="header-pse-btn"><img src="/images/pse.png" alt="PSE"></a>
+        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+
+<div class="page-wrapper">
+
+    <section class="tl-hero" id="hero">
+        <div class="tl-hero-photo" th:style="${heroImage != null} ? |--tl-img: url('${heroImage}');| : ''"></div>
+        <div class="tl-hero-panel"></div>
+        <div class="container">
+            <div class="tl-hero-copy">
+                <div class="tl-eyebrow">Servicio al cliente</div>
+                <h1 th:utext="${pageContents['hero-title']} ?: 'Formatos digitales&lt;br&gt;para su &lt;strong&gt;gestión portuaria&lt;/strong&gt;'">Formatos digitales<br>para su <strong>gestión portuaria</strong></h1>
+                <div class="tl-hero-line"></div>
+                <p th:utext="${pageContents['hero-sub']} ?: 'Con los trámites en línea, facilitamos la administración de sus operaciones portuarias y la gestión documental, brindando una respuesta oportuna y segura. Descargue los formatos según su requerimiento.'">Con los trámites en línea, facilitamos la administración de sus operaciones portuarias y la gestión documental, brindando una respuesta oportuna y segura. Descargue los formatos según su requerimiento.</p>
+            </div>
+        </div>
+        <div class="tl-wave" aria-hidden="true">
+            <svg viewBox="0 0 1440 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48 L1440,62 C1200,32 960,42 720,66 C480,90 240,84 0,48 Z" fill="#1e98d9"/>
+                <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48 L1440,0 L0,0 Z" fill="#f4faff"/>
+                <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48" fill="none" stroke="#e6ab09" stroke-width="2" vector-effect="non-scaling-stroke"/>
+            </svg>
+        </div>
+    </section>
+
+    <div class="section-block tl-first">
+        <div class="container">
+            <div class="process-note reveal">
+                <div class="process-note-icon"><i class="fas fa-info"></i></div>
+                <div class="process-note-text">
+                    <h3>¿Cómo usar estos formatos?</h3>
+                    <p>Descargue el formato correspondiente a su tipo de operación, diligencie todos los campos requeridos y envíelo al correo electrónico indicado en cada formulario. Nuestro equipo le responderá para programar y confirmar su servicio.</p>
+                </div>
+            </div>
+            <div class="steps-row reveal">
+                <div class="step-item"><div class="step-num">1</div><h4>Descargue el formato</h4><p>Identifique el formulario según su categoría de operación.</p></div>
+                <div class="step-item"><div class="step-num">2</div><h4>Diligencie el documento</h4><p>Complete todos los campos requeridos con la información precisa.</p></div>
+                <div class="step-item"><div class="step-num">3</div><h4>Envíe al correo indicado</h4><p>Remita el formato al correo especificado en cada sección.</p></div>
+                <div class="step-item"><div class="step-num">4</div><h4>Reciba confirmación</h4><p>Nuestro equipo le confirmará su aprobación.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-block">
+        <div class="container">
+            <div class="cat-heading reveal">
+                <div class="cat-heading-icon"><i class="fas fa-users"></i></div>
+                <div><h2>Inscripción de Clientes y Proveedores</h2><div class="cat-underline"></div></div>
+            </div>
+            <div class="formats-grid">
+                <div class="format-card reveal delay-1" th:with="d=${cardDocs['INSCRIPCION_CLIENTES']}">
+                    <div class="format-card-icon"><i class="fas fa-user-plus"></i></div>
+                    <h3>Inscripción de Clientes</h3>
+                    <p th:text="${d?.descripcion} ?: 'Formulario para la inscripción de personas naturales o jurídicas que deseen realizar operaciones en la Sociedad Portuaria.'">Formulario para la inscripción de personas naturales o jurídicas que deseen realizar operaciones en la Sociedad Portuaria.</p>
+                    <div class="email-hint" th:if="${d?.email != null}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Enviar a: <a th:href="'mailto:' + ${d.email}" th:text="${d.email}">correo</a><span th:if="${!#strings.isEmpty(d.emailCc)}" th:text="' con copia a ' + ${d.emailCc}"></span></span>
+                    </div>
+                    <a th:if="${d != null}" th:href="${d.filePath}" class="download-btn" target="_blank"><i class="fas fa-download"></i> Descargar formato</a>
+                    <span th:unless="${d != null}" class="card-link"><i class="fas fa-info-circle"></i> Consulte en puerto <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <div class="format-card reveal delay-2" th:with="d=${cardDocs['DECLARACION_LAFT']}">
+                    <div class="format-card-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Declaración Prevención LAFT</h3>
+                    <p th:text="${d?.descripcion} ?: 'Declaración de prevención del lavado de activos y financiación del terrorismo requerida para todos los usuarios.'">Declaración de prevención del lavado de activos y financiación del terrorismo requerida para todos los usuarios.</p>
+                    <div class="email-hint" th:if="${d?.email != null}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Enviar a: <a th:href="'mailto:' + ${d.email}" th:text="${d.email}">correo</a><span th:if="${!#strings.isEmpty(d.emailCc)}" th:text="' con copia a ' + ${d.emailCc}"></span></span>
+                    </div>
+                    <a th:if="${d != null}" th:href="${d.filePath}" class="download-btn" target="_blank"><i class="fas fa-download"></i> Descargar formato</a>
+                    <span th:unless="${d != null}" class="card-link"><i class="fas fa-info-circle"></i> Consulte en puerto <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <div class="format-card reveal delay-3" th:with="d=${cardDocs['CERTIFICACION_LAFT']}">
+                    <div class="format-card-icon"><i class="fas fa-certificate"></i></div>
+                    <h3>Certificación Prevención LAFT</h3>
+                    <p th:text="${d?.descripcion} ?: 'Certificación formal que, conjuntamente con los demás documentos, permite la habilitación del usuario para operar en la plataforma.'">Certificación formal que, conjuntamente con los demás documentos, permite la habilitación del usuario para operar en la plataforma.</p>
+                    <div class="email-hint" th:if="${d?.email != null}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Enviar a: <a th:href="'mailto:' + ${d.email}" th:text="${d.email}">correo</a><span th:if="${!#strings.isEmpty(d.emailCc)}" th:text="' con copia a ' + ${d.emailCc}"></span></span>
+                    </div>
+                    <a th:if="${d != null}" th:href="${d.filePath}" class="download-btn" target="_blank"><i class="fas fa-download"></i> Descargar formato</a>
+                    <span th:unless="${d != null}" class="card-link"><i class="fas fa-info-circle"></i> Consulte en puerto <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <div class="format-card reveal delay-4" th:with="d=${cardDocs['ACUERDO_SEGURIDAD']}">
+                    <div class="format-card-icon"><i class="fas fa-handshake"></i></div>
+                    <h3>Acuerdo de Seguridad — Asociado de Negocio</h3>
+                    <p th:text="${d?.descripcion} ?: 'Acuerdo formal de seguridad portuaria que deben suscribir todos los asociados de negocio.'">Acuerdo formal de seguridad portuaria que deben suscribir todos los asociados de negocio.</p>
+                    <div class="email-hint" th:if="${d?.email != null}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Enviar a: <a th:href="'mailto:' + ${d.email}" th:text="${d.email}">correo</a><span th:if="${!#strings.isEmpty(d.emailCc)}" th:text="' con copia a ' + ${d.emailCc}"></span></span>
+                    </div>
+                    <a th:if="${d != null}" th:href="${d.filePath}" class="download-btn" target="_blank"><i class="fas fa-download"></i> Descargar formato</a>
+                    <span th:unless="${d != null}" class="card-link"><i class="fas fa-info-circle"></i> Consulte en puerto <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-block section-bg-light">
+        <div class="container">
+            <div class="cat-heading reveal">
+                <div class="cat-heading-icon"><i class="fas fa-ship"></i></div>
+                <div><h2>Importadores, Exportadores y Agencias de Aduana</h2><div class="cat-underline"></div></div>
+            </div>
+            <div class="formats-grid">
+                <div class="format-card reveal delay-1" th:with="d=${cardDocs['SOLICITUDES_PROGRAMABLES']}">
+                    <div class="format-card-icon"><i class="fas fa-calendar-check"></i></div>
+                    <h3>Solicitudes Programables</h3>
+                    <p th:text="${d?.descripcion} ?: 'Formato para solicitar servicios programables de cargue, descargue y demás operaciones portuarias con anticipación.'">Formato para solicitar servicios programables de cargue, descargue y demás operaciones portuarias con anticipación.</p>
+                    <div class="email-hint" th:if="${d?.email != null}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Enviar a: <a th:href="'mailto:' + ${d.email}" th:text="${d.email}">correo</a><span th:if="${!#strings.isEmpty(d.emailCc)}" th:text="' con copia a ' + ${d.emailCc}"></span></span>
+                    </div>
+                    <a th:if="${d != null}" th:href="${d.filePath}" class="download-btn" target="_blank"><i class="fas fa-download"></i> Descargar formato</a>
+                    <span th:unless="${d != null}" class="card-link"><i class="fas fa-info-circle"></i> Consulte en puerto <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <div class="format-card reveal delay-2" th:with="d=${cardDocs['SOLICITUD_EMBARQUE']}">
+                    <div class="format-card-icon"><i class="fas fa-boxes"></i></div>
+                    <h3>Solicitud de Embarque</h3>
+                    <p th:text="${d?.descripcion} ?: 'Formato oficial para solicitar la programación de embarques de carga en los muelles de la Sociedad Portuaria Mardique.'">Formato oficial para solicitar la programación de embarques de carga en los muelles de la Sociedad Portuaria Mardique.</p>
+                    <div class="email-hint" th:if="${d?.email != null}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Enviar a: <a th:href="'mailto:' + ${d.email}" th:text="${d.email}">correo</a><span th:if="${!#strings.isEmpty(d.emailCc)}" th:text="' con copia a ' + ${d.emailCc}"></span></span>
+                    </div>
+                    <a th:if="${d != null}" th:href="${d.filePath}" class="download-btn" target="_blank"><i class="fas fa-download"></i> Descargar formato</a>
+                    <span th:unless="${d != null}" class="card-link"><i class="fas fa-info-circle"></i> Consulte en puerto <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-block">
+        <div class="container">
+            <div class="cat-heading reveal">
+                <div class="cat-heading-icon"><i class="fas fa-anchor"></i></div>
+                <div><h2>Agencia Marítima</h2><div class="cat-underline"></div></div>
+            </div>
+            <div class="formats-grid">
+                <div class="format-card reveal delay-1" th:with="d=${cardDocs['BOOKING']}">
+                    <div class="format-card-icon"><i class="fas fa-clipboard"></i></div>
+                    <h3>Formato Booking</h3>
+                    <p th:text="${d?.descripcion} ?: 'Formato para realizar la reserva (booking) de espacios en los servicios marítimos y fluviales de Mardique.'">Formato para realizar la reserva (booking) de espacios en los servicios marítimos y fluviales de Mardique.</p>
+                    <div class="email-hint" th:if="${d?.email != null}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Enviar a: <a th:href="'mailto:' + ${d.email}" th:text="${d.email}">correo</a><span th:if="${!#strings.isEmpty(d.emailCc)}" th:text="' con copia a ' + ${d.emailCc}"></span></span>
+                    </div>
+                    <a th:if="${d != null}" th:href="${d.filePath}" class="download-btn" target="_blank"><i class="fas fa-download"></i> Descargar formato</a>
+                    <span th:unless="${d != null}" class="card-link"><i class="fas fa-info-circle"></i> Consulte en puerto <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-block section-bg-light">
+        <div class="container">
+            <div class="cat-heading reveal">
+                <div class="cat-heading-icon"><i class="fas fa-id-card"></i></div>
+                <div><h2>Autorización de Ingreso y Salida de Personal, Materiales y Vehículos</h2><div class="cat-underline"></div></div>
+            </div>
+            <div class="formats-grid">
+                <div class="format-card reveal delay-1" th:with="d=${cardDocs['AUTORIZACION_INGRESO']}">
+                    <div class="format-card-icon"><i class="fas fa-door-open"></i></div>
+                    <h3>Autorización de Ingreso y Salida</h3>
+                    <p th:text="${d?.descripcion} ?: 'Formato para solicitar acceso autorizado de personal, vehículos y materiales a las instalaciones portuarias.'">Formato para solicitar acceso autorizado de personal, vehículos y materiales a las instalaciones portuarias.</p>
+                    <div class="email-hint" th:if="${d?.email != null}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Enviar a: <a th:href="'mailto:' + ${d.email}" th:text="${d.email}">correo</a><span th:if="${!#strings.isEmpty(d.emailCc)}" th:text="' con copia a ' + ${d.emailCc}"></span></span>
+                    </div>
+                    <a th:if="${d != null}" th:href="${d.filePath}" class="download-btn" target="_blank"><i class="fas fa-download"></i> Descargar formato</a>
+                    <span th:unless="${d != null}" class="card-link"><i class="fas fa-info-circle"></i> Consulte en puerto <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA: misma ola que Inicio (azul + línea dorada) -->
+    <section class="cta-v3 reveal">
+        <img th:src="@{${ctaImage}}" src="/images/Operar.png" alt="" class="cta-bg-img">
+        <div class="cta-overlay"></div>
+        <div class="cta-wave" aria-hidden="true">
+            <svg viewBox="0 0 1440 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48 L1440,62 C1200,32 960,42 720,66 C480,90 240,84 0,48 Z" fill="#1e98d9"/>
+                <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48 L1440,0 L0,0 Z" fill="#f4faff"/>
+                <path d="M0,34 C240,70 480,76 720,52 C960,28 1200,18 1440,48" fill="none" stroke="#e6ab09" stroke-width="2" vector-effect="non-scaling-stroke"/>
+            </svg>
+        </div>
+        <div class="container">
+            <h2>¿Necesita orientación con los trámites?</h2>
+            <p>Nuestro equipo de servicio al cliente está disponible para guiarle en cada paso del proceso.</p>
+            <div class="cta-buttons">
+                <a href="/procedimientos" class="btn btn-orange">Ver procedimientos <i class="fas fa-arrow-right"></i></a>
+                <button type="button" onclick="openServiceForm('Solicite una Cotización', 'Cotización de Servicios', 'Su operación portuaria', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted a la brevedad posible.')" class="btn btn-outline-light">Contáctenos <i class="fas fa-phone-alt"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo"><img src="/images/Logo.png" alt="Mardique Logo"></div>
+                    <p class="footer-desc">Puerto multipropósito privado de uso público con servicios portuarios y de infraestructura para el desarrollo del país.</p>
+                    <div class="social-icons">
+                        <a href="https://www.youtube.com/channel/UCaqN40lCIj_nm53aHPJEicQ" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="mailto:info@spmardique.com"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-title">ENLACES RÁPIDOS</h4>
+                    <ul class="footer-links">
+                        <li><a href="/inicio">Inicio</a></li>
+                        <li><a href="/empresa">Empresa</a></li>
+                        <li><a href="/servicios">Servicios</a></li>
+                        <li><a href="/tramites-en-linea">Servicio al Cliente</a></li>
+                        <li><a href="/contacto">Contacto</a></li>
+                        <li><a href="/galeria">Galería</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div style="display:flex;gap:30px;">
+                        <div>
+                            <h4 class="footer-title">SERVICIO AL CLIENTE</h4>
+                            <ul class="footer-links">
+                                <li><a href="/tramites-en-linea">Trámites en Línea</a></li>
+                                <li><a href="/procedimientos">Procedimientos</a></li>
+                                <li><a href="/tarifas">Tarifas</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="footer-title">CONTÁCTANOS</h4>
+                            <ul class="contact-info">
+                                <li><i class="fa-solid fa-location-dot"></i><span>Carretera Antigua Vía Barú, Cartagena</span></li>
+                                <li><i class="fa-solid fa-phone"></i><span>PBX: (57) (5) 669 0730</span></li>
+                                <li><i class="fa-solid fa-envelope"></i><span>info@spmardique.com</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-title">CERTIFICACIONES</h4>
+                    <div class="certs-container">
+                        <div class="cert-item"><div class="cert-circle"><i class="fas fa-certificate"></i></div><p>ISO<br>9001</p></div>
+                        <div class="cert-item"><div class="cert-circle"><i class="fas fa-hard-hat"></i></div><p>ISO<br>45001</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Sociedad Portuaria Mardique S.A. Todos los derechos reservados.</span>
+                <div class="footer-bottom-links">
+                    <a href="https://spmardique.com/wp-content/uploads/2024/01/REGLAMENTO_DE_CONDICIONES_TECNICO_DE_OPERACION.pdf" target="_blank"><i class="fas fa-file-pdf"></i> Reglamento Operativo</a>
+                    <a href="/privacidad"><i class="fas fa-shield-alt"></i> Políticas de Privacidad</a>
+                    <a href="#"><i class="fas fa-shield-halved"></i> Políticas de Seguridad</a>
+                    <a href="#" data-cc-action="open-modal"><i class="fas fa-cookie-bite"></i> Preferencias de cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.nav-menu li.dropdown').forEach(function(li) {
+                var menu = li.querySelector('.dropdown-menu'); if (!menu) return; var timer;
+                function show() { clearTimeout(timer); menu.style.setProperty('opacity','1','important'); menu.style.setProperty('visibility','visible','important'); menu.style.pointerEvents='auto'; }
+                function hide() { timer = setTimeout(function() { menu.style.setProperty('opacity','0','important'); menu.style.setProperty('visibility','hidden','important'); menu.style.pointerEvents=''; }, 150); }
+                li.addEventListener('mouseenter', show); li.addEventListener('mouseleave', hide);
+            });
+            var bar = document.getElementById('scroll-progress'), hdr = document.getElementById('main-header');
+            function onScroll() {
+                bar.style.width = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100) + '%';
+                hdr.classList.toggle('scrolled', window.scrollY > 60);
+            }
+            onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+            var io = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+            document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
+        });
+        /*]]>*/
+    </script>
+</div><div class="drawer-overlay" id="drawerOverlay"></div>
+
+<nav class="mobile-nav-drawer" id="mobileDrawer" aria-label="Menú móvil">
+    <div class="drawer-header">
+        <img src="/images/Logo.png" alt="Mardique">
+        <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">&times;</button>
+    </div>
+    <div class="drawer-nav">
+        <a href="/inicio">INICIO</a>
+        <a href="/empresa">EMPRESA</a>
+        <a href="/servicios">SERVICIOS</a>
+        <div class="drawer-divider"></div>
+        <button class="drawer-item active" id="drawerServCliente">
+            SERVICIO AL CLIENTE <i class="fas fa-chevron-down drawer-chevron"></i>
+        </button>
+        <div class="drawer-submenu open" id="subServCliente">
+            <a href="/tramites-en-linea" class="active">TRÁMITES EN LÍNEA</a>
+            <a href="/procedimientos">PROCEDIMIENTOS</a>
+            <a href="/tarifas">TARIFAS</a>
+        </div>
+        <a href="/contacto">CONTACTO</a>
+        <a href="/galeria">GALERÍA</a>
+        <div class="drawer-divider"></div>
+        <a href="/login">ACCESO</a>
+        <button type="button" class="drawer-contact-btn" onclick="openServiceForm('Contáctenos', 'Otro', 'Solicitud General', 'Complete el formulario y nuestro equipo comercial se pondrá en contacto con usted a la brevedad posible.')" style="border:none;cursor:pointer;"><i class="fas fa-phone-alt"></i> CONTÁCTANOS</button>
+    </div>
+</nav>
+
+<div th:replace="~{Inicio :: contactModal}"></div>
+<script src="/js/chatbot.js"></script>
+<div th:replace="~{fragments/cookie-consent :: cookieBanner}"></div>
+</body>
+</html>

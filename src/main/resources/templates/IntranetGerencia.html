@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/Icon192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Icon180.png">
+    <title>Bandeja de Gerencia — Intranet Mardique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="/css/panel-nav.css">
+    <script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
+    <style>
+        /* ── Tokens ── */
+        :root{
+            --pd:var(--navy);--pb:var(--navy);--ag:var(--miel);--ac:var(--cian);
+            --gn:#16a34a;--rd:#dc2626;
+            --bg:#f0f4f8;--sur:#fff;--bdr:#e2e8f2;
+            --tx:#1e293b;--mx:#64748b;
+            --r:10px;--rl:16px;
+        }
+        *{box-sizing:border-box;}
+        body{margin:0;padding:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);}
+
+        /* ── Keyframes ── */
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-22px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes floatIcon{0%,100%{transform:translateY(0)}30%{transform:translateY(-14px)}70%{transform:translateY(-8px)}}
+        @keyframes slideIn{from{opacity:0;transform:scale(.96) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        @keyframes thReveal{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @keyframes thSidebarSlide{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes thCardPop{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+        @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+        @keyframes loaderPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.8}}
+        @keyframes loaderBar{0%{transform:translateX(-100%)}50%{transform:translateX(200%)}100%{transform:translateX(-100%)}}
+        @keyframes badgePop{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+
+        /* ── Page Loader ── */
+        #pageLoader{position:fixed;inset:0;z-index:99999;background:linear-gradient(155deg,var(--navy-deep) 0%,var(--navy) 55%,var(--navy-deep) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .55s ease;}
+        #pageLoader.hidden{opacity:0;pointer-events:none;}
+        #pageLoader .loader-icon{width:68px;height:68px;border-radius:50%;background:rgba(230,171,9,.12);border:3px solid rgba(230,171,9,.3);display:flex;align-items:center;justify-content:center;margin-bottom:20px;animation:loaderPulse 1.5s ease-in-out infinite;}
+        #pageLoader .loader-icon i{font-size:26px;color:var(--ag);}
+        #pageLoader .loader-text{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-.2px;}
+        #pageLoader .loader-sub{font-size:12px;color:rgba(255,255,255,.45);}
+        #pageLoader .loader-bar{width:180px;height:3px;background:rgba(255,255,255,.12);border-radius:4px;margin-top:18px;overflow:hidden;}
+        #pageLoader .loader-bar-fill{height:100%;width:40%;background:linear-gradient(90deg,var(--ag),var(--miel));border-radius:4px;animation:loaderBar 1.2s ease-in-out infinite;}
+
+        /* ── Hero ── */
+        .phero{background:linear-gradient(155deg,#0a1c2b 0%,var(--navy) 50%,var(--navy-deep) 100%);padding:0 32px;position:relative;overflow:hidden;}
+        .phw-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;opacity:.38;width:560px;height:560px;background:radial-gradient(circle,rgba(30,152,217,.34),transparent 70%);top:-200px;right:-120px;}
+        .phw-glow2{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;opacity:.22;width:380px;height:380px;background:radial-gradient(circle,rgba(230,171,9,.28),transparent 70%);bottom:-80px;left:8%;}
+        .phero-floaters{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+        .phero-floaters i{position:absolute;color:rgba(255,255,255,.07);animation:floatIcon 10s ease-in-out infinite;}
+        .phero-floaters i:nth-child(1){font-size:64px;top:14%;left:6%;animation-delay:0s;}
+        .phero-floaters i:nth-child(2){font-size:42px;top:62%;left:16%;animation-delay:1.5s;}
+        .phero-floaters i:nth-child(3){font-size:50px;top:20%;right:9%;animation-delay:.8s;}
+        .phero-floaters i:nth-child(4){font-size:38px;bottom:16%;right:20%;animation-delay:2.2s;}
+        .phw-container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:96px 0 56px;}
+        .phero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center;}
+        .phero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(230,171,9,.13);border:1px solid rgba(230,171,9,.28);color:var(--ag);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;padding:5px 15px;border-radius:50px;margin-bottom:22px;animation:fadeInDown .6s ease both;}
+        .phero h1{font-size:38px;font-weight:800;color:#fff;line-height:1.16;margin-bottom:16px;letter-spacing:-.6px;animation:fadeInUp .7s ease .1s both;}
+        .phero h1 em{color:var(--ag);font-style:normal;}
+        .phero-desc{font-size:14.5px;color:rgba(255,255,255,.58);margin-bottom:30px;max-width:440px;line-height:1.7;animation:fadeInUp .7s ease .25s both;}
+        .phero-stats{display:flex;gap:10px;flex-wrap:wrap;animation:fadeInUp .7s ease .4s both;}
+        .phero-stat{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:50px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);color:rgba(255,255,255,.72);font-size:11px;font-weight:600;}
+        .phero-stat i{color:var(--ag);font-size:10px;}
+        /* Hero right: KPI glass cards */
+        .phero-kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px;animation:fadeInUp .7s ease .35s both;}
+        .phero-kpi{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:14px;padding:18px 16px;text-align:center;backdrop-filter:blur(6px);transition:background .25s;}
+        .phero-kpi:hover{background:rgba(255,255,255,.11);}
+        .phero-kpi-val{font-size:30px;font-weight:800;color:#fff;line-height:1;margin-bottom:4px;}
+        .phero-kpi-val.amber{color:var(--ag);}
+        .phero-kpi-val.blue{color:var(--ac);}
+        .phero-kpi-val.green{color:#4ade80;}
+        .phero-kpi-val.red{color:#f87171;}
+        .phero-kpi-label{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.3px;}
+        .phw-wave{position:relative;z-index:1;line-height:0;margin:48px -32px 0;}
+        .phw-wave svg{display:block;width:100%;height:60px;}
+
+        /* ── Shell & Layout ── */
+        .intranet-shell{max-width:1200px;margin:0 auto;padding:0 24px 90px;}
+        .ger-layout{display:grid;grid-template-columns:1fr 288px;gap:28px;align-items:start;}
+        @media(max-width:960px){.ger-layout{grid-template-columns:1fr;}}
+        .intranet-main{min-width:0;}
+
+        /* ── Reveal animation ── */
+        .reveal{opacity:0;transform:translateY(26px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1);}
+        .reveal.visible{opacity:1;transform:none;}
+
+        /* ── Toolbar ── */
+        .ger-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;flex-wrap:wrap;gap:12px;animation:thReveal .5s cubic-bezier(.22,1,.36,1) .15s both;}
+        .ger-toolbar-left h2{font-size:21px;font-weight:800;color:var(--pd);margin:0;letter-spacing:-.4px;}
+        .ger-toolbar-left p{font-size:12px;color:var(--mx);margin:2px 0 0;}
+
+        /* ── Tabs ── */
+        .ger-tabs{display:flex;gap:4px;border-bottom:2px solid #eef1f4;padding-bottom:0;margin-bottom:24px;flex-wrap:wrap;animation:thReveal .5s cubic-bezier(.22,1,.36,1) .2s both;}
+        .ger-tab{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px 10px 0 0;font-size:12.5px;font-weight:700;border:none;cursor:pointer;font-family:inherit;background:transparent;color:var(--mx);transition:all .2s;margin-bottom:-2px;border-bottom:2px solid transparent;}
+        .ger-tab:hover{background:rgba(10,46,77,.04);color:var(--pd);}
+        .ger-tab.active{background:#fff;color:var(--pd);border:2px solid #eef1f4;border-bottom-color:#fff;box-shadow:0 -2px 8px rgba(15,42,58,.04);}
+        .ger-tab i{font-size:11px;}
+        .badge-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:18px;padding:0 6px;border-radius:50px;font-size:10px;font-weight:800;background:rgba(230,171,9,.15);color:#b45309;margin-left:2px;transition:transform .3s;}
+        .ger-tab.active .badge-count{background:rgba(230,171,9,.2);color:#92400e;}
+        .badge-count.pop{animation:badgePop .3s ease;}
+        .ger-panel{display:none;}
+        .ger-panel.active{display:block;animation:fadeInUp .3s ease;}
+
+        /* ── Search ── */
+        .ger-search-wrap{position:relative;margin-bottom:20px;animation:thReveal .5s cubic-bezier(.22,1,.36,1) .25s both;}
+        .ger-search-wrap i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--mx);font-size:14px;pointer-events:none;}
+        .ger-search-wrap input{width:100%;border:1.5px solid var(--bdr);border-radius:50px;padding:11px 18px 11px 42px;font-size:13.5px;font-family:inherit;background:var(--sur);color:var(--tx);transition:all .25s;box-shadow:0 2px 8px rgba(15,42,58,.04);}
+        .ger-search-wrap input:focus{outline:none;border-color:var(--ag);box-shadow:0 0 0 3px rgba(230,171,9,.1);}
+        .ger-search-wrap input::placeholder{color:#94a3b8;}
+
+        /* ── Cards ── */
+        .ger-card{background:var(--sur);border:1px solid var(--bdr);border-radius:18px;padding:0;margin-bottom:14px;box-shadow:0 2px 12px rgba(15,42,58,.04);transition:all .3s;animation:thCardPop .45s cubic-bezier(.22,1,.36,1) both;overflow:hidden;}
+        .ger-card:hover{box-shadow:0 8px 32px rgba(15,42,58,.1);border-color:rgba(230,171,9,.2);transform:translateY(-2px);}
+        .ger-card-stripe{height:3px;background:linear-gradient(90deg,var(--pd),var(--ac));}
+        .ger-card-stripe.amber{background:linear-gradient(90deg,var(--ag),#f0c060);}
+        .ger-card-stripe.green{background:linear-gradient(90deg,var(--gn),#4ade80);}
+        .ger-card-stripe.red{background:linear-gradient(90deg,var(--rd),#f87171);}
+        .ger-card-stripe.gray{background:linear-gradient(90deg,#94a3b8,#cbd5e1);}
+        .ger-card-inner{padding:20px 22px 18px;}
+        .ger-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
+        .ger-card-info{flex:1;min-width:0;}
+        .ger-card-title{font-size:15px;font-weight:800;color:var(--pd);margin:0 0 5px;line-height:1.3;}
+        .ger-card-meta{font-size:12px;color:var(--mx);display:flex;flex-wrap:wrap;align-items:center;gap:10px;}
+        .ger-card-meta span{display:inline-flex;align-items:center;gap:4px;}
+        .ger-card-meta i{font-size:10px;color:var(--ag);}
+        .ger-card-section{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:6px;background:#f1f5f9;font-size:11px;font-weight:700;color:#475569;margin-bottom:10px;}
+        .ger-card-section i{font-size:10px;color:var(--ag);}
+        .ger-card-desc{font-size:13px;color:var(--tx);line-height:1.65;margin:0 0 16px;max-height:56px;overflow:hidden;}
+        .ger-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid #f1f5f9;flex-wrap:wrap;gap:8px;}
+        .ger-card-actions{display:flex;gap:8px;}
+
+        /* Status pills */
+        .ger-status{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:50px;font-size:10.5px;font-weight:800;letter-spacing:.3px;flex-shrink:0;}
+        .ger-status.PENDIENTE{background:rgba(230,171,9,.12);color:#b45309;}
+        .ger-status.EN_PROCESO{background:rgba(30,152,217,.1);color:var(--ac);}
+        .ger-status.EN_ESPERA{background:rgba(100,116,139,.1);color:var(--mx);}
+        .ger-status.PROCESADO{background:rgba(22,163,74,.1);color:var(--gn);}
+        .ger-status.APROBADO{background:rgba(22,163,74,.1);color:var(--gn);}
+        .ger-status.RECHAZADO{background:rgba(220,38,38,.1);color:var(--rd);}
+
+        /* Buttons */
+        .ger-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;}
+        .ger-btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
+        .ger-btn-view{background:linear-gradient(135deg,var(--pd),var(--navy-deep));color:#fff;box-shadow:0 2px 8px rgba(10,46,77,.2);}
+        .ger-btn-view:hover{box-shadow:0 4px 16px rgba(10,46,77,.3);}
+
+        /* ── Empty / Loading ── */
+        .ger-empty{text-align:center;padding:54px 30px;border:2px dashed #e2e8f2;border-radius:18px;background:var(--sur);}
+        .ger-empty-icon{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,rgba(10,46,77,.06),rgba(230,171,9,.06));display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px;color:var(--mx);opacity:.45;}
+        .ger-empty h3{font-size:16px;font-weight:700;color:var(--pd);margin:0 0 6px;}
+        .ger-empty p{font-size:13px;color:var(--mx);margin:0;line-height:1.6;}
+        .ger-loading{text-align:center;padding:52px;color:var(--mx);}
+        .ger-loading i{font-size:28px;margin-bottom:10px;display:block;}
+        .ger-loading span{font-size:14px;}
+
+        /* ── Sidebar ── */
+        .ger-sidebar{position:sticky;top:80px;align-self:start;display:flex;flex-direction:column;gap:16px;animation:thSidebarSlide .6s cubic-bezier(.22,1,.36,1) .35s both;}
+        .ger-side-card{background:#fff;border:1px solid var(--bdr);border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(15,42,58,.05);}
+        .ger-side-header{background:linear-gradient(135deg,var(--navy-deep) 0%,var(--navy) 100%);padding:14px 18px;display:flex;align-items:center;gap:9px;}
+        .ger-side-header i{color:var(--ag);font-size:14px;}
+        .ger-side-header span{font-size:11px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.5px;}
+
+        /* Signature widget */
+        .ger-sig-widget{padding:16px;}
+        .ger-sig-preview{display:flex;align-items:center;justify-content:center;background:#f8fafc;border:1.5px solid var(--bdr);border-radius:10px;min-height:64px;margin-bottom:12px;overflow:hidden;}
+        .ger-sig-preview img{max-height:54px;max-width:100%;object-fit:contain;display:block;}
+        .ger-sig-none{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px;color:var(--mx);}
+        .ger-sig-none i{font-size:20px;opacity:.3;}
+        .ger-sig-none span{font-size:11px;font-weight:600;}
+        .ger-sig-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--ag),#e08820);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}
+        .ger-sig-btn:hover{box-shadow:0 4px 14px rgba(230,171,9,.35);transform:translateY(-1px);}
+
+        /* Accesos rápidos */
+        .ger-quicklinks{padding:10px 8px;display:flex;flex-direction:column;gap:2px;}
+        .ger-quicklink{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;text-decoration:none;color:var(--pd);font-size:12px;font-weight:700;transition:all .18s;cursor:pointer;border:none;background:transparent;font-family:inherit;width:100%;text-align:left;}
+        .ger-quicklink:hover{background:rgba(10,46,77,.05);transform:translateX(2px);}
+        .ger-ql-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;}
+        .ger-ql-icon.pend{background:linear-gradient(135deg,var(--ag),#e08820);color:#fff;}
+        .ger-ql-icon.all{background:linear-gradient(135deg,var(--pd),var(--navy-deep));color:#fff;}
+        .ger-ql-icon.sig{background:linear-gradient(135deg,#9333ea,#7c3aed);color:#fff;}
+        .ger-ql-arrow{color:var(--mx);font-size:9px;flex-shrink:0;margin-left:auto;}
+
+        /* Tip card */
+        .ger-tip-card{background:linear-gradient(135deg,rgba(30,152,217,.06),rgba(10,46,77,.04));border:1px solid rgba(30,152,217,.15);border-radius:14px;padding:14px 16px;}
+        .ger-tip-title{font-size:11px;font-weight:800;color:var(--pd);display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+        .ger-tip-title i{color:var(--ac);}
+        .ger-tip-body{font-size:11.5px;color:var(--mx);line-height:1.6;}
+
+        /* ── Modal ── */
+        .ger-modal{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;}
+        .ger-modal.open{display:flex;}
+        .ger-modal-overlay{position:absolute;inset:0;background:rgba(10,20,32,.6);backdrop-filter:blur(5px);}
+        .ger-modal-box{position:relative;z-index:1;background:var(--sur);border-radius:20px;box-shadow:0 28px 72px rgba(15,42,58,.28);max-height:94vh;overflow-y:auto;width:min(740px,96vw);animation:slideIn .3s ease;}
+        .ger-modal-close{position:absolute;top:14px;right:16px;background:rgba(100,116,139,.08);border:none;font-size:18px;color:var(--mx);cursor:pointer;z-index:2;padding:6px 8px;line-height:1;border-radius:8px;transition:all .15s;}
+        .ger-modal-close:hover{background:rgba(220,38,38,.08);color:var(--rd);}
+        .ger-modal-head{padding:22px 26px 16px;border-bottom:1px solid #eef1f4;}
+        .ger-modal-title{font-size:18px;font-weight:800;color:var(--pd);margin:0 0 8px;line-height:1.3;}
+        .ger-modal-meta{font-size:12px;color:var(--mx);display:flex;flex-wrap:wrap;gap:12px;}
+        .ger-modal-meta span{display:inline-flex;align-items:center;gap:4px;}
+        .ger-modal-meta i{color:var(--ag);font-size:11px;}
+        .ger-modal-body{padding:22px 26px;}
+        .ger-modal-section{margin-bottom:22px;}
+        .ger-modal-section-title{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;color:var(--pd);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+        .ger-modal-section-title i{color:var(--ag);font-size:11px;}
+        .ger-modal-desc{font-size:13.5px;color:var(--tx);line-height:1.7;background:#f9fafc;border:1px solid #eef1f4;border-radius:12px;padding:15px 17px;}
+
+        /* PDF Viewer */
+        .ger-pdf-viewer{width:100%;height:68vh;border:none;border-radius:12px;overflow:hidden;background:#454a52;}
+        .ger-pdf-viewer iframe{display:block;width:100%;height:100%;border:none;background:#fff;}
+        .ger-pdf-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#e6e8ec;font-size:13px;gap:8px;}
+        .ger-pdf-placeholder i{font-size:34px;opacity:.3;}
+        .ger-doc-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .15s;text-decoration:none;}
+        .ger-doc-btn-view{background:rgba(10,46,77,.08);color:var(--pd);}
+        .ger-doc-btn-view:hover{background:rgba(10,46,77,.14);}
+        .ger-doc-btn-dl{background:rgba(30,152,217,.08);color:var(--ac);}
+        .ger-doc-btn-dl:hover{background:rgba(30,152,217,.14);}
+
+        /* Approval timeline */
+        .ger-timeline{position:relative;padding-left:26px;margin:0;}
+        .ger-timeline::before{content:'';position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:#e2e8f2;border-radius:2px;}
+        .ger-tl-item{position:relative;padding:8px 0 8px 16px;margin-bottom:4px;}
+        .ger-tl-item::before{content:'';position:absolute;left:-20px;top:12px;width:11px;height:11px;border-radius:50%;border:2px solid #e2e8f2;background:#fff;}
+        .ger-tl-item.done::before{background:var(--gn);border-color:var(--gn);}
+        .ger-tl-item.active::before{background:var(--ag);border-color:var(--ag);box-shadow:0 0 0 4px rgba(230,171,9,.2);}
+        .ger-tl-item.rejected::before{background:var(--rd);border-color:var(--rd);}
+        .ger-tl-name{font-size:12.5px;font-weight:700;color:var(--pd);}
+        .ger-tl-role{font-size:11px;color:var(--mx);}
+        .ger-tl-status{font-size:10.5px;font-weight:700;margin-top:2px;}
+        .ger-tl-status.done{color:var(--gn);}
+        .ger-tl-status.rejected{color:var(--rd);}
+        .ger-tl-status.active{color:var(--ag);}
+        .ger-tl-status.waiting{color:var(--mx);}
+
+        /* Response area */
+        .ger-response-wrap textarea{width:100%;min-height:72px;padding:12px 14px;border:1.5px solid var(--bdr);border-radius:10px;font-size:13px;font-family:inherit;color:var(--tx);resize:vertical;line-height:1.6;transition:border-color .2s;}
+        .ger-response-wrap textarea:focus{outline:none;border-color:var(--ag);box-shadow:0 0 0 3px rgba(230,171,9,.08);}
+        .ger-response-wrap textarea::placeholder{color:var(--mx);}
+        .ger-response-hint{font-size:11px;color:var(--mx);margin-top:4px;}
+
+        /* Modal actions */
+        .ger-modal-actions{display:flex;gap:10px;padding:16px 26px 22px;border-top:1px solid #eef1f4;flex-wrap:wrap;}
+        .ger-action-btn{display:inline-flex;align-items:center;gap:7px;padding:12px 28px;border-radius:10px;font-size:13px;font-weight:800;border:none;cursor:pointer;font-family:inherit;transition:all .2s;flex:1;justify-content:center;letter-spacing:.1px;}
+        .ger-action-btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
+        .ger-action-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+        .ger-action-btn.approve{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;box-shadow:0 4px 14px rgba(22,163,74,.25);}
+        .ger-action-btn.approve:hover{box-shadow:0 6px 22px rgba(22,163,74,.35);}
+        .ger-action-btn.reject{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;box-shadow:0 4px 14px rgba(220,38,38,.25);}
+        .ger-action-btn.reject:hover{box-shadow:0 6px 22px rgba(220,38,38,.35);}
+
+        /* ── Signature Setup Modal ── */
+        .sig-setup-overlay{position:fixed;inset:0;z-index:10002;background:rgba(10,20,32,.65);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;}
+        .sig-setup-box{background:var(--sur);border-radius:20px;box-shadow:0 28px 72px rgba(15,42,58,.3);max-width:490px;width:94vw;padding:30px;animation:slideIn .3s ease;}
+        .sig-setup-box h2{font-size:18px;font-weight:800;color:var(--pd);margin:0 0 6px;}
+        .sig-setup-box p{font-size:13px;color:var(--mx);margin:0 0 18px;line-height:1.5;}
+        .sig-setup-canvas-wrap{border:1.5px solid var(--bdr);border-radius:12px;overflow:hidden;background:#fff;margin-bottom:16px;}
+        .sig-setup-canvas-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#f9fafc;border-bottom:1px solid #eef1f4;}
+        .sig-setup-canvas-header span{font-size:11px;font-weight:700;color:var(--pd);display:flex;align-items:center;gap:5px;}
+        .sig-setup-canvas-header span i{color:var(--ag);font-size:10px;}
+        .sig-setup-clear{padding:4px 10px;border-radius:6px;border:1px solid #e2e8f0;background:#fff;color:#64748b;font-size:10.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;}
+        .sig-setup-clear:hover{background:#fee2e2;color:var(--rd);border-color:#fca5a5;}
+        .sig-setup-canvas{display:block;width:100%;cursor:crosshair;background:#fff;}
+        .sig-setup-actions{display:flex;gap:10px;margin-top:16px;}
+        .sig-setup-btn{flex:1;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center;}
+        .sig-setup-btn.save{background:linear-gradient(135deg,var(--pd),var(--navy-deep));color:#fff;}
+        .sig-setup-btn.save:hover{filter:brightness(1.1);}
+        .sig-setup-btn.cancel{background:#f1f5f9;color:var(--mx);}
+        .sig-setup-btn.cancel:hover{background:#e2e8f0;}
+
+        /* ── Toast ── */
+        .intranet-toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:var(--r);font-size:13px;font-weight:600;z-index:10001;box-shadow:0 8px 32px rgba(10,46,77,.15);max-width:90%;text-align:center;animation:fadeInUp .3s ease;}
+        .intranet-toast.success{background:#16a34a;color:#fff;}
+        .intranet-toast.error{background:#dc2626;color:#fff;}
+
+        /* ── Footer ── */
+        .pfooter{text-align:center;padding:22px 28px;border-top:1px solid var(--bdr);color:var(--mx);font-size:12px;margin-top:auto;background:var(--bg);position:relative;}
+        .pfooter::before{content:'';position:absolute;top:0;left:15%;width:70%;height:2px;background:linear-gradient(90deg,transparent,var(--ag),transparent);opacity:.3;}
+
+        /* ── Responsive ── */
+        @media(max-width:960px){.ger-layout{grid-template-columns:1fr;}.ger-sidebar{position:static;}}
+        @media(max-width:860px){
+            .phero-grid{grid-template-columns:1fr;gap:32px;}
+        }
+        @media(max-width:700px){
+            .phero{padding:0 16px!important;}
+            .phw-container{padding:72px 0 32px!important;}
+            .phero-grid{grid-template-columns:1fr!important;gap:20px!important;text-align:center;}
+            .phero-main{display:flex;flex-direction:column;align-items:center;}
+            .phero h1{font-size:22px!important;margin-bottom:8px!important;}
+            .phero-desc{font-size:12px!important;text-align:center;}
+            .phero-badge{margin:0 auto 20px!important;}
+            .phero-stats{justify-content:center;flex-wrap:wrap;}
+            .phero-stat{font-size:11px!important;}
+            .phero-kpis{display:none!important;}
+            .phero-floaters i{display:none!important;}
+            .phw-glow,.phw-glow2{display:none!important;}
+            .phw-wave{margin:24px -16px 0!important;}
+            .phw-wave svg{height:36px!important;}
+            .tab-content{padding:14px 10px!important;border-radius:12px!important;}
+            .intranet-shell{padding:0 12px 60px!important;}
+            .ger-layout{grid-template-columns:1fr!important;}
+            .ger-sidebar{position:static!important;}
+            .ger-toolbar{flex-direction:column!important;align-items:stretch!important;}
+            .ger-toolbar-left{justify-content:center;}
+            .ger-toolbar-left h2{font-size:16px!important;}
+            .ger-search-wrap{width:100%!important;}
+            .ger-tabs{gap:2px!important;overflow-x:auto!important;flex-wrap:nowrap!important;padding-bottom:10px!important;-webkit-overflow-scrolling:touch;}
+            .ger-tab{padding:8px 14px!important;font-size:11px!important;white-space:nowrap!important;flex-shrink:0!important;}
+            .ger-side-card{border-radius:14px!important;}
+            .ger-side-header{padding:14px!important;}
+            .ger-side-header span{font-size:11px!important;}
+            .ger-sig-widget{padding:14px!important;}
+            .ger-sig-btn{width:100%!important;font-size:12px!important;padding:10px!important;}
+            .ger-quicklinks{flex-direction:column!important;}
+            .ger-quicklink{width:100%!important;justify-content:flex-start!important;}
+            .ger-tip-card{padding:14px!important;border-radius:12px!important;}
+            .ger-tip-title{font-size:12px!important;}
+            .ger-tip-body{font-size:11px!important;}
+            .ger-card-inner{padding:16px!important;}
+            .ger-card-head{flex-direction:column!important;gap:10px!important;}
+            .ger-card-info{width:100%!important;}
+            .ger-card-title{font-size:14px!important;}
+            .ger-card-meta{font-size:11px!important;gap:6px!important;flex-wrap:wrap;}
+            .ger-card-section{font-size:11px!important;}
+            .ger-card-desc{font-size:12px!important;}
+            .ger-card-footer{flex-direction:column!important;align-items:stretch!important;gap:10px!important;}
+            .ger-card-actions{width:100%!important;}
+            .ger-btn{width:100%!important;justify-content:center!important;padding:10px!important;font-size:12px!important;}
+            .sig-setup-box{padding:16px!important;max-width:96vw!important;}
+            .sig-canvas-wrap canvas{max-width:100%!important;height:auto!important;}
+            .ger-modal-box{padding:16px!important;max-width:96vw!important;max-height:90vh!important;}
+            .ger-modal-head{flex-direction:column!important;gap:8px!important;}
+            .ger-modal-title{font-size:17px!important;}
+            .ger-modal-meta{font-size:11px!important;gap:6px!important;flex-wrap:wrap;}
+            .ger-modal-section{padding:12px!important;}
+            .ger-modal-section-title{font-size:13px!important;}
+            .ger-modal-desc{font-size:12px!important;}
+            .ger-modal-actions{flex-direction:column!important;gap:10px!important;}
+            .ger-action-btn{width:100%!important;padding:12px!important;font-size:13px!important;}
+            .ger-pdf-viewer{height:40vh!important;}
+            .ger-timeline{padding:10px!important;}
+            .ger-tl-name{font-size:12px!important;}
+            .ger-tl-role{font-size:10px!important;}
+            .ger-tl-status{font-size:10px!important;}
+            .pfooter{padding:16px!important;font-size:11px!important;}
+        }
+        @media(max-width:480px){
+            .phero h1{font-size:22px!important;}
+            .phero-badge{font-size:9px!important;padding:4px 12px!important;}
+        }
+    </style>
+    <link rel="stylesheet" href="/css/mardique-theme.css">
+</head>
+<body>
+
+<div id="pageLoader">
+    <div class="loader-icon"><i class="fas fa-building"></i></div>
+    <div class="loader-text">Bandeja de Gerencia</div>
+    <div class="loader-sub">Verificando solicitudes...</div>
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<div id="intranet-toast" class="intranet-toast"></div>
+
+<div th:replace="~{IntranetNav :: nav(current='gerencia')}"></div>
+
+<!-- ── Hero ── -->
+<div class="phero">
+    <div class="phw-glow"></div>
+    <div class="phw-glow2"></div>
+    <div class="phero-floaters">
+        <i class="fas fa-clipboard-check"></i>
+        <i class="fas fa-stamp"></i>
+        <i class="fas fa-file-signature"></i>
+        <i class="fas fa-user-tie"></i>
+    </div>
+    <div class="phw-container">
+        <div class="phero-grid">
+            <div>
+                <div class="phero-badge"><i class="fas fa-building"></i> Panel de Gerencia</div>
+                <h1>Bandeja de<br><em>Aprobaciones</em></h1>
+                <p class="phero-desc">Revisa, gestiona y aprueba las solicitudes de tu equipo en un solo lugar. Cada aprobación con un clic, respaldada con tu firma digital.</p>
+                <div class="phero-stats">
+                    <span class="phero-stat"><i class="fas fa-shield-alt"></i> Firma digital habilitada</span>
+                    <span class="phero-stat"><i class="fas fa-bolt"></i> Aprobación en 1 clic</span>
+                </div>
+            </div>
+            <div class="phero-kpis">
+                <div class="phero-kpi">
+                    <div class="phero-kpi-val amber" id="kpiPendientes">—</div>
+                    <div class="phero-kpi-label">Pendientes</div>
+                </div>
+                <div class="phero-kpi">
+                    <div class="phero-kpi-val blue" id="kpiTotal">—</div>
+                    <div class="phero-kpi-label">Total recibidas</div>
+                </div>
+                <div class="phero-kpi">
+                    <div class="phero-kpi-val green" id="kpiAprobadas">—</div>
+                    <div class="phero-kpi-label">Aprobadas</div>
+                </div>
+                <div class="phero-kpi">
+                    <div class="phero-kpi-val red" id="kpiRechazadas">—</div>
+                    <div class="phero-kpi-label">Rechazadas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="phw-wave"></div>
+</div>
+
+<!-- ── Shell ── -->
+<div class="intranet-shell">
+    <div class="ger-layout">
+
+        <!-- Main -->
+        <div class="intranet-main">
+            <div class="reveal" id="gerContent">
+
+                <!-- Toolbar -->
+                <div class="ger-toolbar">
+                    <div class="ger-toolbar-left">
+                        <h2>Solicitudes recibidas</h2>
+                        <p>Bandeja personal de <span id="userDisplay">Gerente</span></p>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="ger-search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="gerSearch" placeholder="Buscar por nombre, solicitante o sección…">
+                </div>
+
+                <!-- Tabs -->
+                <div class="ger-tabs">
+                    <button class="ger-tab active" data-tab="pendientes"><i class="fas fa-clock"></i> Pendientes <span class="badge-count" id="countPendientes">0</span></button>
+                    <button class="ger-tab" data-tab="todas"><i class="fas fa-list"></i> Todas</button>
+                </div>
+
+                <div id="panel-pendientes" class="ger-panel active">
+                    <div class="ger-loading"><i class="fas fa-spinner fa-spin"></i><span>Cargando solicitudes...</span></div>
+                </div>
+                <div id="panel-todas" class="ger-panel">
+                    <div class="ger-loading"><i class="fas fa-spinner fa-spin"></i><span>Cargando solicitudes...</span></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="ger-sidebar">
+
+            <!-- Firma digital -->
+            <div class="ger-side-card">
+                <div class="ger-side-header">
+                    <i class="fas fa-signature"></i>
+                    <span>Mi Firma Digital</span>
+                </div>
+                <div class="ger-sig-widget">
+                    <div class="ger-sig-preview" id="sidebarSigPreview">
+                        <div class="ger-sig-none">
+                            <i class="fas fa-pen-nib"></i>
+                            <span>Sin firma registrada</span>
+                        </div>
+                    </div>
+                    <button class="ger-sig-btn" onclick="openSignatureManager()">
+                        <i class="fas fa-cog"></i> Gestionar firma
+                    </button>
+                </div>
+            </div>
+
+            <!-- Accesos rápidos -->
+            <div class="ger-side-card">
+                <div class="ger-side-header">
+                    <i class="fas fa-bolt"></i>
+                    <span>Acceso Rápido</span>
+                </div>
+                <div class="ger-quicklinks">
+                    <button class="ger-quicklink" onclick="switchTab('pendientes')">
+                        <span class="ger-ql-icon pend"><i class="fas fa-clock"></i></span>
+                        <span style="flex:1;font-size:11.5px;">Ver pendientes</span>
+                        <i class="fas fa-chevron-right ger-ql-arrow"></i>
+                    </button>
+                    <button class="ger-quicklink" onclick="switchTab('todas')">
+                        <span class="ger-ql-icon all"><i class="fas fa-list"></i></span>
+                        <span style="flex:1;font-size:11.5px;">Todas las solicitudes</span>
+                        <i class="fas fa-chevron-right ger-ql-arrow"></i>
+                    </button>
+                    <button class="ger-quicklink" onclick="openSignatureManager()">
+                        <span class="ger-ql-icon sig"><i class="fas fa-pen-nib"></i></span>
+                        <span style="flex:1;font-size:11.5px;">Configurar firma</span>
+                        <i class="fas fa-chevron-right ger-ql-arrow"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tip -->
+            <div class="ger-tip-card">
+                <div class="ger-tip-title"><i class="fas fa-info-circle"></i> ¿Sabías que…?</div>
+                <div class="ger-tip-body">Tus aprobaciones quedan respaldadas automáticamente con tu firma digital en cada documento PDF generado.</div>
+            </div>
+
+        </aside>
+    </div>
+</div>
+
+<div class="pfooter">
+    &copy; 2026 Sociedad Portuaria Mardique S.A. &mdash; Intranet Corporativa. Todos los derechos reservados.
+</div>
+
+<!-- ── Detail Modal ── -->
+<div class="ger-modal" id="gerDetailModal">
+    <div class="ger-modal-overlay" onclick="closeGerModal()"></div>
+    <div class="ger-modal-box">
+        <button class="ger-modal-close" onclick="closeGerModal()">&times;</button>
+        <div class="ger-modal-head">
+            <h2 class="ger-modal-title" id="modalTitle"></h2>
+            <div class="ger-modal-meta">
+                <span><i class="fas fa-user"></i> <span id="modalSender"></span></span>
+                <span><i class="fas fa-calendar"></i> <span id="modalDate"></span></span>
+                <span id="modalStatusWrap"></span>
+            </div>
+        </div>
+        <div class="ger-modal-body">
+            <div class="ger-modal-section">
+                <div class="ger-modal-section-title"><i class="fas fa-align-left"></i> Descripción</div>
+                <div class="ger-modal-desc" id="modalDesc"></div>
+            </div>
+            <div class="ger-modal-section">
+                <div class="ger-modal-section-title"><i class="fas fa-file-pdf"></i> Documento adjunto</div>
+                <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                    <a class="ger-doc-btn ger-doc-btn-view" id="btnViewPdf" href="#" target="_blank" style="display:none;"><i class="fas fa-external-link-alt"></i> Abrir en nueva pestaña</a>
+                    <a class="ger-doc-btn ger-doc-btn-dl" id="btnDownloadPdf" href="#" download style="display:none;"><i class="fas fa-download"></i> Descargar PDF</a>
+                </div>
+                <div class="ger-pdf-viewer" id="pdfViewerWrap">
+                    <div class="ger-pdf-placeholder" id="pdfPlaceholder">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Cargando documento...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="ger-modal-section">
+                <div class="ger-modal-section-title"><i class="fas fa-route"></i> Flujo de aprobación</div>
+                <div class="ger-timeline" id="approvalTimeline"></div>
+            </div>
+            <div class="ger-modal-section">
+                <div class="ger-modal-section-title">
+                    <i class="fas fa-comment-dots"></i> Comentarios
+                    <span id="commentRequired" style="color:var(--rd);font-size:10px;margin-left:4px;display:none;">* Requerido para rechazar</span>
+                </div>
+                <div class="ger-response-wrap">
+                    <textarea id="gerResponseText" placeholder="Escribe tu respuesta u observaciones (opcional al aprobar)..."></textarea>
+                </div>
+                <div class="ger-response-hint" id="responseHint">Los comentarios son opcionales al aprobar.</div>
+            </div>
+        </div>
+        <div class="ger-modal-actions">
+            <button class="ger-action-btn reject" id="btnRechazar" onclick="submitGerResponse('RECHAZADO')">
+                <i class="fas fa-times-circle"></i> Rechazar
+            </button>
+            <button class="ger-action-btn approve" id="btnAprobar" onclick="submitGerResponse('APROBADO')">
+                <i class="fas fa-check-circle"></i> Aprobar en 1 Clic
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* ── API helpers ── */
+    async function getReceivedSolicitudes(email){const res=await fetch("/api/intranet/solicitudes-hr/received?email="+encodeURIComponent(email));if(!res.ok)return[];const t=await res.text();try{return JSON.parse(t);}catch(e){return[];}}
+    async function getSolicitudHr(id){const res=await fetch("/api/intranet/solicitudes-hr/"+id);const t=await res.text();try{return JSON.parse(t);}catch(e){return null;}}
+    async function respondToSolicitudHr(id,data){const res=await fetch("/api/intranet/solicitudes-hr/"+id+"/respond",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});const t=await res.text();try{return JSON.parse(t);}catch(e){return null;}}
+    async function getSignature(email){const res=await fetch("/api/intranet/solicitudes-hr/signature/"+encodeURIComponent(email));const t=await res.text();try{return JSON.parse(t);}catch(e){return null;}}
+    async function saveSignature(data){const res=await fetch("/api/intranet/solicitudes-hr/signature",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});const t=await res.text();try{return JSON.parse(t);}catch(e){return null;}}
+    async function uploadFile(file){const fd=new FormData();fd.append("file",file);const res=await fetch("/api/intranet/upload",{method:"POST",body:fd});const t=await res.text();try{return JSON.parse(t);}catch(e){return null;}}
+    function isMsalAuthenticated(){return!!sessionStorage.getItem("msalToken");}
+    async function getCurrentUser(){return{displayName:"Adelino Aragon",mail:"AdelinoAragon@spmardique.co",userPrincipalName:"AdelinoAragon@spmardique.co"};}
+
+    function showIntranetToast(msg,type){const t=document.getElementById('intranet-toast');if(!t)return;t.textContent=msg;t.className='intranet-toast '+(type||'success');t.style.display='block';setTimeout(()=>{t.style.display='none';},3500);}
+
+    /* ── State ── */
+    let gerUser='',gerEmail='',gerName='';
+    let gerSolicitudes=[];
+    let gerCurrentId=null;
+    let userSignatureData=null;
+    let gerSearchQuery='';
+
+    const SEC_MAP={'reglamento':'Reglamento Interno','permisos':'Solicitud de Permiso','vacaciones':'Solicitud de Vacaciones','compensacion-vacaciones':'Compensación de Vacaciones','general':'General','gerencia-general':'Gerencia General','gerencia-operaciones':'Gerencia de Operaciones','gerencia-comercial':'Gerencia Comercial','gerencia-financiera':'Gerencia Financiera','sistemas':'Sistemas','talento-humano':'Talento Humano','contabilidad':'Contabilidad'};
+
+    function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+    function fmtDT(s){if(!s)return'-';const d=new Date(s);if(isNaN(d.getTime()))return s;return d.toLocaleDateString('es-CO',{year:'numeric',month:'short',day:'numeric'})+' '+d.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});}
+    function getStatusLabel(st){return(st||'PENDIENTE').replace(/_/g,' ');}
+    function getSectionName(id){return SEC_MAP[id]||id||'General';}
+
+    /* ── Tabs ── */
+    function switchTab(tabName){
+        document.querySelectorAll('.ger-tab').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('.ger-panel').forEach(p=>p.classList.remove('active'));
+        const tab=document.querySelector('[data-tab="'+tabName+'"]');
+        if(tab)tab.classList.add('active');
+        const panel=document.getElementById('panel-'+tabName);
+        if(panel)panel.classList.add('active');
+    }
+    document.querySelectorAll('.ger-tab[data-tab]').forEach(tab=>{
+        tab.addEventListener('click',function(){switchTab(this.dataset.tab);});
+    });
+
+    /* ── Search ── */
+    document.getElementById('gerSearch')?.addEventListener('input',function(){
+        gerSearchQuery=this.value.trim().toLowerCase();
+        renderPendientes();renderTodas();
+    });
+
+    /* ── KPI update ── */
+    function updateKpis(){
+        const total=(gerSolicitudes||[]).length;
+        const pendientes=(gerSolicitudes||[]).filter(s=>{
+            if(s.status==='PROCESADO'||s.status==='RECHAZADO')return false;
+            if(!s.recipients)return s.status==='PENDIENTE'||s.status==='EN_PROCESO';
+            const r=s.recipients.find(r=>r.recipientEmail===gerEmail);
+            return r&&r.status==='PENDIENTE';
+        }).length;
+        const aprobadas=(gerSolicitudes||[]).filter(s=>s.status==='APROBADO'||s.status==='PROCESADO').length;
+        const rechazadas=(gerSolicitudes||[]).filter(s=>s.status==='RECHAZADO').length;
+        document.getElementById('kpiPendientes').textContent=pendientes;
+        document.getElementById('kpiTotal').textContent=total;
+        document.getElementById('kpiAprobadas').textContent=aprobadas;
+        document.getElementById('kpiRechazadas').textContent=rechazadas;
+    }
+
+    /* ── Load ── */
+    async function loadSolicitudes(){
+        gerSolicitudes=await getReceivedSolicitudes(gerEmail);
+        updateKpis();
+        renderPendientes();
+        renderTodas();
+        const pend=(gerSolicitudes||[]).filter(s=>{
+            if(s.status==='PROCESADO'||s.status==='RECHAZADO')return false;
+            if(!s.recipients)return s.status==='PENDIENTE'||s.status==='EN_PROCESO';
+            const r=s.recipients.find(r=>r.recipientEmail===gerEmail);
+            return r&&r.status==='PENDIENTE';
+        });
+        if(!pend.length&&(gerSolicitudes||[]).length>0){switchTab('todas');}
+    }
+
+    function filterList(list){
+        if(!gerSearchQuery)return list;
+        return list.filter(s=>{
+            const title=(s.title||'').toLowerCase();
+            const sender=(s.senderName||'').toLowerCase();
+            const sec=getSectionName(s.sectionId).toLowerCase();
+            return title.includes(gerSearchQuery)||sender.includes(gerSearchQuery)||sec.includes(gerSearchQuery);
+        });
+    }
+
+    function renderPendientes(){
+        const cont=document.getElementById('panel-pendientes');
+        const pendientes=(gerSolicitudes||[]).filter(s=>{
+            if(s.status==='PROCESADO'||s.status==='RECHAZADO')return false;
+            if(!s.recipients)return s.status==='PENDIENTE'||s.status==='EN_PROCESO';
+            const r=s.recipients.find(r=>r.recipientEmail===gerEmail);
+            return r&&r.status==='PENDIENTE';
+        });
+        const filtered=filterList(pendientes);
+        const badge=document.getElementById('countPendientes');
+        badge.textContent=pendientes.length;
+        if(pendientes.length>0){badge.classList.add('pop');setTimeout(()=>badge.classList.remove('pop'),400);}
+        if(!filtered.length){
+            cont.innerHTML='<div class="ger-empty"><div class="ger-empty-icon"><i class="fas fa-inbox"></i></div><h3>Sin solicitudes pendientes</h3><p>No tienes solicitudes pendientes de revisión en este momento.</p></div>';
+            return;
+        }
+        cont.innerHTML=filtered.map((s,i)=>renderCard(s,i)).join('');
+    }
+
+    function renderTodas(){
+        const cont=document.getElementById('panel-todas');
+        const filtered=filterList(gerSolicitudes||[]);
+        if(!filtered.length){
+            cont.innerHTML='<div class="ger-empty"><div class="ger-empty-icon"><i class="fas fa-inbox"></i></div><h3>Sin solicitudes</h3><p>No se encontraron solicitudes recibidas.</p></div>';
+            return;
+        }
+        cont.innerHTML=filtered.map((s,i)=>renderCard(s,i)).join('');
+    }
+
+    function getStripeClass(status){
+        if(status==='APROBADO'||status==='PROCESADO')return'green';
+        if(status==='RECHAZADO')return'red';
+        if(status==='PENDIENTE'||status==='EN_PROCESO')return'amber';
+        return'gray';
+    }
+
+    function renderCard(s,idx){
+        const desc=esc((s.description||'').substring(0,150));
+        const section=getSectionName(s.sectionId);
+        const statusCls=s.status||'PENDIENTE';
+        const iconMap={PENDIENTE:'clock',EN_PROCESO:'spinner fa-spin',EN_ESPERA:'hourglass-half',PROCESADO:'check-circle',APROBADO:'check-circle',RECHAZADO:'times-circle'};
+        const stripe=getStripeClass(statusCls);
+        return '<div class="ger-card" style="animation-delay:'+(idx*0.055)+'s">'+
+            '<div class="ger-card-stripe '+stripe+'"></div>'+
+            '<div class="ger-card-inner">'+
+            '<div class="ger-card-head">'+
+            '<div class="ger-card-info">'+
+            '<div class="ger-card-title">'+esc(s.title||'Sin título')+'</div>'+
+            '<div class="ger-card-meta">'+
+            '<span><i class="fas fa-user"></i> '+esc(s.senderName||'Desconocido')+'</span>'+
+            '<span><i class="fas fa-calendar"></i> '+fmtDT(s.createdAt)+'</span>'+
+            '</div>'+
+            '</div>'+
+            '<span class="ger-status '+statusCls+'"><i class="fas fa-'+( iconMap[statusCls]||'clock')+'"></i> '+getStatusLabel(statusCls)+'</span>'+
+            '</div>'+
+            '<div class="ger-card-section"><i class="fas fa-folder"></i> '+esc(section)+'</div>'+
+            (desc?'<div class="ger-card-desc">'+desc+'...</div>':'')+
+            '<div class="ger-card-footer">'+
+            '<div class="ger-card-actions">'+
+            '<button class="ger-btn ger-btn-view" onclick="openGerModal(\''+esc(s.id)+'\')"><i class="fas fa-eye"></i> Revisar</button>'+
+            '</div>'+
+            '</div>'+
+            '</div>'+
+            '</div>';
+    }
+
+    /* ── Modal ── */
+    async function openGerModal(id){
+        gerCurrentId=id;
+        const modal=document.getElementById('gerDetailModal');
+        modal.classList.add('open');
+        document.body.style.overflow='hidden';
+        const sol=await getSolicitudHr(id);
+        if(!sol){showIntranetToast('No se pudo cargar la solicitud','error');return;}
+        document.getElementById('modalTitle').textContent=sol.title||'Sin título';
+        document.getElementById('modalSender').textContent=sol.senderName||'—';
+        document.getElementById('modalDate').textContent=fmtDT(sol.createdAt);
+        const sw=document.getElementById('modalStatusWrap');
+        const sc=sol.status||'PENDIENTE';
+        const iconMap2={PENDIENTE:'clock',EN_PROCESO:'spinner fa-spin',EN_ESPERA:'hourglass-half',PROCESADO:'check-circle',APROBADO:'check-circle',RECHAZADO:'times-circle'};
+        sw.innerHTML='<span class="ger-status '+sc+'"><i class="fas fa-'+(iconMap2[sc]||'clock')+'"></i> '+getStatusLabel(sc)+'</span>';
+        document.getElementById('modalDesc').textContent=sol.description||'Sin descripción.';
+        const pdfWrap=document.getElementById('pdfViewerWrap');
+        const placeholder=document.getElementById('pdfPlaceholder');
+        const btnView=document.getElementById('btnViewPdf');
+        const btnDl=document.getElementById('btnDownloadPdf');
+        if(sol.fileUrl){
+            btnView.href=sol.fileUrl;btnView.style.display='';
+            btnDl.href=sol.fileUrl;btnDl.style.display='';
+            placeholder.style.display='none';
+            const oldIframe=pdfWrap.querySelector('iframe');if(oldIframe)oldIframe.remove();
+            const iframe=document.createElement('iframe');
+            iframe.src=sol.fileUrl+'#toolbar=0&navpanes=0';
+            iframe.title='Documento adjunto';
+            pdfWrap.appendChild(iframe);
+        }else{
+            btnView.style.display='none';btnDl.style.display='none';
+            placeholder.innerHTML='<i class="fas fa-file-pdf"></i><span>Sin documento adjunto</span>';
+            placeholder.style.display='';
+            const oldIframe=pdfWrap.querySelector('iframe');if(oldIframe)oldIframe.remove();
+        }
+        const tl=document.getElementById('approvalTimeline');
+        tl.innerHTML='';
+        const recs=(sol.recipients||[]);
+        recs.forEach(r=>{
+            const item=document.createElement('div');
+            const st=(r.status||'PENDIENTE');
+            const cls=st==='APROBADO'||st==='PROCESADO'?'done':st==='RECHAZADO'?'rejected':st==='PENDIENTE'?'active':'waiting';
+            item.className='ger-tl-item '+cls;
+            item.innerHTML='<div class="ger-tl-name">'+esc(r.recipientName||r.recipientEmail||'')+'</div>'+
+                '<div class="ger-tl-role">'+esc(r.recipientRole||'Aprobador')+'</div>'+
+                '<div class="ger-tl-status '+cls+'">'+getStatusLabel(st)+(r.respondedAt?' · '+fmtDT(r.respondedAt):'')+'</div>'+
+                (r.comment?'<div style="font-size:11.5px;color:var(--mx);margin-top:3px;font-style:italic;">'+esc(r.comment)+'</div>':'');
+            tl.appendChild(item);
+        });
+        if(!recs.length)tl.innerHTML='<div style="font-size:13px;color:var(--mx);">Sin destinatarios definidos.</div>';
+        document.getElementById('gerResponseText').value='';
+        const myRecip=(sol.recipients||[]).find(r=>r.recipientEmail===gerEmail);
+        const canAct=myRecip&&myRecip.status==='PENDIENTE';
+        document.getElementById('btnAprobar').disabled=!canAct;
+        document.getElementById('btnRechazar').disabled=!canAct;
+    }
+
+    function closeGerModal(){
+        document.getElementById('gerDetailModal').classList.remove('open');
+        document.body.style.overflow='';
+        gerCurrentId=null;
+    }
+
+    async function submitGerResponse(action){
+        if(!gerCurrentId)return;
+        const comment=document.getElementById('gerResponseText').value.trim();
+        if(action==='RECHAZADO'&&!comment){
+            document.getElementById('commentRequired').style.display='';
+            document.getElementById('gerResponseText').focus();
+            showIntranetToast('Escribe un motivo para rechazar','error');return;
+        }
+        const sig=userSignatureData?userSignatureData.signatureUrl:'';
+        document.getElementById('btnAprobar').disabled=true;
+        document.getElementById('btnRechazar').disabled=true;
+        try{
+            await respondToSolicitudHr(gerCurrentId,{
+                recipientEmail:gerEmail,recipientName:gerName,
+                status:action,comment:comment,signatureUrl:sig
+            });
+            showIntranetToast(action==='APROBADO'?'Solicitud aprobada correctamente':'Solicitud rechazada','success');
+            closeGerModal();
+            await loadSolicitudes();
+        }catch(e){
+            showIntranetToast('Error al procesar: '+e.message,'error');
+            document.getElementById('btnAprobar').disabled=false;
+            document.getElementById('btnRechazar').disabled=false;
+        }
+    }
+
+    /* ── Sidebar sig update ── */
+    function updateSidebarSig(){
+        const wrap=document.getElementById('sidebarSigPreview');
+        if(!wrap)return;
+        if(userSignatureData&&userSignatureData.signatureUrl){
+            wrap.innerHTML='<img src="'+esc(userSignatureData.signatureUrl)+'" alt="Firma digital" style="max-height:54px;max-width:100%;object-fit:contain;">';
+        }else{
+            wrap.innerHTML='<div class="ger-sig-none"><i class="fas fa-pen-nib"></i><span>Sin firma registrada</span></div>';
+        }
+    }
+
+    /* ── Signature Manager ── */
+    let _gerSavedScrollY=0;
+    function openSignatureManager(){
+        if(document.getElementById('gerSigOverlay'))return;
+        _gerSavedScrollY=window.scrollY;
+        const o=document.createElement('div');o.id='gerSigOverlay';o.className='sig-setup-overlay';
+        o.innerHTML='<div class="sig-setup-box">'+
+            '<h2><i class="fas fa-signature" style="color:var(--ag);margin-right:8px;"></i>Mi Firma Digital</h2>'+
+            '<p>Dibuja tu firma. Aparecerá en los documentos que apruebes.</p>'+
+            '<div class="sig-setup-canvas-wrap">'+
+            '<div class="sig-setup-canvas-header">'+
+            '<span><i class="fas fa-pen"></i> Área de firma</span>'+
+            '<button class="sig-setup-clear" onclick="clearGerSig()">Limpiar</button>'+
+            '</div>'+
+            '<canvas class="sig-setup-canvas" id="gerSigCanvas" height="150"></canvas>'+
+            '</div>'+
+            (userSignatureData&&userSignatureData.signatureUrl?
+                '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--pd);margin-bottom:6px;">Firma actual:</div>'+
+                '<div style="background:#f8fafc;border:1px solid var(--bdr);border-radius:8px;padding:10px;text-align:center;">'+
+                '<img src="'+esc(userSignatureData.signatureUrl)+'" style="max-height:50px;max-width:100%;object-fit:contain;"></div></div>':'') +
+            '<div class="sig-setup-actions">'+
+            '<button class="sig-setup-btn cancel" onclick="closeGerSigManager()">Cancelar</button>'+
+            '<button class="sig-setup-btn save" id="btnGerSaveSig" onclick="saveGerSignature()"><i class="fas fa-save"></i> Guardar Firma</button>'+
+            '</div>'+
+            '</div>';
+        document.body.appendChild(o);
+        initGerSigCanvas();
+    }
+    function closeGerSigManager(){const o=document.getElementById('gerSigOverlay');if(o)o.remove();requestAnimationFrame(()=>window.scrollTo(0,_gerSavedScrollY));}
+
+    let _gerSigCtx=null,_gerSigCanvas=null,_gerSigDrawing=false,_gerSigLastX=0,_gerSigLastY=0;
+    function initGerSigCanvas(){
+        _gerSigCanvas=document.getElementById('gerSigCanvas');if(!_gerSigCanvas)return;
+        _gerSigCtx=_gerSigCanvas.getContext('2d');
+        const wrap=_gerSigCanvas.parentElement;const w=wrap?wrap.clientWidth:400;const ratio=window.devicePixelRatio||1;
+        _gerSigCanvas.width=w*ratio;_gerSigCanvas.height=150*ratio;_gerSigCanvas.style.width='100%';_gerSigCanvas.style.height='150px';
+        _gerSigCtx.scale(ratio,ratio);_gerSigCtx.lineCap='round';_gerSigCtx.lineJoin='round';_gerSigCtx.strokeStyle='#0a2e4d';_gerSigCtx.lineWidth=2.5;
+        _gerSigCanvas.onmousedown=e=>{e.preventDefault();_gerSigDrawing=true;const p=getGerSigPos(e);_gerSigLastX=p.x;_gerSigLastY=p.y;};
+        _gerSigCanvas.onmousemove=e=>{if(!_gerSigDrawing||!_gerSigCtx)return;e.preventDefault();const p=getGerSigPos(e);_gerSigCtx.beginPath();_gerSigCtx.moveTo(_gerSigLastX,_gerSigLastY);_gerSigCtx.lineTo(p.x,p.y);_gerSigCtx.stroke();_gerSigLastX=p.x;_gerSigLastY=p.y;};
+        _gerSigCanvas.onmouseup=e=>{if(e)e.preventDefault();_gerSigDrawing=false;};
+        _gerSigCanvas.onmouseleave=e=>{if(e)e.preventDefault();_gerSigDrawing=false;};
+        _gerSigCanvas.ontouchstart=e=>{e.preventDefault();_gerSigDrawing=true;const p=getGerSigPos(e);_gerSigLastX=p.x;_gerSigLastY=p.y;};
+        _gerSigCanvas.ontouchmove=e=>{e.preventDefault();if(!_gerSigDrawing||!_gerSigCtx)return;const p=getGerSigPos(e);_gerSigCtx.beginPath();_gerSigCtx.moveTo(_gerSigLastX,_gerSigLastY);_gerSigCtx.lineTo(p.x,p.y);_gerSigCtx.stroke();_gerSigLastX=p.x;_gerSigLastY=p.y;};
+        _gerSigCanvas.ontouchend=e=>{if(e)e.preventDefault();_gerSigDrawing=false;};
+    }
+    function getGerSigPos(e){const rect=_gerSigCanvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-rect.left,y:t.clientY-rect.top};}
+    function clearGerSig(){if(_gerSigCtx&&_gerSigCanvas){const ratio=window.devicePixelRatio||1;_gerSigCtx.clearRect(0,0,_gerSigCanvas.width/ratio,_gerSigCanvas.height/ratio);}}
+    function hasGerSigDrawn(){if(!_gerSigCanvas||!_gerSigCtx)return false;const data=_gerSigCtx.getImageData(0,0,_gerSigCanvas.width,_gerSigCanvas.height).data;for(let i=3;i<data.length;i+=4){if(data[i]>0)return true;}return false;}
+
+    async function saveGerSignature(){
+        if(!hasGerSigDrawn()){showIntranetToast('Dibuja tu firma antes de guardar','error');return;}
+        const btn=document.getElementById('btnGerSaveSig');btn.disabled=true;btn.textContent='Guardando...';
+        try{
+            const dataUrl=_gerSigCanvas.toDataURL('image/png');const parts=dataUrl.split(',');const byteStr=atob(parts[1]);
+            const ab=new ArrayBuffer(byteStr.length);const ia=new Uint8Array(ab);for(let i=0;i<byteStr.length;i++)ia[i]=byteStr.charCodeAt(i);
+            const blob=new Blob([ab],{type:'image/png'});const fd=new FormData();fd.append('file',blob,'firma_'+Date.now()+'.png');
+            const uploadRes=await fetch('/api/intranet/upload',{method:'POST',body:fd});const uploadJson=JSON.parse(await uploadRes.text());const sigUrl=uploadJson.url||'';
+            await saveSignature({email:gerEmail,name:gerName,roleLabel:'Aprobador',signatureUrl:sigUrl});
+            userSignatureData={signatureUrl:sigUrl,name:gerName};
+            closeGerSigManager();updateSidebarSig();showIntranetToast('Firma guardada correctamente','success');
+        }catch(e){showIntranetToast('Error al guardar: '+e.message,'error');}
+        if(document.getElementById('btnGerSaveSig')){document.getElementById('btnGerSaveSig').disabled=false;document.getElementById('btnGerSaveSig').textContent='Guardar Firma';}
+    }
+
+    /* ── Init ── */
+    document.addEventListener("DOMContentLoaded",async function(){
+        if(!isMsalAuthenticated()){window.location.href="/login";return;}
+        try{
+            const user=await getCurrentUser();
+            gerName=user.displayName||'';
+            gerEmail=user.mail||user.userPrincipalName||'';
+            const ud=document.getElementById('userDisplay');if(ud)ud.textContent=gerName;
+        }catch(e){}
+        try{
+            const sig=await getSignature(gerEmail);
+            if(sig&&sig.signatureUrl){userSignatureData=sig;updateSidebarSig();}
+        }catch(e){}
+        try{await loadSolicitudes();}catch(e){console.error("Error cargando solicitudes:",e);}
+        const loader=document.getElementById('pageLoader');
+        if(loader){loader.classList.add('hidden');setTimeout(()=>loader.remove(),600);}
+        const revealObs=new IntersectionObserver(entries=>{
+            entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+        },{threshold:0.08});
+        document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
+    });
+</script>
+</body>
+</html>
